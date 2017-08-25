@@ -1,0 +1,238 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../request-panel.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <request-panel></request-panel>
+      </template>
+    </test-fixture>
+
+    <script>
+    /* global fixture, assert, TestHelpers */
+    suite('Response data', function() {
+
+      const REQUEST_URL =
+        'https://cdn.rawgit.com/advanced-rest-client/arc-datastore-api/4e1cd2c6/api.raml';
+      const REQUEST_METHOD = 'GET';
+      const REQUEST_HEADERS = {'accept': 'application/json'};
+      const RESPONSE_STATUS = 200;
+      const RESPONSE_STATUS_TEXT = 'OK';
+      const RESPONSE_BODY = '{"test":true}';
+      const RESPONSE_HEADERS = {
+        'Content-Type': 'application/json',
+        'Content-Length': RESPONSE_BODY.length
+      };
+      const LOAD_TIME = 123;
+
+      function createRequest() {
+        var init = {
+          method: REQUEST_METHOD,
+          mode: 'cors',
+          headers: new Headers(REQUEST_HEADERS)
+        };
+        return new Request(REQUEST_URL, init);
+      }
+
+      function createResponse() {
+        var init = {
+          status: RESPONSE_STATUS,
+          statusText: RESPONSE_STATUS_TEXT,
+          headers: new Headers(RESPONSE_HEADERS)
+        };
+        return new Response(RESPONSE_BODY, init);
+      }
+
+      function fireResponse(detail) {
+        var event = new CustomEvent('report-response', {
+          cancelable: false,
+          bubbles: true,
+          composed: true,
+          detail: detail
+        });
+        document.body.dispatchEvent(event);
+      }
+
+      suite('Simple response', function() {
+        var element;
+        setup(function() {
+          element = fixture('basic');
+        });
+
+        function createSimpleResponseObject() {
+          var detail = {
+            request: createRequest(),
+            response: createResponse(),
+            loadingTime: LOAD_TIME,
+            isXhr: true
+          };
+          return detail;
+        }
+
+        test('report-response event triggers setResponseData()', function() {
+          var called = false;
+          element.setResponseData = function() {
+            called = true;
+          };
+          fireResponse(createSimpleResponseObject());
+          assert.isTrue(called);
+        });
+
+        test('report-response event handler passes the response data', function() {
+          element.setResponseData = function(data) {
+            assert.typeOf(data.request, 'request', 'request is an object');
+            assert.typeOf(data.response, 'response', 'response is an object');
+            assert.typeOf(data.loadingTime, 'number', 'loadingTime is a nuumber');
+            assert.typeOf(data.isXhr, 'boolean', 'isXhr is a boolean');
+          };
+          fireResponse(createSimpleResponseObject());
+        });
+
+        test('sets responseIsXhr property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isTrue(element.responseIsXhr);
+        });
+
+        test('sets response property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.typeOf(element.response, 'response', 'response is an object');
+        });
+
+        test('sets transportRequest property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.typeOf(element.transportRequest, 'request', 'transportRequest is an object');
+        });
+
+        test('sets responseError property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isUndefined(element.responseError, 'responseError is undefined');
+        });
+
+        test('sets loadingTime property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.typeOf(element.loadingTime, 'number', 'loadingTime is a number');
+        });
+
+        test('sets timings property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isUndefined(element.timings, 'timings is undefined');
+        });
+
+        test('sets redirectTimings property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isUndefined(element.redirectTimings, 'redirectTimings is undefined');
+        });
+
+        test('sets redirects property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isUndefined(element.redirects, 'redirects is undefined');
+        });
+
+        test('sets sourceMessage property', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isUndefined(element.sourceMessage, 'sourceMessage is undefined');
+        });
+
+        test('Computes hasResponse', function() {
+          element.setResponseData(createSimpleResponseObject());
+          assert.isTrue(element.hasResponse);
+        });
+
+        test('Renders response panel', function() {
+          element.setResponseData(createSimpleResponseObject());
+          TestHelpers.forceXIfStamp(element);
+          var node = Polymer.dom(element.root).querySelector('response-view');
+          assert.isOk(node);
+        });
+
+        test('The response panel has properties set', function() {
+          element.setResponseData(createSimpleResponseObject());
+          TestHelpers.forceXIfStamp(element);
+          var node = Polymer.dom(element.root).querySelector('response-view');
+          assert.typeOf(node.request, 'request', 'request is an object');
+          assert.typeOf(node.response, 'response', 'response is an object');
+          assert.equal(node.loadingTime, LOAD_TIME, 'loadingTime is a nuumber');
+          assert.equal(node.isXhr, true, 'isXhr is a boolean');
+          assert.isUndefined(node.responseError, 'responseError is undefined');
+          assert.isUndefined(node.responseTimings, 'responseTimings is undefined');
+          assert.isUndefined(node.redirectTimings, 'redirectTimings is undefined');
+          assert.isUndefined(node.redirects, 'redirects is undefined');
+          assert.isUndefined(node.sentHttpMessage, 'sentHttpMessage is undefined');
+        });
+      });
+
+      suite('Complex response', function() {
+        var element;
+        setup(function() {
+          element = fixture('basic');
+        });
+
+        function createComplexResponseObject() {
+          var detail = {
+            request: createRequest(),
+            response: createResponse(),
+            loadingTime: LOAD_TIME,
+            isXhr: false,
+            redirects: [],
+            redirectTimings: [],
+            timings: {},
+            sourceMessage: 'test'
+          };
+          return detail;
+        }
+
+        test('sets timings property', function() {
+          element.setResponseData(createComplexResponseObject());
+          assert.typeOf(element.timings, 'object');
+        });
+
+        test('sets redirectTimings property', function() {
+          element.setResponseData(createComplexResponseObject());
+          assert.typeOf(element.redirectTimings, 'array');
+        });
+
+        test('sets redirects property', function() {
+          element.setResponseData(createComplexResponseObject());
+          assert.typeOf(element.redirects, 'array');
+        });
+
+        test('sets sourceMessage property', function() {
+          element.setResponseData(createComplexResponseObject());
+          assert.equal(element.sourceMessage, 'test');
+        });
+
+        test('The response panel has properties set', function() {
+          element.setResponseData(createComplexResponseObject());
+          TestHelpers.forceXIfStamp(element);
+          var node = Polymer.dom(element.root).querySelector('response-view');
+          assert.typeOf(node.responseTimings, 'object');
+          assert.typeOf(node.redirectTimings, 'array');
+          assert.typeOf(node.redirects, 'array');
+          assert.equal(node.sentHttpMessage, 'test');
+        });
+      });
+    });
+    </script>
+
+  </body>
+</html>

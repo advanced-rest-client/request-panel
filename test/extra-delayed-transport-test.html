@@ -1,0 +1,174 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../request-panel.html">
+    <link rel="import" href="demo-transport.html">
+    <link rel="import" href="demo-before-request-worker.html">
+
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <request-panel handlers-timeout="100"></request-panel>
+        <demo-transport></demo-transport>
+        <demo-before-request-worker timeout="200" promise-timeout="100"></demo-before-request-worker>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="cont">
+      <template>
+        <request-panel handlers-timeout="100"></request-panel>
+        <demo-transport></demo-transport>
+        <demo-before-request-worker timeout="200" promise-timeout="0"></demo-before-request-worker>
+      </template>
+    </test-fixture>
+
+    <script>
+    // Deleyed by setting a timeout on a before-request promise.
+    /* global fixture, assert, TestHelpers */
+    suite('extra-delayed-basic-transport', function() {
+      var element;
+      const url = 'https://httpbin.org/';
+      const request = {
+        url: url,
+        method: 'HEAD',
+        headers: ''
+      };
+      setup(function() {
+        element = fixture('basic')[0];
+        element.request = request;
+      });
+
+      test('Timeouts before-request event', function(done) {
+        element._onBeforeRequestTimeout = function() {
+          element._setBeforeTimedOut(true);
+          done();
+        };
+        element._continueRequest = function() {
+          done(new Error('Should not reach this function.'));
+        };
+        element.send();
+      });
+
+      test('Continue request after the timeout', function(done) {
+        element._continueRequest = function() {
+          done();
+        };
+        element.send();
+      });
+
+      test('beforeTimedOut is set', function(done) {
+        element._continueRequest = function() {
+          assert.isTrue(element.beforeTimedOut);
+          done();
+        };
+        element.send();
+      });
+
+      test('clears _currentTimeout property', function(done) {
+        element._continueRequest = function() {
+          assert.isUndefined(element._currentTimeout);
+          done();
+        };
+        element.send();
+      });
+
+      test('_continueRequest called only once after timeout', function(done) {
+        element._continueRequest = function() {
+          done();
+        };
+        element.send();
+      });
+
+      test('_beforePromisesResolved is false', function(done) {
+        element._continueRequest = function() {
+          assert.isFalse(element._beforePromisesResolved);
+          done();
+        };
+        element.send();
+      });
+
+      test('_awaitingContinue is false', function(done) {
+        element._continueRequest = function() {
+          assert.isFalse(element._awaitingContinue);
+          done();
+        };
+        element.send();
+      });
+
+      test('_continueRequest gets original request object', function(done) {
+        element._continueRequest = function(request) {
+          assert.equal(request.url, url);
+          assert.equal(request.headers, request.headers);
+          done();
+        };
+        element.send();
+      });
+    });
+
+    suite('indefinitely long before-request event', function() {
+      var element;
+      const url = 'https://httpbin.org/';
+      const request = {
+        url: url,
+        method: 'HEAD',
+        headers: ''
+      };
+      setup(function() {
+        element = fixture('cont')[0];
+        element.request = request;
+      });
+
+      test('_awaitingContinue is true', function() {
+        element.send();
+        assert.isTrue(element._awaitingContinue);
+      });
+
+      test('_continueRequest is not called', function(done) {
+        element._continueRequest = function() {
+          done(new Error('_continueRequest was called ;('));
+        };
+        element.send();
+        setTimeout(function() {
+          done();
+        }, 500);
+      });
+
+      test('_continueRequest is called after continue-request', function(done) {
+        var eventFired = false;
+        element._continueRequest = function() {
+          if (!eventFired) {
+            done(new Error('_continueRequest was called too early ;('));
+          } else {
+            done();
+          }
+        };
+        element.send();
+        setTimeout(function() {
+          eventFired = true;
+          TestHelpers.fireEvent('continue-request', {}, document.body);
+        }, 500);
+      });
+    });
+    </script>
+
+  </body>
+</html>

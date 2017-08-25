@@ -1,0 +1,182 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../request-panel.html">
+    <link rel="import" href="demo-transport.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <request-panel></request-panel>
+        <demo-transport></demo-transport>
+      </template>
+    </test-fixture>
+
+    <script>
+    /* global suite, test, fixture, assert, TestHelpers */
+    suite('basic-transport', function() {
+      var element;
+      setup(function() {
+        element = fixture('basic')[0];
+      });
+
+      function assertResponseData(element) {
+        assert.ok(element.transportRequest, 'Transport request object is set');
+        assert.ok(element.response, 'Transport response object is set');
+        assert.notOk(element.responseError, 'Response error object is not set');
+        assert.ok(element.loadingTime, 'loadingTime is set');
+      }
+
+      test('Makes a GET request', function(done) {
+        this.timeout(5000);
+        const url = 'https://httpbin.org/get';
+        const request = {
+          url: url,
+          headers: '',
+          method: 'GET'
+        };
+        element.request = request;
+        var callback = function() {
+          window.removeEventListener('report-response', callback);
+          TestHelpers.forceXIfStamp(element);
+          window.setTimeout(function() {
+            assertResponseData(element);
+            done();
+          }, 1);
+        };
+        window.addEventListener('report-response', callback);
+        element.send();
+      });
+
+      test('Makes a POST request', function(done) {
+        this.timeout(5000);
+        const url = 'https://httpbin.org/post';
+        const request = {
+          url: url,
+          method: 'POST',
+          payload: '{"a":"b"}',
+          headers: 'content-type: application/json'
+        };
+        element.request = request;
+        var callback = function() {
+          window.removeEventListener('report-response', callback);
+          TestHelpers.forceXIfStamp(element);
+          window.setTimeout(function() {
+            assertResponseData(element);
+            done();
+          }, 1);
+        };
+        window.addEventListener('report-response', callback);
+        element.send();
+      });
+
+      test('Makes a PUT request', function(done) {
+        this.timeout(5000);
+        const url = 'https://httpbin.org/put';
+        const body = new FormData();
+        body.append('test', 'value');
+        body.append('test-file', new Blob(['test'], {type: 'text/plain'}));
+        const request = {
+          url: url,
+          method: 'PUT',
+          payload: body
+        };
+        element.request = request;
+        var callback = function() {
+          window.removeEventListener('report-response', callback);
+          TestHelpers.forceXIfStamp(element);
+          window.setTimeout(function() {
+            assertResponseData(element);
+            done();
+          }, 1);
+        };
+        window.addEventListener('report-response', callback);
+        element.send();
+      });
+
+      test('Makes a PATCH request', function(done) {
+        this.timeout(5000);
+        const url = 'https://httpbin.org/patch';
+        const body = new Blob(['test'], {type: 'text/plain'});
+        const request = {
+          url: url,
+          method: 'PATCH',
+          payload: body
+        };
+        element.request = request;
+        var callback = function() {
+          window.removeEventListener('report-response', callback);
+          TestHelpers.forceXIfStamp(element);
+          window.setTimeout(function() {
+            assertResponseData(element);
+            done();
+          }, 1);
+        };
+        window.addEventListener('report-response', callback);
+        element.send();
+      });
+
+      test('Makes a HEAD request', function(done) {
+        this.timeout(5000);
+        const url = 'https://httpbin.org/';
+        const request = {
+          url: url,
+          method: 'HEAD'
+        };
+        element.request = request;
+        var callback = function() {
+          window.removeEventListener('report-response', callback);
+          TestHelpers.forceXIfStamp(element);
+          window.setTimeout(function() {
+            assertResponseData(element);
+            done();
+          }, 1);
+        };
+        window.addEventListener('report-response', callback);
+        element.send();
+      });
+
+      test('Reports an error', function(done) {
+        this.timeout(5000);
+        const url = 'https://httpbin.org/';
+        const request = {
+          url: url,
+          method: 'POST'
+        };
+        element.request = request;
+        var callback = function() {
+          window.removeEventListener('report-response', callback);
+          TestHelpers.forceXIfStamp(element);
+          window.setTimeout(function() {
+            assert.ok(element.transportRequest, 'Transport request object is set');
+            assert.ok(element.response, 'Transport response object is set');
+            assert.ok(element.responseError, 'Response error object is set');
+            done();
+          }, 1);
+        };
+        window.addEventListener('report-response', callback);
+        element.send();
+      });
+    });
+    </script>
+
+  </body>
+</html>

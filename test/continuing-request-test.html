@@ -1,0 +1,89 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../request-panel.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <request-panel handlers-timeout="0"></request-panel>
+      </template>
+    </test-fixture>
+
+    <script>
+    // Deleyed by setting a timeout on a before-request promise.
+    /* global fixture, assert, TestHelpers, sinon */
+    suite('Continuing request', function() {
+      var element;
+      const url = 'https://httpbin.org/';
+      const request = {
+        url: url,
+        method: 'HEAD',
+        headers: ''
+      };
+      setup(function() {
+        element = fixture('basic');
+        element.request = request;
+      });
+
+      test('Clears pre-request working variables', function(done) {
+        element.send();
+        assert.typeOf(element._requestCopy, 'object', '_requestCopy is an object');
+        setTimeout(function() {
+          TestHelpers.fireEvent('continue-request', {}, document.body);
+
+          assert.isUndefined(element._requestCopy, '_requestCopy is cleared');
+          assert.isUndefined(element._currentTimeout, '_currentTimeout is undefined');
+          done();
+        }, 10);
+      });
+
+      test('Fires transport-request custom event', function(done) {
+        var spy = sinon.spy();
+        element.addEventListener('transport-request', spy);
+        element.send();
+        setTimeout(function() {
+          TestHelpers.fireEvent('continue-request', {}, document.body);
+          assert.isTrue(spy.calledOnce);
+          done();
+        }, 10);
+      });
+
+      test('transport-request properties are immutable', function(done) {
+        var callback = function(e) {
+          element.removeEventListener('transport-request', callback);
+          // It only takes to check one. If one propery is then other are.
+          // The test for that is in basic-test
+          e.detail.url = 'should-not-set';
+          assert.equal(e.detail.url, url);
+          done();
+        };
+        element.addEventListener('transport-request', callback);
+        element.send();
+        setTimeout(function() {
+          TestHelpers.fireEvent('continue-request', {}, document.body);
+        }, 10);
+      });
+    });
+    </script>
+
+  </body>
+</html>

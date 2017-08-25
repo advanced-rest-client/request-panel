@@ -1,0 +1,276 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/test-helpers.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../request-panel.html">
+    <link rel="import" href="demo-transport.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <request-panel></request-panel>
+        <demo-transport></demo-transport>
+      </template>
+    </test-fixture>
+
+    <script>
+    /* global suite, test, fixture, assert */
+    suite('basic', function() {
+      var element;
+      setup(function() {
+        element = fixture('basic')[0];
+      });
+
+      suite('ready()', function() {
+        test('Initializes request object', function() {
+          assert.typeOf(element.request, 'object');
+        });
+      });
+
+      suite('_reset()', function() {
+        setup(function() {
+          element._reset();
+        });
+
+        test('Resets _awaitingContinue', function() {
+          assert.isFalse(element._awaitingContinue);
+        });
+
+        test('Resets _beforePromisesResolved', function() {
+          assert.isTrue(element._beforePromisesResolved);
+        });
+
+        test('Resets _requestCopy', function() {
+          assert.isUndefined(element._requestCopy);
+        });
+
+        test('Resets _cancelled', function() {
+          assert.isFalse(element._awaitingContinue);
+        });
+
+        test('Resets beforeTimedOut', function() {
+          assert.isFalse(element.beforeTimedOut);
+        });
+
+        test('Resets transportRequest', function() {
+          assert.isUndefined(element.transportRequest);
+        });
+
+        test('Resets response', function() {
+          assert.isUndefined(element.response);
+        });
+
+        test('Resets responseError', function() {
+          assert.isUndefined(element.responseError);
+        });
+
+        test('Resets responseIsXhr', function() {
+          assert.isTrue(element.responseIsXhr);
+        });
+
+        test('Resets loadingTime', function() {
+          assert.isUndefined(element.loadingTime);
+        });
+
+        test('Resets redirects', function() {
+          assert.isUndefined(element.redirects);
+        });
+
+        test('Resets redirectTimings', function() {
+          assert.isUndefined(element.redirectTimings);
+        });
+
+        test('Resets timings', function() {
+          assert.isUndefined(element.timings);
+        });
+
+        test('Resets sourceMessage', function() {
+          assert.isUndefined(element.sourceMessage);
+        });
+      });
+
+      suite('_prepareEventRequest()', function() {
+        const url = 'http://domain.com/';
+        const request = {
+          url: url,
+          headers: 'x-test: abs',
+          method: 'GET'
+        };
+        var result;
+        setup(function() {
+          element.request = request;
+          result = element._prepareEventRequest();
+        });
+        suiteTeardown(function() {
+          element.request = {};
+        });
+
+        test('Copies request object properties', function() {
+          assert.equal(result.url, request.url);
+          assert.equal(result.headers, request.headers);
+          assert.equal(result.method, request.method);
+        });
+
+        test('Generated object is a copy', function() {
+          result.url = 'test';
+          assert.notEqual(result.url, request.url);
+        });
+
+        test('Adds promises array', function() {
+          assert.typeOf(result.promises, 'array');
+        });
+
+        test('Removes payload for GET', function() {
+          element.request.payload = 'test';
+          result = element._prepareEventRequest();
+          assert.isUndefined(result.payload);
+        });
+
+        test('Removes payload for HEAD', function() {
+          element.request.payload = 'test';
+          element.request.method = 'HEAD';
+          result = element._prepareEventRequest();
+          assert.isUndefined(result.payload);
+        });
+
+        test('Do not removes payload for POST', function() {
+          element.request.payload = 'test';
+          element.request.method = 'POST';
+          result = element._prepareEventRequest();
+          assert.equal(result.payload, 'test');
+        });
+      });
+
+      suite('_computeHandlersTimeout()', function() {
+
+        test('Uses default timeout for lack of arguments', function() {
+          var result = element._computeHandlersTimeout();
+          assert.equal(result, element.handlersTimeout);
+        });
+
+        test('Returns highest time from the array of objects', function() {
+          var args = [{
+            'timeout': 2500
+          }, {
+            'timeout': 3500
+          }, {
+            'timeout': 2700
+          }];
+          var result = element._computeHandlersTimeout(args);
+          assert.equal(result, args[1].timeout);
+        });
+
+        test('Returns default time for lower timeouts in argument object', function() {
+          var args = [{
+            'timeout': 100
+          }, {
+            'timeout': 200
+          }, {
+            'timeout': 300
+          }];
+          var result = element._computeHandlersTimeout(args);
+          assert.equal(result, element.handlersTimeout);
+        });
+
+        test('Returns -1 when handlersTimeout is removed', function() {
+          element.handlersTimeout = 0;
+          var result = element._computeHandlersTimeout();
+          assert.equal(result, -1);
+        });
+
+        test('Returns -1 when any of timeouts in array is 0', function() {
+          assert.isAbove(element.handlersTimeout, 0);
+          var args = [{
+            'timeout': 100
+          }, {
+            'timeout': 0
+          }, {
+            'timeout': 300
+          }];
+          var result = element._computeHandlersTimeout(args);
+          assert.equal(result, -1);
+        });
+      });
+    });
+
+    suite('_clearBeforeRequestTimeout', function() {
+      var element;
+      setup(function() {
+        element = fixture('basic')[0];
+      });
+
+      test('Clears the variable', function() {
+        element._currentTimeout = 'test';
+        element._clearBeforeRequestTimeout();
+        assert.isUndefined(element._currentTimeout);
+      });
+
+      test('Do nothing when variable is empty', function() {
+        element._clearBeforeRequestTimeout();
+        // Basically it doesn't throws an error.
+        assert.isUndefined(element._currentTimeout);
+      });
+
+      test('Clears existing timeout', function(done) {
+        var errored = false;
+        element._currentTimeout = window.setTimeout(function() {
+          errored = true;
+          done(new Error('Do not clears the timeout.'));
+        }, 10);
+        element._clearBeforeRequestTimeout();
+        window.setTimeout(function() {
+          done();
+        }, 15);
+      });
+    });
+
+    suite('_prepareTransportObject()', function() {
+      var element;
+      const orig = {
+        a: 'v1',
+        b: 'v2',
+        c: 'v3'
+      };
+      var result;
+      setup(function() {
+        element = fixture('basic')[0];
+        result = element._prepareTransportObject(orig);
+      });
+
+      test('Creates copy of the object', function() {
+        assert.deepEqual(result, orig);
+      });
+
+      test('Values are immutable', function() {
+        result.a = 'a1';
+        result.b = 'a2';
+        result.c = 'a3';
+        assert.equal(result.a, orig.a);
+        assert.equal(result.b, orig.b);
+        assert.equal(result.c, orig.c);
+        assert.notEqual(result.a, 'a1');
+        assert.notEqual(result.b, 'a2');
+        assert.notEqual(result.c, 'a3');
+      });
+    });
+    </script>
+
+  </body>
+</html>
