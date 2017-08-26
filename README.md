@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/advanced-rest-client/request-panel.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/request-panel)  
+
+# request-panel
+
 A full request and response view for the Advanced REST client
 
 # Example
@@ -82,9 +86,10 @@ Because browser can't guarantee event handlers execution order this shouldn't be
 `<request-panel>` provides the following custom properties and mixins for styling:
 
 Custom property|Description|Default
------------------ | ---------------------------- | -------
+---------- | ------------------ | ------
 `--request-panel`|Mixin applied to the element|`{}`
+`--request-panel-main-content` | Mixin applied to the container for the request and the resposnse panels | `{}`
+`--request-panel-progress-color` | Color of the progress bar that indicate loading state | `#00A2DF`
+`--request-panel-progress` | Mixin applied to the progress bar | `{}`
+`--request-panel-status-bar` | Mixin applied to the status bar | `{}`
 
-@group UI Elements
-@element request-panel
-@demo demo/index.html
