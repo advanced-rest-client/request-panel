@@ -1,3 +1,13 @@
+<a name="0.1.4"></a>
+## [0.1.4](https://github.com/advanced-rest-client/request-panel/compare/0.1.3...0.1.4) (2017-09-01)
+
+
+### Fix
+
+* Fixed setting isXhr status ([71af9ffa2c802e186b2f712e2ac6c4edda52727a](https://github.com/advanced-rest-client/request-panel/commit/71af9ffa2c802e186b2f712e2ac6c4edda52727a))
+
+
+
 <a name="0.1.3"></a>
 ## [0.1.3](https://github.com/advanced-rest-client/request-panel/compare/0.1.2...0.1.3) (2017-08-31)
 
