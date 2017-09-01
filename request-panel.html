@@ -562,7 +562,8 @@ Custom property|Description|Default
     setResponseData: function(obj) {
       this.loading = false;
       obj = obj || {};
-      this._setResponseIsXhr(obj.isXhr || true);
+      var isXhr = obj.isXhr === undefined ? true : obj.isXhr;
+      this._setResponseIsXhr(isXhr);
       this._setResponse(obj.response);
       this._setResponseError(obj.error);
       this._setTransportRequest(obj.request);
