@@ -1,3 +1,22 @@
+<a name="0.1.6"></a>
+## [0.1.6](https://github.com/advanced-rest-client/request-panel/compare/0.1.5...0.1.6) (2017-09-15)
+
+
+### Docs
+
+* Updated docs for the events. ([76c186d97221580383391fe8800dcc89d37d6877](https://github.com/advanced-rest-client/request-panel/commit/76c186d97221580383391fe8800dcc89d37d6877))
+
+### New
+
+* Added the `id` property to the `transport-request` event. ([2740710560564b035fb87a405ecab8fa9ac2e8f0](https://github.com/advanced-rest-client/request-panel/commit/2740710560564b035fb87a405ecab8fa9ac2e8f0))
+
+### Update
+
+* Added `loading` state handler for the request editor. ([81e5ec564773f529a4add1eb147c5dee5ee0299d](https://github.com/advanced-rest-client/request-panel/commit/81e5ec564773f529a4add1eb147c5dee5ee0299d))
+* Updated demo page styles. ([11a2cd116f9f0eb1fafcb51fa10007229f43b233](https://github.com/advanced-rest-client/request-panel/commit/11a2cd116f9f0eb1fafcb51fa10007229f43b233))
+
+
+
 <a name="0.1.5"></a>
 ## [0.1.5](https://github.com/advanced-rest-client/request-panel/compare/0.1.4...0.1.5) (2017-09-01)
 
