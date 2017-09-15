@@ -324,6 +324,16 @@ Custom property|Description|Default
       'send-request': '_sendRequestHandler',
       'abort-request': '_abortRequestHandler'
     },
+    /**
+     * Returns a number incremented each time this getter is called.
+     * It computes a request ID.
+     */
+    get _nextRequestId() {
+      if (typeof this.__requestId !== 'number') {
+        this.__requestId = 0;
+      }
+      return ++this.__requestId;
+    },
 
     _attachListeners: function(node) {
       this.listen(node, 'continue-request', '_continueRequestHandler');
@@ -554,6 +564,11 @@ Custom property|Description|Default
           enumerable: true
         };
       });
+      configuration.id = {
+        value: this._nextRequestId,
+        writable: false,
+        enumerable: true
+      };
       return Object.create(Object.prototype, configuration);
     },
     /**
