@@ -162,6 +162,9 @@ Custom property|Description|Default
       <template is="dom-if" if="[[loading]]">
         <paper-progress indeterminate></paper-progress>
       </template>
+      <template is="dom-if" if="[[cookieBanner]]" restamp="true">
+        <cookie-exchange-banner></cookie-exchange-banner>
+      </template>
       <template is="dom-if" if="[[hasResponse]]">
         <response-view
           request="[[transportRequest]]"
@@ -176,7 +179,6 @@ Custom property|Description|Default
       </template>
     </div>
     <arc-status-bar></arc-status-bar>
-    <cookie-exchange-banner hidden></cookie-exchange-banner>
     <install-proxy-dialog></install-proxy-dialog>
     <paper-toast id="errorToast"></paper-toast>
     <paper-toast id="cancelToast"></paper-toast>
@@ -317,7 +319,9 @@ Custom property|Description|Default
       beforeTimedOut: {
         type: Boolean,
         readOnly: true
-      }
+      },
+      // True to display cookie exchange instalkl banner.
+      cookieBanner: Boolean
     },
 
     listeners: {
@@ -371,6 +375,7 @@ Custom property|Description|Default
     },
 
     _reset: function() {
+      this.cookieBanner = false;
       this._awaitingContinue = false;
       this._beforePromisesResolved = true;
       this._requestCopy = undefined;
@@ -599,6 +604,9 @@ Custom property|Description|Default
       this._setRedirectTimings(obj.redirectTimings);
       this._setRedirects(obj.redirects);
       this._setSourceMessage(obj.sourceMessage);
+      if (obj.auth) {
+        this.cookieBanner = true;
+      }
     },
 
     // Computes if there is a reponse object.

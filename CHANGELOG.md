@@ -1,3 +1,13 @@
+<a name="0.1.8"></a>
+## [0.1.8](https://github.com/advanced-rest-client/request-panel/compare/0.1.7...0.1.8) (2017-09-15)
+
+
+### Update
+
+* Added support fdor the cookie install banner. ([81c1938548549e027e7a6aa803ce7426203daf3e](https://github.com/advanced-rest-client/request-panel/commit/81c1938548549e027e7a6aa803ce7426203daf3e))
+
+
+
 <a name="0.1.7"></a>
 ## [0.1.7](https://github.com/advanced-rest-client/request-panel/compare/0.1.6...0.1.7) (2017-09-15)
 
