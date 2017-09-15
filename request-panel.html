@@ -57,7 +57,19 @@ The details object has following properties:
 
 ### transport-request
 
-A non-cancelable, immutable request object. This event is mean to be handled by a transport library that is attached to the DOM and handles the event.
+A non-cancelable, immutable request object.
+This event is meant to be handled by the transport library that is attached to the DOM and handles the event.
+
+#### Properties
+
+The details object has following properties:
+
+-   `url` (`string`)- Request URL.
+-   `headers` (`String`) - Headers to be send.
+-   `payload` (`String`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
+-   `method` (`String`) - HTTP method.
+-   `auth` (`Object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
+-   `id` (`Number`) - Request ID. It is unique number for the request. The id is reported back by the transport library in all its events.
 
 ### response-ready event
 
