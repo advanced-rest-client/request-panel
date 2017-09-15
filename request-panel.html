@@ -158,7 +158,7 @@ Custom property|Description|Default
     }
     </style>
     <div class="data-area">
-      <request-editor headers="{{request.headers}}" method="{{request.method}}" payload="{{request.payload}}" url="{{request.url}}"></request-editor>
+      <request-editor loading-request="[[loading]]" headers="{{request.headers}}" method="{{request.method}}" payload="{{request.payload}}" url="{{request.url}}"></request-editor>
       <template is="dom-if" if="[[loading]]">
         <paper-progress indeterminate></paper-progress>
       </template>
