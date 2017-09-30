@@ -158,7 +158,13 @@ Custom property|Description|Default
     }
     </style>
     <div class="data-area">
-      <request-editor loading-request="[[loading]]" headers="{{request.headers}}" method="{{request.method}}" payload="{{request.payload}}" url="{{request.url}}"></request-editor>
+      <request-editor
+        loading-request="[[loading]]"
+        headers="{{request.headers}}"
+        method="{{request.method}}"
+        payload="{{request.payload}}"
+        url="{{request.url}}"
+        xhr-extension="[[xhrExtension]]"></request-editor>
       <template is="dom-if" if="[[loading]]">
         <paper-progress indeterminate></paper-progress>
       </template>
@@ -321,7 +327,15 @@ Custom property|Description|Default
         readOnly: true
       },
       // True to display cookie exchange instalkl banner.
-      cookieBanner: Boolean
+      cookieBanner: Boolean,
+      /**
+       * If set then it renders an option in request context menu to
+       * toggle to XHR request via the extension. This information is passed
+       * to the request editor element.
+       *
+       * It's only relevant to ARC Chrome app.
+       */
+      xhrExtension: Boolean
     },
 
     listeners: {

@@ -1,3 +1,13 @@
+<a name="0.1.10"></a>
+## [0.1.10](https://github.com/advanced-rest-client/request-panel/compare/0.1.8...0.1.10) (2017-09-30)
+
+
+### Update
+
+* Updated version of the request editor and added support for it ([531aca5adae909946c82adedbf3576644d95cf6a](https://github.com/advanced-rest-client/request-panel/commit/531aca5adae909946c82adedbf3576644d95cf6a))
+
+
+
 <a name="0.1.9"></a>
 ## [0.1.9](https://github.com/advanced-rest-client/request-panel/compare/0.1.8...0.1.9) (2017-09-15)
 
