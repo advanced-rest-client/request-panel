@@ -57,12 +57,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <variables-evaluator></variables-evaluator>
         <variables-manager></variables-manager>
         <demo-transport></demo-transport>
-        <request-panel request="[[request]]"></request-panel>
+        <request-panel request="[[request]]" xhr-extension></request-panel>
       </template>
     </demo-snippet>
   </div>
   <paper-toast id="transportToast" text="transport-request event handled"></paper-toast>
-
+  <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
+  <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
+  <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
+  <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
   <script>
   var Demo = {
     sendEvent: function(type, details, cancelable, node) {
@@ -80,6 +83,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Demo.sendEvent('url-history-store', {
       value: e.detail.url
     }, true);
+  });
+  function openToast(id) {
+    document.getElementById(id).opened = true;
+  }
+  window.addEventListener('abort-request', function() {
+    openToast('requestAbort');
+  });
+  window.addEventListener('request-clear-state', function() {
+    openToast('clearToast');
+  });
+  window.addEventListener('request-save-state', function() {
+    openToast('saveToast');
+  });
+  window.addEventListener('request-use-xhr-changed', function() {
+    openToast('xhrToast');
   });
   (function(scope) {
     scope.request = {
