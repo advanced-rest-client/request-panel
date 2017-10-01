@@ -188,7 +188,6 @@ Custom property|Description|Default
     <install-proxy-dialog></install-proxy-dialog>
     <paper-toast id="errorToast"></paper-toast>
     <paper-toast id="cancelToast"></paper-toast>
-    <paper-toast id="abortToast" text="Request aborted"></paper-toast>
   </template>
   <script>
   Polymer({
@@ -378,7 +377,6 @@ Custom property|Description|Default
     _abortRequestHandler: function() {
       this._cancelled = true;
       this._reportCancelation();
-      this.$.abortToast.opened = true;
     },
     /**
      * Sends the request.
@@ -561,7 +559,10 @@ Custom property|Description|Default
       t.text = message;
       t.opened = true;
     },
-
+    /**
+     * Opens the cancelation message toast
+     * @param {?String} reason Message to display. Optional.
+     */
     _reportCancelation: function(reason) {
       this.loading = false;
       reason = reason || 'The request has been canceled';
