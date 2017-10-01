@@ -30,9 +30,10 @@ The details object has following properties:
 -   `headers` (`string`) - Headers to be send.
 -   `payload` (`string`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
 -   `method` (`string`) - HTTP method.
--   `promises` (`array`) - An array when the promises must be added
+-   `promises` (`array`) - An array where promises must be added
 -   `reason` (`string`) - reason of cancelling the event.
 -   `auth` (`object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
+-   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
 
 ### transport-request
 
@@ -48,7 +49,7 @@ The details object has following properties:
 -   `payload` (`String`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
 -   `method` (`String`) - HTTP method.
 -   `auth` (`Object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
--   `id` (`Number`) - Request ID. It is unique number for the request. The id is reported back by the transport library in all its events.
+-   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
 
 ### response-ready event
 
@@ -105,3 +106,20 @@ Custom property|Description|Default
 `--request-panel-progress` | Mixin applied to the progress bar | `{}`
 `--request-panel-status-bar` | Mixin applied to the status bar | `{}`
 
+
+
+### Events
+| Name | Description | Params |
+| --- | --- | --- |
+| before-request | Before sending the request the `before-request` custom event is fired. The event contains the `promises` array on the detail object where all promises should be kept. Handlers can modify any part of the request message.  This event is cancellable. If the event has been cancelled by any of the listeners then the request fails. Handlers may set a reason property on the event's detail object to display a reason to the user.  The handler have a timeout set from the `handlers-timeout` attribute of the element to complete any scheduled tasks. If a handler requires more time to execute (eg. request debugger) it should set a `timeout` property on the Promise object. It is a non-normative property for this object but it will help control the workflow properly. The request will be fired after the number of milliseconds of the highest timeout value. If 0 is set then the request will be halted until `continue-request` event is fired. | url **String** - Request URL. |
+headers **String** - Headers to be send. |
+payload **String** - Message body if the request can carry a body. GET and HEAD request will ignore this property. |
+method **String** - HTTP method. |
+promises **Array** - An array where promises must be added |
+reason **String** - The reason of cancelation. Must be set by the handler. |
+auth **?Object** - An authorization data that will be passed to the transport library (`socket-fetch`) |
+| transport-request | A non-cancelable, immutable request object. This event is meant to be handled by the transport library that is attached to the DOM and handles the event. | url **String** - Request URL. |
+headers **String** - Headers to be send. |
+payload **String** - Message body if the request can carry a body. GET and HEAD request will ignore this property. |
+method **String** - HTTP method. |
+auth **?Object** - An authorization data that will be passed to the transport library (`socket-fetch`) |
