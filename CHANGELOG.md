@@ -1,3 +1,15 @@
+<a name="0.1.11"></a>
+## [0.1.11](https://github.com/advanced-rest-client/request-panel/compare/0.1.10...0.1.11) (2017-10-01)
+
+
+### Update
+
+* Added support for generated in the request editor request ID. ([610962e6e4ec79b26514ce6f87769b75dd875608](https://github.com/advanced-rest-client/request-panel/commit/610962e6e4ec79b26514ce6f87769b75dd875608))
+* Removed redundant toast message ([8db79b673baf727e8a35f9bf1fde0bfc3e1c9f07](https://github.com/advanced-rest-client/request-panel/commit/8db79b673baf727e8a35f9bf1fde0bfc3e1c9f07))
+* Updated documentation for the element. ([69acce5850bbe7015b4bb83852fd22cede7ef5fc](https://github.com/advanced-rest-client/request-panel/commit/69acce5850bbe7015b4bb83852fd22cede7ef5fc))
+
+
+
 <a name="0.1.10"></a>
 ## [0.1.10](https://github.com/advanced-rest-client/request-panel/compare/0.1.8...0.1.10) (2017-09-30)
 
