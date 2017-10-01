@@ -70,7 +70,7 @@ The details object has following properties:
 -   `payload` (`String`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
 -   `method` (`String`) - HTTP method.
 -   `auth` (`Object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
--   `id` (`Number`) - Request ID. It is unique number for the request. The id is reported back by the transport library in all its events.
+-   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
 
 ### response-ready event
 
@@ -418,7 +418,7 @@ Custom property|Description|Default
     _sendRequestHandler: function(e) {
       e.preventDefault();
       e.stopPropagation();
-      this.send();
+      this.send(e.detail.id);
     },
 
     _abortRequestHandler: function() {
@@ -427,9 +427,11 @@ Custom property|Description|Default
     },
     /**
      * Sends the request.
+     *
+     * @param {?String} id Optional, request ID. If not set it will be generated.
      */
-    send: function() {
-      var request = this._prepareEventRequest();
+    send: function(id) {
+      var request = this._prepareEventRequest(id);
       this._beforeRequest(request);
     },
 
@@ -498,10 +500,13 @@ Custom property|Description|Default
      * `before-request` event.
      *
      * @return {Object} Copy of the `request` property.
+     * @param {?String} id Optional, request ID. If not set it will be generated.
      */
-    _prepareEventRequest: function() {
+    _prepareEventRequest: function(id) {
+      id = id || this._nextRequestId;
       var request = this.request;
       var shallowCopy = Object.assign({}, request);
+      shallowCopy.id = id;
       shallowCopy.promises = [];
       if (['GET', 'HEAD'].indexOf(request.method) !== -1) {
         delete shallowCopy.payload;
@@ -631,11 +636,13 @@ Custom property|Description|Default
           enumerable: true
         };
       });
-      configuration.id = {
-        value: this._nextRequestId,
-        writable: false,
-        enumerable: true
-      };
+      if (!request.id) {
+        configuration.id = {
+          value: this._nextRequestId,
+          writable: false,
+          enumerable: true
+        };
+      }
       return Object.create(Object.prototype, configuration);
     },
     /**
