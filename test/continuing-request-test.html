@@ -86,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('transport-request contains an ID', function(done) {
         var callback = function(e) {
           element.removeEventListener('transport-request', callback);
-          assert.typeOf(e.detail.id, 'number');
+          assert.ok(e.detail.id);
           done();
         };
         element.addEventListener('transport-request', callback);

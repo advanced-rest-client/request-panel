@@ -51,9 +51,10 @@ The details object has following properties:
 -   `headers` (`string`) - Headers to be send.
 -   `payload` (`string`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
 -   `method` (`string`) - HTTP method.
--   `promises` (`array`) - An array when the promises must be added
+-   `promises` (`array`) - An array where promises must be added
 -   `reason` (`string`) - reason of cancelling the event.
 -   `auth` (`object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
+-   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
 
 ### transport-request
 
@@ -69,7 +70,7 @@ The details object has following properties:
 -   `payload` (`String`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
 -   `method` (`String`) - HTTP method.
 -   `auth` (`Object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
--   `id` (`Number`) - Request ID. It is unique number for the request. The id is reported back by the transport library in all its events.
+-   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
 
 ### response-ready event
 
@@ -188,7 +189,6 @@ Custom property|Description|Default
     <install-proxy-dialog></install-proxy-dialog>
     <paper-toast id="errorToast"></paper-toast>
     <paper-toast id="cancelToast"></paper-toast>
-    <paper-toast id="abortToast" text="Request aborted"></paper-toast>
   </template>
   <script>
   Polymer({
@@ -196,6 +196,52 @@ Custom property|Description|Default
 
     behaviors: [ArcBehaviors.EventsTargetBehavior],
 
+    /**
+     * Before sending the request the `before-request` custom event is fired.
+     * The event contains the `promises` array on the detail object where all
+     * promises should be kept. Handlers can modify any part of the request
+     * message.
+     *
+     * This event is cancellable. If the event has been cancelled by any of the
+     * listeners then the request fails. Handlers may set a reason property on
+     * the event's detail object to display a reason to the user.
+     *
+     * The handler have a timeout set from the `handlers-timeout` attribute
+     * of the element to complete any scheduled tasks. If a handler requires
+     * more time to execute (eg. request debugger) it should set a `timeout`
+     * property on the Promise object. It is a non-normative property for
+     * this object but it will help control the workflow properly. The request
+     * will be fired after the number of milliseconds of the highest timeout
+     * value. If 0 is set then the request will be halted until
+     * `continue-request` event is fired.
+     *
+     * @event before-request
+     * @param {String} url Request URL.
+     * @param {String} headers Headers to be send.
+     * @param {String} payload Message body if the request can carry a body.
+     * GET and HEAD request will ignore this property.
+     * @param {String} method HTTP method.
+     * @param {Array} promises An array where promises must be added
+     * @param {String} reason The reason of cancelation. Must be set by the
+     * handler.
+     * @param {?Object} auth An authorization data that will be passed to the
+     * transport library (`socket-fetch`)
+     */
+
+    /**
+     * A non-cancelable, immutable request object.
+     * This event is meant to be handled by the transport library that is
+     * attached to the DOM and handles the event.
+     *
+     * @event transport-request
+     * @param {String} url Request URL.
+     * @param {String} headers Headers to be send.
+     * @param {String} payload Message body if the request can carry a body.
+     * GET and HEAD request will ignore this property.
+     * @param {String} method HTTP method.
+     * @param {?Object} auth An authorization data that will be passed to the
+     * transport library (`socket-fetch`)
+     */
     properties: {
       /**
        * The request object with current request editor state.
@@ -372,19 +418,20 @@ Custom property|Description|Default
     _sendRequestHandler: function(e) {
       e.preventDefault();
       e.stopPropagation();
-      this.send();
+      this.send(e.detail.id);
     },
 
     _abortRequestHandler: function() {
       this._cancelled = true;
       this._reportCancelation();
-      this.$.abortToast.opened = true;
     },
     /**
      * Sends the request.
+     *
+     * @param {?String} id Optional, request ID. If not set it will be generated.
      */
-    send: function() {
-      var request = this._prepareEventRequest();
+    send: function(id) {
+      var request = this._prepareEventRequest(id);
       this._beforeRequest(request);
     },
 
@@ -453,10 +500,13 @@ Custom property|Description|Default
      * `before-request` event.
      *
      * @return {Object} Copy of the `request` property.
+     * @param {?String} id Optional, request ID. If not set it will be generated.
      */
-    _prepareEventRequest: function() {
+    _prepareEventRequest: function(id) {
+      id = id || this._nextRequestId;
       var request = this.request;
       var shallowCopy = Object.assign({}, request);
+      shallowCopy.id = id;
       shallowCopy.promises = [];
       if (['GET', 'HEAD'].indexOf(request.method) !== -1) {
         delete shallowCopy.payload;
@@ -561,7 +611,10 @@ Custom property|Description|Default
       t.text = message;
       t.opened = true;
     },
-
+    /**
+     * Opens the cancelation message toast
+     * @param {?String} reason Message to display. Optional.
+     */
     _reportCancelation: function(reason) {
       this.loading = false;
       reason = reason || 'The request has been canceled';
@@ -583,11 +636,13 @@ Custom property|Description|Default
           enumerable: true
         };
       });
-      configuration.id = {
-        value: this._nextRequestId,
-        writable: false,
-        enumerable: true
-      };
+      if (!request.id) {
+        configuration.id = {
+          value: this._nextRequestId,
+          writable: false,
+          enumerable: true
+        };
+      }
       return Object.create(Object.prototype, configuration);
     },
     /**
