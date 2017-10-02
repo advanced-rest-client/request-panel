@@ -51,5 +51,8 @@
     "bower_components",
     "test",
     "tasks"
-  ]
+  ],
+  "resolutions": {
+    "fetch": "arc"
+  }
 }
