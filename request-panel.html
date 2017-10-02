@@ -22,6 +22,7 @@ the License.
 <link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
 <link rel="import" href="../events-target-behavior/events-target-behavior.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../uuid-generator/uuid-generator.html">
 <!--
 A full request and response view for the Advanced REST client
 
@@ -189,6 +190,7 @@ Custom property|Description|Default
     <install-proxy-dialog></install-proxy-dialog>
     <paper-toast id="errorToast"></paper-toast>
     <paper-toast id="cancelToast"></paper-toast>
+    <uuid-generator id="uuid"></uuid-generator>
   </template>
   <script>
   Polymer({
@@ -388,25 +390,17 @@ Custom property|Description|Default
       'send-request': '_sendRequestHandler',
       'abort-request': '_abortRequestHandler'
     },
-    /**
-     * Returns a number incremented each time this getter is called.
-     * It computes a request ID.
-     */
-    get _nextRequestId() {
-      if (typeof this.__requestId !== 'number') {
-        this.__requestId = 0;
-      }
-      return ++this.__requestId;
-    },
 
     _attachListeners: function(node) {
       this.listen(node, 'continue-request', '_continueRequestHandler');
       this.listen(node, 'report-response', '_reportRequestHandler');
+      this.listen(node, 'resend-auth-request', '_resend');
     },
 
     _detachListeners: function(node) {
       this.unlisten(node, 'continue-request', '_continueRequestHandler');
       this.unlisten(node, 'report-response', '_reportRequestHandler');
+      this.listen(node, 'resend-auth-request', '_resend');
     },
 
     ready: function() {
@@ -418,20 +412,16 @@ Custom property|Description|Default
     _sendRequestHandler: function(e) {
       e.preventDefault();
       e.stopPropagation();
-      this.send(e.detail.id);
+      this.send();
     },
 
     _abortRequestHandler: function() {
       this._cancelled = true;
       this._reportCancelation();
     },
-    /**
-     * Sends the request.
-     *
-     * @param {?String} id Optional, request ID. If not set it will be generated.
-     */
-    send: function(id) {
-      var request = this._prepareEventRequest(id);
+
+    send: function() {
+      var request = this._prepareEventRequest();
       this._beforeRequest(request);
     },
 
@@ -500,13 +490,11 @@ Custom property|Description|Default
      * `before-request` event.
      *
      * @return {Object} Copy of the `request` property.
-     * @param {?String} id Optional, request ID. If not set it will be generated.
      */
-    _prepareEventRequest: function(id) {
-      id = id || this._nextRequestId;
+    _prepareEventRequest: function() {
       var request = this.request;
       var shallowCopy = Object.assign({}, request);
-      shallowCopy.id = id;
+      this.lastRequestId = shallowCopy.id = this.$.uuid.generate();
       shallowCopy.promises = [];
       if (['GET', 'HEAD'].indexOf(request.method) !== -1) {
         delete shallowCopy.payload;
@@ -597,7 +585,7 @@ Custom property|Description|Default
       delete request.reason;
       // Changes to the `_requestCopy` object won't affect sent object.
       // However changes made to FormData or File object of the payload property
-      // or to the `auth` object will affect sent object because those are
+      // or to the `auth` object will affect send object because those are
       // references to an object.
       var copy = this._prepareTransportObject(request);
       this.fire('transport-request', copy);
@@ -636,13 +624,6 @@ Custom property|Description|Default
           enumerable: true
         };
       });
-      if (!request.id) {
-        configuration.id = {
-          value: this._nextRequestId,
-          writable: false,
-          enumerable: true
-        };
-      }
       return Object.create(Object.prototype, configuration);
     },
     /**
@@ -661,6 +642,9 @@ Custom property|Description|Default
      * Passing empty object or not setting the object resets the panel state.
      */
     setResponseData: function(obj) {
+      if (obj && obj.id !== this.lastRequestId) {
+        return;
+      }
       this.loading = false;
       obj = obj || {};
       var isXhr = obj.isXhr === undefined ? true : obj.isXhr;
@@ -681,6 +665,13 @@ Custom property|Description|Default
     // Computes if there is a reponse object.
     _computeHasResponse: function(response) {
       return !!response;
+    },
+    // Handler for the `resend-auth-request` event. Sends this request.
+    _resend: function(e) {
+      if (e.detail.id !== this.lastRequestId) {
+        return;
+      }
+      this.send();
     }
   });
   </script>
