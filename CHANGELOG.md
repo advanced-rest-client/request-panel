@@ -1,3 +1,15 @@
+<a name="0.1.13"></a>
+## [0.1.13](https://github.com/advanced-rest-client/request-panel/compare/0.1.12...0.1.13) (2017-10-02)
+
+
+### Update
+
+* Fixing test for the API change ([3c07e55e931bac3a4698dc8073323e5ccefc5364](https://github.com/advanced-rest-client/request-panel/commit/3c07e55e931bac3a4698dc8073323e5ccefc5364))
+* Updated request ID generation. ([32a2a66800830d45e67737255e89d6f0e68926ad](https://github.com/advanced-rest-client/request-panel/commit/32a2a66800830d45e67737255e89d6f0e68926ad))
+* Updated version of the fetch polyfill ([1c284cc0e167f82e84ed7a55ad9f0951ceccd69b](https://github.com/advanced-rest-client/request-panel/commit/1c284cc0e167f82e84ed7a55ad9f0951ceccd69b))
+
+
+
 <a name="0.1.12"></a>
 ## [0.1.12](https://github.com/advanced-rest-client/request-panel/compare/0.1.11...0.1.12) (2017-10-01)
 

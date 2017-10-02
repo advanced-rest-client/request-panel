@@ -73,10 +73,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         document.body.dispatchEvent(event);
       }
 
+      const REQUEST_ID = 'test-id';
+
       suite('Simple response', function() {
         var element;
         setup(function() {
           element = fixture('basic');
+          element.lastRequestId = REQUEST_ID;
         });
 
         function createSimpleResponseObject() {
@@ -84,7 +87,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             request: createRequest(),
             response: createResponse(),
             loadingTime: LOAD_TIME,
-            isXhr: true
+            isXhr: true,
+            id: REQUEST_ID
           };
           return detail;
         }
@@ -100,8 +104,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         test('report-response event handler passes the response data', function() {
           element.setResponseData = function(data) {
-            assert.typeOf(data.request, 'request', 'request is an object');
-            assert.typeOf(data.response, 'response', 'response is an object');
+            assert.typeOf(data.request, 'object', 'request is an object');
+            assert.typeOf(data.response, 'object', 'response is an object');
             assert.typeOf(data.loadingTime, 'number', 'loadingTime is a nuumber');
             assert.typeOf(data.isXhr, 'boolean', 'isXhr is a boolean');
           };
@@ -115,12 +119,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         test('sets response property', function() {
           element.setResponseData(createSimpleResponseObject());
-          assert.typeOf(element.response, 'response', 'response is an object');
+          assert.typeOf(element.response, 'object', 'response is an object');
         });
 
         test('sets transportRequest property', function() {
           element.setResponseData(createSimpleResponseObject());
-          assert.typeOf(element.transportRequest, 'request', 'transportRequest is an object');
+          assert.typeOf(element.transportRequest, 'object', 'transportRequest is an object');
         });
 
         test('sets responseError property', function() {
@@ -169,8 +173,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           element.setResponseData(createSimpleResponseObject());
           TestHelpers.forceXIfStamp(element);
           var node = Polymer.dom(element.root).querySelector('response-view');
-          assert.typeOf(node.request, 'request', 'request is an object');
-          assert.typeOf(node.response, 'response', 'response is an object');
+          assert.typeOf(node.request, 'object', 'request is an object');
+          assert.typeOf(node.response, 'object', 'response is an object');
           assert.equal(node.loadingTime, LOAD_TIME, 'loadingTime is a nuumber');
           assert.equal(node.isXhr, true, 'isXhr is a boolean');
           assert.isUndefined(node.responseError, 'responseError is undefined');

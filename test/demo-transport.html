@@ -44,23 +44,24 @@ the License.
       fetch(requestObj)
       .then(response => {
         let tEnd = Date.now() - tStart;
-        this.responseReady(requestObj, response, tEnd);
+        this.responseReady(requestObj, response, tEnd, request.id);
       })
       .catch(() => {
         let tEnd = Date.now() - tStart;
         var response = Response.error();
-        this.responseReady(requestObj, response, tEnd);
+        this.responseReady(requestObj, response, tEnd, request.id);
       });
     },
 
-    responseReady: function(request, response, loadingTime) {
+    responseReady: function(request, response, loadingTime, id) {
       var error = response.ok ? undefined : 'Resource unavailable';
       var event = this.fire('response-ready', {
         request: request,
         response: response,
         isXhr: true,
         error: error,
-        loadingTime: loadingTime
+        loadingTime: loadingTime,
+        id: id
       }, {
         cancelable: true,
         composed: true
