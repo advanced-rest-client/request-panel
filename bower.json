@@ -23,7 +23,6 @@
     "arc-status-bar": "advanced-rest-client/arc-status-bar#^0.1.1",
     "request-editor": "advanced-rest-client/request-editor#^0.2.0",
     "response-view": "advanced-rest-client/response-view#^0.1.10",
-    "cookie-exchange-banner": "advanced-rest-client/cookie-exchange-banner#^0.0.4",
     "install-proxy-dialog": "advanced-rest-client/install-proxy-dialog#^0.1.1",
     "paper-toast": "PolymerElements/paper-toast#<2",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#<2",
