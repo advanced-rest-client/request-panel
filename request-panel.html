@@ -15,7 +15,6 @@ the License.
 <link rel="import" href="../arc-status-bar/arc-status-bar.html">
 <link rel="import" href="../request-editor/request-editor.html">
 <link rel="import" href="../response-view/response-view.html">
-<link rel="import" href="../cookie-exchange-banner/cookie-exchange-banner.html">
 <link rel="import" href="../install-proxy-dialog/install-proxy-dialog.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
@@ -169,9 +168,6 @@ Custom property|Description|Default
         xhr-extension="[[xhrExtension]]"></request-editor>
       <template is="dom-if" if="[[loading]]">
         <paper-progress indeterminate></paper-progress>
-      </template>
-      <template is="dom-if" if="[[cookieBanner]]" restamp="true">
-        <cookie-exchange-banner></cookie-exchange-banner>
       </template>
       <template is="dom-if" if="[[hasResponse]]">
         <response-view
@@ -374,8 +370,6 @@ Custom property|Description|Default
         type: Boolean,
         readOnly: true
       },
-      // True to display cookie exchange instalkl banner.
-      cookieBanner: Boolean,
       /**
        * If set then it renders an option in request context menu to
        * toggle to XHR request via the extension. This information is passed
@@ -426,7 +420,6 @@ Custom property|Description|Default
     },
 
     _reset: function() {
-      this.cookieBanner = false;
       this._awaitingContinue = false;
       this._beforePromisesResolved = true;
       this._requestCopy = undefined;
@@ -657,9 +650,6 @@ Custom property|Description|Default
       this._setRedirectTimings(obj.redirectTimings);
       this._setRedirects(obj.redirects);
       this._setSourceMessage(obj.sourceMessage);
-      if (obj.auth) {
-        this.cookieBanner = true;
-      }
     },
 
     // Computes if there is a reponse object.

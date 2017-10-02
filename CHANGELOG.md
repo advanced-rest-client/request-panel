@@ -1,3 +1,13 @@
+<a name="0.1.14"></a>
+## [0.1.14](https://github.com/advanced-rest-client/request-panel/compare/0.1.13...0.1.14) (2017-10-02)
+
+
+### Update
+
+* Removed cookie banner as chrome specific element. ([4e9d8ab7fc509836b8e540f021b695e4a8741ccf](https://github.com/advanced-rest-client/request-panel/commit/4e9d8ab7fc509836b8e540f021b695e4a8741ccf))
+
+
+
 <a name="0.1.13"></a>
 ## [0.1.13](https://github.com/advanced-rest-client/request-panel/compare/0.1.12...0.1.13) (2017-10-02)
 
