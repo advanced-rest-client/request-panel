@@ -28,7 +28,8 @@
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#<2",
     "events-target-behavior": "advanced-rest-client/events-target-behavior#^0.1.1",
     "paper-progress": "PolymerElements/paper-progress#<2",
-    "uuid-generator": "advanced-rest-client/uuid-generator#^1.0.4"
+    "uuid-generator": "advanced-rest-client/uuid-generator#^1.0.4",
+    "variables-evaluator": "advanced-rest-client/variables-evaluator#^0.1.8"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#1.0.0",

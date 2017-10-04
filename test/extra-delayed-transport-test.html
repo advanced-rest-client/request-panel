@@ -138,8 +138,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('_awaitingContinue is true', function() {
-        element.send();
-        assert.isTrue(element._awaitingContinue);
+        return element.send()
+        .then(() => {
+          assert.isTrue(element._awaitingContinue);
+        });
       });
 
       test('_continueRequest is not called', function(done) {
