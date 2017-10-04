@@ -10,6 +10,10 @@ A full request and response view for the Advanced REST client
 <request-panel handlers-timeout="2000"></request-panel>
 ```
 
+Note: This element internally uses `variables-evaluator` element but it doesn't
+use `variables-manager` and it soulf be included into the app if variables should
+be evaluated correctly.
+
 ## Request lifecycle
 
 Detailed description: <https://github.com/jarrodek/ChromeRestClient/issues/1010>
@@ -21,6 +25,9 @@ Before sending a request the `before-request` custom event is fired. The event c
 This event is cancellable. If the event has been cancelled by any of the listeners then the request fails. Handlers may set a reason property on the event's detail object to display a reason to the user.
 
 The handler have a timeout set from the `handlers-timeout` attribute of the element to complete any scheduled tasks. If a handler requires more time to execute (eg. request debugger) it should set a `timeout` property on the Promise object. It is a non-normative property for this object but it will help control the workflow properly. The request will be fired after the number of milliseconds of the highest timeout value. If 0 is set then the request will be halted until `continue-request` event is fired.
+
+The request data in the event are already evaluated by the `variables-evaluator`
+element so handlers receive final request parameters.
 
 #### Properties
 

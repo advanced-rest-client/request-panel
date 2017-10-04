@@ -1,3 +1,13 @@
+<a name="0.1.19"></a>
+## [0.1.19](https://github.com/advanced-rest-client/request-panel/compare/0.1.18...0.1.19) (2017-10-04)
+
+
+### Update
+
+* Adding variables evaluator before sending before-request event ([7450393f0d72995b2291c07351a056b84643a032](https://github.com/advanced-rest-client/request-panel/commit/7450393f0d72995b2291c07351a056b84643a032))
+
+
+
 <a name="0.1.18"></a>
 ## [0.1.18](https://github.com/advanced-rest-client/request-panel/compare/0.1.17...0.1.18) (2017-10-04)
 

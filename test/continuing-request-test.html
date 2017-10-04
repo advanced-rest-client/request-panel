@@ -45,15 +45,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('Clears pre-request working variables', function(done) {
-        element.send();
-        assert.typeOf(element._requestCopy, 'object', '_requestCopy is an object');
-        setTimeout(function() {
-          TestHelpers.fireEvent('continue-request', {}, document.body);
+        element.addEventListener('before-request', function(e) {
+          var p = new Promise((resolve) => {
+            setTimeout(resolve, 5);
+          });
+          e.detail.promises.push(p);
+        });
+        element.send()
+        .then(() => {
+          assert.typeOf(element._requestCopy, 'object', '_requestCopy is an object');
+          setTimeout(function() {
+            TestHelpers.fireEvent('continue-request', {}, document.body);
 
-          assert.isUndefined(element._requestCopy, '_requestCopy is cleared');
-          assert.isUndefined(element._currentTimeout, '_currentTimeout is undefined');
-          done();
-        }, 10);
+            assert.isUndefined(element._requestCopy, '_requestCopy is cleared');
+            assert.isUndefined(element._currentTimeout, '_currentTimeout is undefined');
+            done();
+          }, 10);
+        })
+        .catch(e => {
+          done(e);
+        });
       });
 
       test('Fires transport-request custom event', function(done) {
