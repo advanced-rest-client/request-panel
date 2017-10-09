@@ -1,3 +1,13 @@
+<a name="0.1.21"></a>
+## [0.1.21](https://github.com/advanced-rest-client/request-panel/compare/0.1.20...0.1.21) (2017-10-09)
+
+
+### Update
+
+* Added support for request-clear-state event to clear the response. ([c29cef6a27dbecf0e0c2738c7247327198f0f824](https://github.com/advanced-rest-client/request-panel/commit/c29cef6a27dbecf0e0c2738c7247327198f0f824))
+
+
+
 <a name="0.1.20"></a>
 ## [0.1.20](https://github.com/advanced-rest-client/request-panel/compare/0.1.19...0.1.20) (2017-10-04)
 
