@@ -1,3 +1,13 @@
+<a name="0.2.3"></a>
+## [0.2.3](https://github.com/advanced-rest-client/request-panel/compare/0.2.2...0.2.3) (2017-10-11)
+
+
+### Update
+
+* Updated is dirty status check to exclude history items. ([91cba3f406602fedc491b2361eeb31aa0e474ac7](https://github.com/advanced-rest-client/request-panel/commit/91cba3f406602fedc491b2361eeb31aa0e474ac7))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/advanced-rest-client/request-panel/compare/0.2.1...0.2.2) (2017-10-11)
 

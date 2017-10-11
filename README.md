@@ -112,6 +112,7 @@ Custom property|Description|Default
 `--request-panel-progress-color` | Color of the progress bar that indicate loading state | `#00A2DF`
 `--request-panel-progress` | Mixin applied to the progress bar | `{}`
 `--request-panel-status-bar` | Mixin applied to the status bar | `{}`
+`--request-panel-status-bar-left` | Left position of the status bar. | `0`
 
 
 
