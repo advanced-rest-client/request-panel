@@ -1,3 +1,13 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/advanced-rest-client/request-panel/compare/0.1.22...0.2.1) (2017-10-11)
+
+
+### New
+
+* Added save icon in the status bar and dirty status computation ([ea89cec8c4a04916a77b2fa407344b6703c8c398](https://github.com/advanced-rest-client/request-panel/commit/ea89cec8c4a04916a77b2fa407344b6703c8c398))
+
+
+
 <a name="0.1.22"></a>
 ## [0.1.22](https://github.com/advanced-rest-client/request-panel/compare/0.1.21...0.1.22) (2017-10-09)
 

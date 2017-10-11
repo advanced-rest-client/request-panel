@@ -125,6 +125,7 @@ method **String** - HTTP method. |
 promises **Array** - An array where promises must be added |
 reason **String** - The reason of cancelation. Must be set by the handler. |
 auth **?Object** - An authorization data that will be passed to the transport library (`socket-fetch`) |
+| request-save-state | Fired when the save action has been requested in the UI. This event is cancelable. | __none__ |
 | transport-request | A non-cancelable, immutable request object. This event is meant to be handled by the transport library that is attached to the DOM and handles the event. | url **String** - Request URL. |
 headers **String** - Headers to be send. |
 payload **String** - Message body if the request can carry a body. GET and HEAD request will ignore this property. |
