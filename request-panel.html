@@ -22,6 +22,9 @@ the License.
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../uuid-generator/uuid-generator.html">
 <link rel="import" href="../variables-evaluator/variables-evaluator.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../arc-icons/arc-icons.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
 <!--
 A full request and response view for the Advanced REST client
@@ -165,6 +168,18 @@ Custom property|Description|Default
     arc-status-bar {
       @apply --request-panel-status-bar;
     }
+
+    .dirty {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--request-panel-dirty-color, #FF8A65);
+    }
+
+    .save-action {
+      color: var(--request-panel-save-button-color, rgba(0, 0, 0, 0.54));
+    }
     </style>
     <div class="data-area">
       <request-editor
@@ -190,7 +205,20 @@ Custom property|Description|Default
           sent-http-message="[[sourceMessage]]"></response-view>
       </template>
     </div>
-    <arc-status-bar></arc-status-bar>
+    <arc-status-bar>
+      <template is="dom-if" if="[[!noSave]]">
+        <span prefix>
+          <paper-icon-button class="save-action" icon="arc:save" on-tap="_saveRequest"></paper-icon-button>
+          <paper-tooltip animation-delay="200" position="top" offset="0">Save this request object</paper-tooltip>
+        </span>
+        <template is="dom-if" if="[[isDirty]]">
+          <span prefix>
+            <span class="dirty" on-tap=""></span>
+            <paper-tooltip animation-delay="200" position="top" offset="0">Changes in the request object detected</paper-tooltip>
+          </span>
+        </template>
+      </template>
+    </arc-status-bar>
     <paper-toast id="errorToast"></paper-toast>
     <paper-toast id="cancelToast"></paper-toast>
     <uuid-generator id="uuid"></uuid-generator>
@@ -247,6 +275,12 @@ Custom property|Description|Default
      * @param {String} method HTTP method.
      * @param {?Object} auth An authorization data that will be passed to the
      * transport library (`socket-fetch`)
+     */
+    /**
+     * Fired when the save action has been requested in the UI.
+     * This event is cancelable.
+     *
+     * @event request-save-state
      */
     properties: {
       /**
@@ -385,7 +419,24 @@ Custom property|Description|Default
        *
        * It's only relevant to ARC Chrome app.
        */
-      xhrExtension: Boolean
+      xhrExtension: Boolean,
+      /**
+       * A flag that determines if the request object have changed since it has
+       * been loaded into the panel.
+       * It is only set if request has type set.
+       * This should be reset by the application when the request object is saved.
+       */
+      isDirty: {
+        type: Boolean,
+        notify: true
+      },
+      /**
+       * If set then "save request" controlls are not rendered.
+       */
+      noSave: {
+        type: Boolean,
+        value: false
+      }
     },
 
     listeners: {
@@ -393,6 +444,10 @@ Custom property|Description|Default
       'abort-request': '_abortRequestHandler',
       'request-clear-state': '_reset'
     },
+
+    observers: [
+      '_updateDirtyState(request.*)'
+    ],
 
     _attachListeners: function(node) {
       this.listen(node, 'continue-request', '_continueRequestHandler');
@@ -693,6 +748,34 @@ Custom property|Description|Default
         return;
       }
       this.send();
+    },
+
+    _updateDirtyState: function(record) {
+      if (!record || !record.base) {
+        this.isDirty = false;
+        return;
+      }
+      if (record.path === 'request') {
+        // new object has been set. Whatever it's type it is not dirty.
+        this.isDirty = false;
+        return;
+      }
+      var request = record.base;
+      if (!request.type) {
+        return;
+      }
+      if (request.type) {
+        this.isDirty = true;
+      }
+    },
+    /**
+     * Dispatches cancelable `request-save-state` custom event to indicate that
+     * the save data action has been performed by the user.
+     */
+    _saveRequest: function() {
+      this.fire('request-save-state', undefined, {
+        cancelable: true
+      });
     }
   });
   </script>

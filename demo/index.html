@@ -25,6 +25,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../url-history-saver/url-history-saver.html">
   <link rel="import" href="../../cookie-jar/cookie-jar.html">
   <link rel="import" href="../../paper-toast/paper-toast.html">
+  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+
   <link rel="import" href="../request-panel.html">
   <link rel="import" href="../test/demo-transport.html">
 
@@ -58,6 +60,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <variables-manager></variables-manager>
         <demo-transport></demo-transport>
         <request-panel request="[[request]]" xhr-extension></request-panel>
+        <paper-toggle-button on-tap="_toggleTyped">Request is saved request in the datastore</paper-toggle-button>
       </template>
     </demo-snippet>
   </div>
@@ -103,6 +106,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     scope.request = {
       url: window.location.href,
       method: 'GET'
+    };
+    scope._toggleTyped = function() {
+      var r;
+      r = Object.assign({}, scope.request);
+      if (r.type) {
+        delete r.type;
+      } else {
+        r.type = 'saved';
+      }
+      scope.request = r;
     };
   })(document.querySelector('#demo1'));
   </script>
