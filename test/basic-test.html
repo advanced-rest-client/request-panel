@@ -30,8 +30,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
+    <test-fixture id="noSave">
+      <template>
+        <request-panel no-save></request-panel>
+      </template>
+    </test-fixture>
+
     <script>
-    /* global suite, test, fixture, assert */
+    /* global suite, test, fixture, assert, sinon, TestHelpers, MockInteractions */
     suite('basic', function() {
       var element;
       setup(function() {
@@ -269,6 +275,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.notEqual(result.a, 'a1');
         assert.notEqual(result.b, 'a2');
         assert.notEqual(result.c, 'a3');
+      });
+    });
+
+    suite('Save icon', function() {
+      var element;
+      setup(function() {
+        element = fixture('basic')[0];
+        TestHelpers.forceXIfStamp(element);
+      });
+
+      test('Save icon is rendered', function() {
+        var button = Polymer.dom(element.root).querySelector('.save-action');
+        assert.ok(button);
+      });
+
+      test('Save click fires the event', function() {
+        var spy = sinon.spy();
+        element.addEventListener('request-save-state', spy);
+        var button = Polymer.dom(element.root).querySelector('.save-action');
+        MockInteractions.tap(button);
+        assert.isTrue(spy.calledOnce);
+      });
+    });
+
+    suite('Prohibit save icon', function() {
+      var element;
+      setup(function() {
+        element = fixture('noSave');
+        TestHelpers.forceXIfStamp(element);
+      });
+
+      test('Save icon is not rendered', function() {
+        var button = Polymer.dom(element.root).querySelector('.save-action');
+        assert.notOk(button);
       });
     });
     </script>
