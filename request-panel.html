@@ -137,6 +137,7 @@ Custom property|Description|Default
 `--request-panel-progress-color` | Color of the progress bar that indicate loading state | `#00A2DF`
 `--request-panel-progress` | Mixin applied to the progress bar | `{}`
 `--request-panel-status-bar` | Mixin applied to the status bar | `{}`
+`--request-panel-status-bar-left` | Left position of the status bar. | `0`
 
 @group UI Elements
 @element request-panel
@@ -166,6 +167,7 @@ Custom property|Description|Default
     }
 
     arc-status-bar {
+      left: var(--request-panel-status-bar-left, 0);
       @apply --request-panel-status-bar;
     }
 
@@ -764,7 +766,7 @@ Custom property|Description|Default
       if (!request.type) {
         return;
       }
-      if (request.type) {
+      if (request.type !== 'history') {
         this.isDirty = true;
       }
     },
