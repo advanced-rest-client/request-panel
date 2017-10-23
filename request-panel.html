@@ -190,7 +190,8 @@ Custom property|Description|Default
         method="{{request.method}}"
         payload="{{request.payload}}"
         url="{{request.url}}"
-        xhr-extension="[[xhrExtension]]"></request-editor>
+        xhr-extension="[[xhrExtension]]"
+        events-target="[[eventsTarget]]"></request-editor>
       <template is="dom-if" if="[[loading]]">
         <paper-progress indeterminate></paper-progress>
       </template>
@@ -460,7 +461,7 @@ Custom property|Description|Default
     _detachListeners: function(node) {
       this.unlisten(node, 'continue-request', '_continueRequestHandler');
       this.unlisten(node, 'report-response', '_reportRequestHandler');
-      this.listen(node, 'resend-auth-request', '_resend');
+      this.unlisten(node, 'resend-auth-request', '_resend');
     },
 
     ready: function() {
