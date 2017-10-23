@@ -1,3 +1,17 @@
+<a name="0.2.5"></a>
+## [0.2.5](https://github.com/advanced-rest-client/request-panel/compare/0.2.4...0.2.5) (2017-10-23)
+
+
+### Fix
+
+* Fixing unobserving event. ([6a7b0c88ce611ea0b495189fece46966792740f1](https://github.com/advanced-rest-client/request-panel/commit/6a7b0c88ce611ea0b495189fece46966792740f1))
+
+### Update
+
+* Adding eventsTarget property propagation. ([f0a554b2580d0f7742ceb97da7378d856bd9226e](https://github.com/advanced-rest-client/request-panel/commit/f0a554b2580d0f7742ceb97da7378d856bd9226e))
+
+
+
 <a name="0.2.4"></a>
 ## [0.2.4](https://github.com/advanced-rest-client/request-panel/compare/0.2.3...0.2.4) (2017-10-11)
 
