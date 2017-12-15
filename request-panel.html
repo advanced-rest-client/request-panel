@@ -445,7 +445,8 @@ Custom property|Description|Default
     listeners: {
       'send-request': '_sendRequestHandler',
       'abort-request': '_abortRequestHandler',
-      'request-clear-state': '_reset'
+      'request-clear-state': '_reset',
+      'url-change-action': '_changeUrlHandler'
     },
 
     observers: [
@@ -779,6 +780,16 @@ Custom property|Description|Default
       this.fire('request-save-state', undefined, {
         cancelable: true
       });
+    },
+    /**
+     * Updates value of the request URL from `url-change-action`
+     * custom event.
+     */
+    _changeUrlHandler: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      this.set('request.url', e.detail.url);
     }
   });
   </script>
