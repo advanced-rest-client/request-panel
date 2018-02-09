@@ -1,3 +1,14 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/advanced-rest-client/request-panel/compare/0.2.8...0.3.1) (2018-02-09)
+
+
+### New
+
+* Added actions panel. ([00f45feb8fc34ac0ef3913755cc2bb1dc1cf804e](https://github.com/advanced-rest-client/request-panel/commit/00f45feb8fc34ac0ef3913755cc2bb1dc1cf804e))
+* Added request actions. ([b9f94e053a91dc6ba6a789f0c293d9dd6c598fb8](https://github.com/advanced-rest-client/request-panel/commit/b9f94e053a91dc6ba6a789f0c293d9dd6c598fb8))
+
+
+
 <a name="0.2.8"></a>
 ## [0.2.8](https://github.com/advanced-rest-client/request-panel/compare/0.2.7...0.2.8) (2017-12-15)
 
