@@ -25,6 +25,7 @@ the License.
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="request-logic.html">
 
 <!--
 A full request and response view for the Advanced REST client
@@ -190,6 +191,7 @@ Custom property|Description|Default
         method="{{request.method}}"
         payload="{{request.payload}}"
         url="{{request.url}}"
+        request-actions="{{request.actions}}"
         xhr-extension="[[xhrExtension]]"
         events-target="[[eventsTarget]]"></request-editor>
       <template is="dom-if" if="[[loading]]">
@@ -226,6 +228,14 @@ Custom property|Description|Default
     <paper-toast id="cancelToast"></paper-toast>
     <uuid-generator id="uuid"></uuid-generator>
     <variables-evaluator id="eval" no-before-request></variables-evaluator>
+    <request-logic id="logic"
+      loading="{{loading}}"
+      request="[[request]]"
+      events-target="[[eventTarget]]"
+      last-request-id="{{lastRequestId}}"
+      handlers-timeout="[[handlersTimeout]]"
+      on-request-cancelled="_cancelationHandler"
+      on-request-error="_errorHandler"></request-logic>
   </template>
   <script>
   Polymer({
@@ -304,11 +314,10 @@ Custom property|Description|Default
        * result. When set to `0`, `null`, `undefined` or `false` the timeoout
        * is not applied and the element waits with the request until
        * `continue-request` event is fired.
+       *
+       * Default is 2000 ms set in the `request-logic` element.
        */
-      handlersTimeout: {
-        type: Number,
-        value: 2000
-      },
+      handlersTimeout: Number,
       /**
        * Computed value. If true then the request is loading.
        * This resets each time the request status changes.
@@ -407,15 +416,6 @@ Custom property|Description|Default
         readOnly: true
       },
       /**
-       * Set to true if current request has timed out in the `before-request`
-       * event handlers. The request will continue without without waiting for
-       * the event handlers anymore.
-       */
-      beforeTimedOut: {
-        type: Boolean,
-        readOnly: true
-      },
-      /**
        * If set then it renders an option in request context menu to
        * toggle to XHR request via the extension. This information is passed
        * to the request editor element.
@@ -439,7 +439,9 @@ Custom property|Description|Default
       noSave: {
         type: Boolean,
         value: false
-      }
+      },
+      // Last generated ID for the request.
+      lastRequestId: String
     },
 
     listeners: {
@@ -454,15 +456,11 @@ Custom property|Description|Default
     ],
 
     _attachListeners: function(node) {
-      this.listen(node, 'continue-request', '_continueRequestHandler');
-      this.listen(node, 'report-response', '_reportRequestHandler');
-      this.listen(node, 'resend-auth-request', '_resend');
+      this.listen(node, 'report-response', '_reportResponseHandler');
     },
 
     _detachListeners: function(node) {
-      this.unlisten(node, 'continue-request', '_continueRequestHandler');
-      this.unlisten(node, 'report-response', '_reportRequestHandler');
-      this.unlisten(node, 'resend-auth-request', '_resend');
+      this.unlisten(node, 'report-response', '_reportResponseHandler');
     },
 
     ready: function() {
@@ -478,7 +476,7 @@ Custom property|Description|Default
     },
 
     _abortRequestHandler: function() {
-      this._cancelled = true;
+      this.$.logic.cancel();
       this._reportCancelation();
     },
     /**
@@ -487,235 +485,43 @@ Custom property|Description|Default
      * event is dispatched.
      */
     send: function() {
-      var request = this._prepareEventRequest();
-      return this._beforeProcessVariables(request);
-    },
-    /**
-     * Before the request object can be sent to any `before-request` handler
-     * it must be first evaluated by variables evaluator. It is the only way to
-     * ensure that the handler will receive actuall request data.
-     */
-    _beforeProcessVariables: function(request) {
-      return new Promise((resolve, reject) => {
-        this.cache = undefined;
-        this.context = undefined;
-        this.$.eval._processBeforeRequest(request, resolve, reject);
-      })
-      .then(request => {
-        this._beforeRequest(request);
-      })
-      .catch(() => {
-        this._beforeRequest(request);
-      });
+      return this.$.logic.send();
     },
 
     _reset: function() {
-      this._awaitingContinue = false;
-      this._beforePromisesResolved = true;
-      this._requestCopy = undefined;
-      this._cancelled = false;
-      this.loading = false;
-      this._setBeforeTimedOut(false);
       this.setResponseData();
-    },
-    /**
-     * Handles the before request logic.
-     * @param {Object} request The request object.
-     */
-    _beforeRequest: function(request) {
-      this._reset();
-      this.loading = true;
-      var event = this.fire('before-request', request, {
-        cancelable: true,
-        composed: true
-      });
-      if (event.defaultPrevented) {
-        return this._reportCancelation(event.detail.reason);
-      }
-      this._requestCopy = request;
-      var p = event.detail.promises;
-      if (p && p.length) {
-        this._beforePromisesResolved = false;
-        let timeout = this._computeHandlersTimeout(p);
-        p = Promise.all(p);
-        if (timeout > 0) {
-          this._currentTimeout =
-            window.setTimeout(this._onBeforeRequestTimeout.bind(this), timeout);
-        } else {
-          this._awaitingContinue = true;
-        }
-      } else {
-        p = Promise.resolve();
-      }
-      p.then(() => {
-        this._beforePromisesResolved = true;
-        if (this.beforeTimedOut || this._cancelled) {
-          return;
-        }
-        if (!this._awaitingContinue) {
-          this._continueRequest(request);
-        }
-      })
-      .catch(cause => {
-        this.loading = false;
-        this._reportError(cause);
-        console.warn(cause);
-      });
-    },
-    /**
-     * Prepares a request object to be used to send it with the `before-request`
-     * event. This is a "shallow" copy of the `request` property. It only creates
-     * a copy of the primitive values of the object. If the `payload` is an
-     * object (`FormData` or `File`) then it will be passed by reference instead
-     * of copying the object.
-     *
-     * It adds `promises` property to the object that is required by the
-     * `before-request` event.
-     *
-     * @return {Object} Copy of the `request` property.
-     */
-    _prepareEventRequest: function() {
-      var request = this.request;
-      var shallowCopy = Object.assign({}, request);
-      this.lastRequestId = shallowCopy.id = this.$.uuid.generate();
-      shallowCopy.promises = [];
-      if (['GET', 'HEAD'].indexOf(request.method) !== -1) {
-        delete shallowCopy.payload;
-      }
-      return shallowCopy;
-    },
-    /**
-     * Computes timeout for the before-request event handlers.
-     * It reads a `timeout` property from a promise. If set, it returns a highest
-     * value for the timeout or default value defined in the `handlersTimeout`
-     * property. If `handlersTimeout` is falsy or any timeout property equals
-     * zero (`0`) then this function returns -1 meaning no timeout.
-     *
-     * @param {Array} promises Array of promises returned by the handlers.
-     * @return {Number} -1 for no timeout or positive number of milliseconds
-     * for the `before-request` event to be handled by all handlers.
-     */
-    _computeHandlersTimeout: function(promises) {
-      var timeout = this.handlersTimeout;
-      if (!timeout) {
-        return -1;
-      }
-      if (!promises || !promises.length) {
-        return timeout;
-      }
-      for (var i = 0, len = promises.length; i < len; i++) {
-        if (promises[i].timeout !== undefined) {
-          if (promises[i].timeout === 0) {
-            return -1;
-          }
-          if (promises[i].timeout > timeout) {
-            timeout = promises[i].timeout;
-          }
-        }
-      }
-      if (timeout === 0) {
-        timeout = -1;
-      }
-      return timeout;
-    },
-    /**
-     * Clears the before-request timeout timer.
-     */
-    _clearBeforeRequestTimeout: function() {
-      if (this._currentTimeout) {
-        window.clearTimeout(this._currentTimeout);
-        this._currentTimeout = undefined;
-      }
-    },
-    /**
-     * Called when the `before-request` timeout fired.
-     * It continues the request with current values in the `_requestCopy`
-     * property that has been sent with the `before-request` event.
-     */
-    _onBeforeRequestTimeout: function() {
-      this._currentTimeout = undefined;
-      this._setBeforeTimedOut(true);
-      console.warn('The before-request event handlers timed out.');
-      this._continueRequest(this._requestCopy);
-    },
-    /**
-     * A handler for the `continue-request` custom event.
-     * If "continues" the request if all promises for the `before-request`
-     * has been resolved.
-     * It do nothing if current request doesn't expect this event to be handled
-     * (no timeout set to 0).
-     */
-    _continueRequestHandler: function() {
-      if (!this._awaitingContinue) {
-        return;
-      }
-      if (!this._beforePromisesResolved) {
-        this._awaitingContinue = false;
-        return;
-      }
-      this._continueRequest(this._requestCopy);
-    },
-    /**
-     * Called when before request block finished (whatever the output) and the
-     * request can now be send to the transport library.
-     *
-     * @param {Object} request The request object
-     */
-    _continueRequest: function(request) {
-      this._requestCopy = undefined;
-      this._clearBeforeRequestTimeout();
-      delete request.promises;
-      delete request.reason;
-      // Changes to the `_requestCopy` object won't affect sent object.
-      // However changes made to FormData or File object of the payload property
-      // or to the `auth` object will affect send object because those are
-      // references to an object.
-      var copy = this._prepareTransportObject(request);
-      this.fire('transport-request', copy);
+      this.$.logic.reset();
     },
 
-    _reportError: function(cause) {
-      this.loading = false;
-      this._clearBeforeRequestTimeout();
-      var message = cause && cause.message ? cause.message : 'An error occurred';
-      var t = this.$.errorToast;
-      t.text = message;
-      t.opened = true;
-    },
     /**
      * Opens the cancelation message toast
      * @param {?String} reason Message to display. Optional.
      */
     _reportCancelation: function(reason) {
-      this.loading = false;
+      this._reset();
       reason = reason || 'The request has been canceled';
       var t = this.$.cancelToast;
       t.text = reason;
       t.opened = true;
     },
-    /**
-     * Creates an immutable request data object to be send to the transport
-     * library.
-     * @return {Object} Immutable request object.
-     */
-    _prepareTransportObject: function(request) {
-      var configuration = {};
-      Object.keys(request).forEach(key => {
-        configuration[key] = {
-          value: request[key],
-          writable: false,
-          enumerable: true
-        };
-      });
-      return Object.create(Object.prototype, configuration);
+
+    _cancelationHandler: function(e) {
+      this._reportCancelation(e.detail.message);
     },
+
+    _errorHandler: function(e) {
+      var t = this.$.errorToast;
+      t.text = e.detail.message;
+      t.opened = true;
+    },
+
     /**
      * Handler for the `report-request` event.
      * Sets the response information to render.
      *
      * @param {CustomEvent} e Event fired by the transport library.
      */
-    _reportRequestHandler: function(e) {
+    _reportResponseHandler: function(e) {
       this.setResponseData(e.detail);
     },
     /**
@@ -745,13 +551,6 @@ Custom property|Description|Default
     // Computes if there is a reponse object.
     _computeHasResponse: function(response) {
       return !!response;
-    },
-    // Handler for the `resend-auth-request` event. Sends this request.
-    _resend: function(e) {
-      if (e.detail.id !== this.lastRequestId) {
-        return;
-      }
-      this.send();
     },
 
     _updateDirtyState: function(record) {

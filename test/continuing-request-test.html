@@ -53,12 +53,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
         element.send()
         .then(() => {
-          assert.typeOf(element._requestCopy, 'object', '_requestCopy is an object');
+          assert.typeOf(element.$.logic._requestCopy, 'object', '_requestCopy is an object');
           setTimeout(function() {
             TestHelpers.fireEvent('continue-request', {}, document.body);
 
-            assert.isUndefined(element._requestCopy, '_requestCopy is cleared');
-            assert.isUndefined(element._currentTimeout, '_currentTimeout is undefined');
+            assert.isUndefined(element.$.logic._requestCopy, '_requestCopy is cleared');
+            assert.isUndefined(element.$.logic._currentTimeout, '_currentTimeout is undefined');
             done();
           }, 10);
         })
