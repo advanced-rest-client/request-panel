@@ -55,16 +55,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h3>The `request-panel`</h3>
     <demo-snippet>
       <template is="dom-bind" id="demo1">
-        <cookie-jar></cookie-jar>
-        <url-history-saver></url-history-saver>
-        <variables-evaluator></variables-evaluator>
-        <variables-manager></variables-manager>
-        <demo-transport></demo-transport>
         <request-panel request="[[request]]" xhr-extension></request-panel>
         <paper-toggle-button on-tap="_toggleTyped">Request is saved request in the datastore</paper-toggle-button>
       </template>
     </demo-snippet>
   </div>
+  <cookie-jar></cookie-jar>
+  <url-history-saver></url-history-saver>
+  <demo-transport></demo-transport>
+  <variables-manager></variables-manager>
   <paper-toast id="transportToast" text="transport-request event handled"></paper-toast>
   <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
   <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>

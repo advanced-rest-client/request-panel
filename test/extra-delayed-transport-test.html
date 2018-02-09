@@ -58,64 +58,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('Timeouts before-request event', function(done) {
-        element._onBeforeRequestTimeout = function() {
-          element._setBeforeTimedOut(true);
+        element.$.logic._onBeforeRequestTimeout = function() {
+          element.$.logic._setBeforeTimedOut(true);
           done();
         };
-        element._continueRequest = function() {
+        element.$.logic._continueRequest = function() {
           done(new Error('Should not reach this function.'));
         };
         element.send();
       });
 
       test('Continue request after the timeout', function(done) {
-        element._continueRequest = function() {
+        element.$.logic._continueRequest = function() {
           done();
         };
         element.send();
       });
 
       test('beforeTimedOut is set', function(done) {
-        element._continueRequest = function() {
-          assert.isTrue(element.beforeTimedOut);
+        element.$.logic._continueRequest = function() {
+          assert.isTrue(element.$.logic.beforeTimedOut);
           done();
         };
         element.send();
       });
 
       test('clears _currentTimeout property', function(done) {
-        element._continueRequest = function() {
-          assert.isUndefined(element._currentTimeout);
+        element.$.logic._continueRequest = function() {
+          assert.isUndefined(element.$.logic._currentTimeout);
           done();
         };
         element.send();
       });
 
       test('_continueRequest called only once after timeout', function(done) {
-        element._continueRequest = function() {
+        element.$.logic._continueRequest = function() {
           done();
         };
         element.send();
       });
 
       test('_beforePromisesResolved is false', function(done) {
-        element._continueRequest = function() {
-          assert.isFalse(element._beforePromisesResolved);
+        element.$.logic._continueRequest = function() {
+          assert.isFalse(element.$.logic._beforePromisesResolved);
           done();
         };
         element.send();
       });
 
       test('_awaitingContinue is false', function(done) {
-        element._continueRequest = function() {
-          assert.isFalse(element._awaitingContinue);
+        element.$.logic._continueRequest = function() {
+          assert.isFalse(element.$.logic._awaitingContinue);
           done();
         };
         element.send();
       });
 
       test('_continueRequest gets original request object', function(done) {
-        element._continueRequest = function(request) {
+        element.$.logic._continueRequest = function(request) {
           assert.equal(request.url, url);
           assert.equal(request.headers, request.headers);
           done();
@@ -140,12 +140,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('_awaitingContinue is true', function() {
         return element.send()
         .then(() => {
-          assert.isTrue(element._awaitingContinue);
+          assert.isTrue(element.$.logic._awaitingContinue);
         });
       });
 
       test('_continueRequest is not called', function(done) {
-        element._continueRequest = function() {
+        element.$.logic._continueRequest = function() {
           done(new Error('_continueRequest was called ;('));
         };
         element.send();
@@ -156,7 +156,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('_continueRequest is called after continue-request', function(done) {
         var eventFired = false;
-        element._continueRequest = function() {
+        element.$.logic._continueRequest = function() {
           if (!eventFired) {
             done(new Error('_continueRequest was called too early ;('));
           } else {
