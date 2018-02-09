@@ -1,3 +1,13 @@
+<a name="0.3.3"></a>
+## [0.3.3](https://github.com/advanced-rest-client/request-panel/compare/0.3.2...0.3.3) (2018-02-09)
+
+
+### Fix
+
+* Clearing context and cache for variables evaluator. ([1455edf7652590866c4cf8769a74672c6371e98f](https://github.com/advanced-rest-client/request-panel/commit/1455edf7652590866c4cf8769a74672c6371e98f))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/advanced-rest-client/request-panel/compare/0.3.1...0.3.2) (2018-02-09)
 
