@@ -26,9 +26,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../cookie-jar/cookie-jar.html">
   <link rel="import" href="../../paper-toast/paper-toast.html">
   <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+  <link rel="import" href="../../request-hooks-logic/request-hooks-logic.html">
 
   <link rel="import" href="../request-panel.html">
-  <link rel="import" href="../test/demo-transport.html">
+  <link rel="import" href="demo-transport.html">
 
   <style is="custom-style" include="demo-pages-shared-styles">
     :root {
@@ -69,6 +70,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
   <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
   <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
+  <paper-toast id="varUpdate" text="Update variable value event handled"></paper-toast>
+  <paper-toast id="varStore" text="Store variable value event handled"></paper-toast>
   <script>
   var Demo = {
     sendEvent: function(type, details, cancelable, node) {
@@ -102,6 +105,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   window.addEventListener('request-use-xhr-changed', function() {
     openToast('xhrToast');
   });
+
+  window.addEventListener('variable-store-action', function() {
+    openToast('varStore');
+  });
+  window.addEventListener('variable-update-action', function() {
+    openToast('varUpdate');
+  });
   (function(scope) {
     scope.request = {
       url: window.location.href,
@@ -117,6 +127,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       scope.request = r;
     };
+    var latestActions;
+    window.addEventListener('report-response', function(e) {
+      if (!latestActions || !latestActions.length) {
+        return;
+      }
+      /* global RequestLogicRunner */
+      const runner = new RequestLogicRunner(latestActions);
+      runner.run(e.detail.request, e.detail.response)
+      .then(() => console.log('Request action executed'));
+    });
+
+    window.addEventListener('transport-request', function(e) {
+      latestActions = e.detail.actions;
+    });
   })(document.querySelector('#demo1'));
   </script>
 </body>
