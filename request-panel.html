@@ -431,7 +431,8 @@ Custom property|Description|Default
        */
       isDirty: {
         type: Boolean,
-        notify: true
+        notify: true,
+        readOnly: true
       },
       /**
        * If set then "save request" controlls are not rendered.
@@ -555,12 +556,12 @@ Custom property|Description|Default
 
     _updateDirtyState: function(record) {
       if (!record || !record.base) {
-        this.isDirty = false;
+        this._setIsDirty(false);
         return;
       }
       if (record.path === 'request') {
         // new object has been set. Whatever it's type it is not dirty.
-        this.isDirty = false;
+        this._setIsDirty(false);
         return;
       }
       var request = record.base;
@@ -568,7 +569,7 @@ Custom property|Description|Default
         return;
       }
       if (request.type !== 'history') {
-        this.isDirty = true;
+        this._setIsDirty(true);
       }
     },
     /**
