@@ -1,3 +1,14 @@
+<a name="0.4.1"></a>
+## [0.4.1](https://github.com/advanced-rest-client/request-panel/compare/0.3.4...0.4.1) (2018-02-12)
+
+
+### Update
+
+* Changed `isDirty` property to be read only. ([7b28ca38f85c668e22e948550eb6df395c298b16](https://github.com/advanced-rest-client/request-panel/commit/7b28ca38f85c668e22e948550eb6df395c298b16))
+* Updated request editor with authorization settings. ([45a6e5da4aeddcc70f28ff78d60ebd5867489e82](https://github.com/advanced-rest-client/request-panel/commit/45a6e5da4aeddcc70f28ff78d60ebd5867489e82))
+
+
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://github.com/advanced-rest-client/request-panel/compare/0.3.3...0.3.4) (2018-02-09)
 
