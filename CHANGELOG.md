@@ -1,3 +1,13 @@
+<a name="0.4.3"></a>
+## [0.4.3](https://github.com/advanced-rest-client/request-panel/compare/0.4.2...0.4.3) (2018-02-12)
+
+
+### Update
+
+* Updated request property name ([5be76c8a854b6510a0a96394d1af1c7d417fcd92](https://github.com/advanced-rest-client/request-panel/commit/5be76c8a854b6510a0a96394d1af1c7d417fcd92))
+
+
+
 <a name="0.4.2"></a>
 ## [0.4.2](https://github.com/advanced-rest-client/request-panel/compare/0.4.1...0.4.2) (2018-02-12)
 
