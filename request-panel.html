@@ -192,6 +192,8 @@ Custom property|Description|Default
         payload="{{request.payload}}"
         url="{{request.url}}"
         request-actions="{{request.actions}}"
+        auth-settings="{{request.authSettings}}"
+        oauth2-redirect-uri="[[oauth2RedirectUri]]"
         xhr-extension="[[xhrExtension]]"
         events-target="[[eventsTarget]]"></request-editor>
       <template is="dom-if" if="[[loading]]">
@@ -431,7 +433,8 @@ Custom property|Description|Default
        */
       isDirty: {
         type: Boolean,
-        notify: true
+        notify: true,
+        readOnly: true
       },
       /**
        * If set then "save request" controlls are not rendered.
@@ -441,7 +444,13 @@ Custom property|Description|Default
         value: false
       },
       // Last generated ID for the request.
-      lastRequestId: String
+      lastRequestId: String,
+      /**
+       * Redirect URL for the OAuth2 authorization.
+       * If can be also set by dispatching `oauth2-redirect-url-changed`
+       * with `value` property on the `detail` object.
+       */
+      oauth2RedirectUri: String
     },
 
     listeners: {
@@ -555,12 +564,12 @@ Custom property|Description|Default
 
     _updateDirtyState: function(record) {
       if (!record || !record.base) {
-        this.isDirty = false;
+        this._setIsDirty(false);
         return;
       }
       if (record.path === 'request') {
         // new object has been set. Whatever it's type it is not dirty.
-        this.isDirty = false;
+        this._setIsDirty(false);
         return;
       }
       var request = record.base;
@@ -568,7 +577,7 @@ Custom property|Description|Default
         return;
       }
       if (request.type !== 'history') {
-        this.isDirty = true;
+        this._setIsDirty(true);
       }
     },
     /**
