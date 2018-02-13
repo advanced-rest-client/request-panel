@@ -1,3 +1,13 @@
+<a name="0.4.5"></a>
+## [0.4.5](https://github.com/advanced-rest-client/request-panel/compare/0.4.4...0.4.5) (2018-02-13)
+
+
+### New
+
+* Added queryModel support. ([27d1a49fa78205330887d10daa022a794780f206](https://github.com/advanced-rest-client/request-panel/commit/27d1a49fa78205330887d10daa022a794780f206))
+
+
+
 <a name="0.4.4"></a>
 ## [0.4.4](https://github.com/advanced-rest-client/request-panel/compare/0.4.3...0.4.4) (2018-02-12)
 
