@@ -93,21 +93,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return detail;
         }
 
-        test('report-response event triggers setResponseData()', function() {
-          var called = false;
+        test('report-response event triggers setResponseData()', function(done) {
           element.setResponseData = function() {
-            called = true;
+            done();
           };
           fireResponse(createSimpleResponseObject());
-          assert.isTrue(called);
         });
 
-        test('report-response event handler passes the response data', function() {
+        test('report-response event handler passes the response data', function(done) {
           element.setResponseData = function(data) {
             assert.typeOf(data.request, 'object', 'request is an object');
             assert.typeOf(data.response, 'object', 'response is an object');
             assert.typeOf(data.loadingTime, 'number', 'loadingTime is a nuumber');
             assert.typeOf(data.isXhr, 'boolean', 'isXhr is a boolean');
+            done();
           };
           fireResponse(createSimpleResponseObject());
         });
@@ -233,6 +232,112 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.typeOf(node.redirectTimings, 'array');
           assert.typeOf(node.redirects, 'array');
           assert.equal(node.sentHttpMessage, 'test');
+        });
+      });
+
+      suite('reportResponse()', function() {
+        const arcRequest = {
+          url: 'https://domain.com/${test1}',
+          headers: 'content-length: 0\nx-test: true\nx-var: ${test2}',
+          method: 'POST',
+          payload: '${test1}',
+          responseActions: [{
+            source: 'response.body.${varName}',
+            action: 'assign-variable',
+            destination: 'myVar-${test3}'
+          }],
+          requestActions: {
+            variables: [{
+              enabled: true,
+              value: 'test-value',
+              variable: 'test-var'
+            }, {
+              enabled: true,
+              variable: 'v2',
+              value: '${test1}'
+            }]
+          }
+        };
+        var element;
+        setup(function() {
+          element = fixture('basic');
+          element.request = arcRequest;
+          element.lastRequestId = REQUEST_ID;
+        });
+
+        const contextFactory = function(e) {
+          e.preventDefault();
+          e.detail.value = [{
+            variable: 'varName',
+            value: 'test',
+            enabled: true
+          }, {
+            variable: 'test2',
+            value: 'value2 ${test1}',
+            enabled: true
+          }, {
+            variable: 'test3',
+            value: 'value3 ${test4}',
+            enabled: true
+          }, {
+            variable: 'test4',
+            value: 'value4',
+            enabled: true
+          }, {
+            variable: 'test5',
+            value: 'value5',
+            enabled: false
+          }];
+        };
+        suiteSetup(function() {
+          window.addEventListener('variable-list', contextFactory);
+        });
+        suiteTeardown(function() {
+          window.removeEventListener('variable-list', contextFactory);
+        });
+
+        function createRequest() {
+          var init = {
+            method: arcRequest.method,
+            mode: 'cors',
+            headers: new Headers(arcRequest.headers)
+          };
+          return new Request(arcRequest.url, init);
+        }
+
+        function createComplexResponseObject() {
+          var detail = {
+            request: createRequest(),
+            response: createResponse(),
+            loadingTime: LOAD_TIME,
+            isXhr: false,
+            redirects: [],
+            redirectTimings: [],
+            timings: {},
+            sourceMessage: 'test'
+          };
+          return detail;
+        }
+
+        test('reportResponse returns promise', function() {
+          const result = element.reportResponse(createComplexResponseObject());
+          assert.typeOf(result.then, 'function');
+        });
+
+        test('Returns promise when no actions', function() {
+          element.request = {};
+          const result = element.reportResponse(createComplexResponseObject());
+          assert.typeOf(result.then, 'function');
+        });
+
+        test('Executes actions', function(done) {
+          window.addEventListener('variable-update-action', function clb(e) {
+            element.removeEventListener('variable-update-action', clb);
+            assert.equal(e.detail.variable, 'myVar-value3 value4');
+            assert.equal(e.detail.value, true);
+            done();
+          });
+          element.reportResponse(createComplexResponseObject());
         });
       });
     });
