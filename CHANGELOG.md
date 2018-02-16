@@ -1,3 +1,14 @@
+<a name="0.4.7"></a>
+## [0.4.7](https://github.com/advanced-rest-client/request-panel/compare/0.4.6...0.4.7) (2018-02-16)
+
+
+### New
+
+* Added response action execution to the panel. ([22370702dbab0d07ea72b11ff1453dd1402a6d38](https://github.com/advanced-rest-client/request-panel/commit/22370702dbab0d07ea72b11ff1453dd1402a6d38))
+* request logic now evaluates pre-actions for variables. ([3795d694422c4eb41c4e9fcb8f7c7e8f7f5b8c2b](https://github.com/advanced-rest-client/request-panel/commit/3795d694422c4eb41c4e9fcb8f7c7e8f7f5b8c2b))
+
+
+
 <a name="0.4.6"></a>
 ## [0.4.6](https://github.com/advanced-rest-client/request-panel/compare/0.4.5...0.4.6) (2018-02-13)
 
