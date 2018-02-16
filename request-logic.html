@@ -93,7 +93,7 @@ Polymer({
     this.unlisten(node, 'resend-auth-request', '_resend');
   },
 
-  get _evalElement() {
+  get evalElement() {
     if (!this.$) {
       this.$ = {};
     }
@@ -168,10 +168,10 @@ Polymer({
    * ensure that the handler will receive actuall request data.
    */
   _beforeProcessVariables: function(request) {
-    return new Promise((resolve, reject) => {
-      this._evalElement.cache = undefined;
-      this._evalElement.context = undefined;
-      this._evalElement._processBeforeRequest(request, resolve, reject);
+    return this._preparePreRequestVariables(request)
+    .then((override) => {
+      this._notifyVariablesChange(override);
+      return this.evalElement.processBeforeRequest(request, override);
     })
     .then(request => {
       this._beforeRequest(request);
@@ -180,7 +180,53 @@ Polymer({
       this._beforeRequest(request);
     });
   },
-
+  /**
+   * Prepares scripts context override values for variables evaluator.
+   * If there are actions defined for the `beforeRequest` key then it will
+   * get list of variables and create the override object.
+   *
+   * @param {Object} request ARC request object
+   * @return {Promise} Promise resolved to an object of variables
+   * or undefined if actions not defined.
+   */
+  _preparePreRequestVariables: function(request) {
+    var actions = request.requestActions;
+    if (!actions) {
+      return Promise.resolve();
+    }
+    var vars = actions.variables;
+    if (!vars || !vars.length) {
+      return Promise.resolve();
+    }
+    var result = {};
+    vars.forEach(function(item) {
+      if (item.enabled === false) {
+        return;
+      }
+      result[item.variable] = item.value;
+    });
+    var _eval = this.evalElement;
+    _eval.cache = undefined;
+    _eval.context = undefined;
+    return _eval.evaluateVariables(result);
+  },
+  /**
+   * Notifies
+   * @param {[type]} obj [description]
+   * @return {[type]} [description]
+   */
+  _notifyVariablesChange: function(obj) {
+    if (!obj) {
+      return;
+    }
+    Object.keys(obj).forEach(function(key) {
+      let detail = {
+        variable: key,
+        value: obj[key]
+      };
+      this.fire('variable-update-action', detail);
+    }, this);
+  },
   /**
    * Handles the before request logic.
    * @param {Object} request The request object.

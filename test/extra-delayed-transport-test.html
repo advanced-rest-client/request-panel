@@ -56,7 +56,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         element = fixture('basic')[0];
         element.request = request;
       });
-
       test('Timeouts before-request event', function(done) {
         element.$.logic._onBeforeRequestTimeout = function() {
           element.$.logic._setBeforeTimedOut(true);
