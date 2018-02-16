@@ -1,3 +1,9 @@
+<a name="0.4.8"></a>
+## [0.4.8](https://github.com/advanced-rest-client/request-panel/compare/0.4.7...0.4.8) (2018-02-16)
+
+
+
+
 <a name="0.4.7"></a>
 ## [0.4.7](https://github.com/advanced-rest-client/request-panel/compare/0.4.6...0.4.7) (2018-02-16)
 
