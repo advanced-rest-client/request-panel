@@ -24,6 +24,7 @@ the License.
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../request-hooks-logic/request-hooks-logic.html">
 <link rel="import" href="request-logic.html">
 
 <!--
@@ -190,7 +191,8 @@ Custom property|Description|Default
         method="{{request.method}}"
         payload="{{request.payload}}"
         url="{{request.url}}"
-        request-actions="{{request.actions}}"
+        request-actions="{{request.requestActions}}"
+        response-actions="{{request.responseActions}}"
         auth-settings="{{request.auth}}"
         query-model="{{request.queryModel}}"
         oauth2-redirect-uri="[[oauth2RedirectUri]]"
@@ -530,8 +532,81 @@ Custom property|Description|Default
      * @param {CustomEvent} e Event fired by the transport library.
      */
     _reportResponseHandler: function(e) {
-      this.setResponseData(e.detail);
+      this.reportResponse(e.detail);
     },
+    /**
+     * Reports the response.
+     *
+     * @param {Object} arcResponse arcResponse object returned by the transport.
+     * @return {Promise} Resolved promise when response actions were executed
+     * and response displayed.
+     */
+    reportResponse: function(arcResponse) {
+      let p;
+      if (this.request.responseActions && this.request.responseActions.length) {
+        p = this._processResponseActions(arcResponse.request, arcResponse.response);
+      } else {
+        p = Promise.resolve();
+      }
+      return p.catch(() => {}).then(() => {
+        this.setResponseData(arcResponse);
+      });
+    },
+
+    /**
+     * Executes response action before displaying the results.
+     *
+     * @param {Request} request
+     * @param {Response} response
+     */
+    _processResponseActions: function(request, response) {
+      /* global RequestLogicRunner */
+      var p = this.request.responseActions.map((action) =>
+        this._evaluateAction(action));
+      return Promise.all(p)
+      .then((actions) => {
+        const runner = new RequestLogicRunner(actions);
+        return runner.run(request, response);
+      });
+    },
+    /**
+     * Uses `variables-evaluator` to evaluate variables in the action.
+     *
+     * @param {Object} action Action model. It will create a copy of the object.
+     */
+    _evaluateAction: function(action) {
+      action = this._copyAction(action);
+      // this.$.logic.evalElement.cache = undefined;
+      // this.$.logic.evalElement.context = undefined;
+      let mainProps = ['destination', 'source'];
+      let iteratorProps = ['condition', 'source'];
+      return this.$.logic.evalElement.evaluateVariables(action, mainProps)
+      .then(() => {
+        if (action.iterator) {
+          return this.$.logic.evalElement.evaluateVariables(action.iterator, iteratorProps);
+        }
+      })
+      .then(() => action);
+    },
+    /**
+     * Creates a copy of the actio object.
+     *
+     * @param {Object} action Action model
+     * @return {Object} Deep copy of the action model.
+     */
+    _copyAction: function(action) {
+      let result = Object.assign({}, action);
+      if (result.iterator) {
+        result.iterator = Object.assign({}, result.iterator);
+      }
+      if (result.conditions && result.conditions.length) {
+        result.conditions = result.conditions.map((cond) => {
+          return Object.assign({}, cond);
+        });
+      }
+      return result;
+    },
+
     /**
      * Sets the response data for the response panel.
      *
