@@ -1,3 +1,13 @@
+<a name="0.4.9"></a>
+## [0.4.9](https://github.com/advanced-rest-client/request-panel/compare/0.4.8...0.4.9) (2018-02-25)
+
+
+### Update
+
+* Updated demo page. ([75b3afebf9279ba46686219c4bc7fef579d6857e](https://github.com/advanced-rest-client/request-panel/commit/75b3afebf9279ba46686219c4bc7fef579d6857e))
+
+
+
 <a name="0.4.8"></a>
 ## [0.4.8](https://github.com/advanced-rest-client/request-panel/compare/0.4.7...0.4.8) (2018-02-16)
 

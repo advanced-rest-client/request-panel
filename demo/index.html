@@ -9,11 +9,11 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-
   <title>request-panel demo</title>
   <script>
   if (location.search.indexOf('response_type') !== -1 && location.search.indexOf('redirect_uri') !== -1) {
@@ -44,51 +44,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../request-hooks-logic/request-hooks-logic.html">
   <link rel="import" href="../../oauth-authorization/oauth2-authorization.html">
   <link rel="import" href="../../oauth-authorization/oauth1-authorization.html">
+  <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+  <link rel="import" href="../../paper-listbox/paper-listbox.html">
+  <link rel="import" href="../../paper-item/paper-item.html">
   <link rel="import" href="../request-panel.html">
   <link rel="import" href="demo-transport.html">
-
+  <script type="text/javascript" src="../../chance/chance.js"></script>
   <style is="custom-style" include="demo-pages-shared-styles">
-    :root {
-      --demo-snippet-demo: {
-        padding: 0;
-        background-color: #CDDC39;
-        padding-bottom: 20px;
-      };
+  :root {
+    --demo-snippet-demo: {
+      padding: 0;
+      background-color: #CDDC39;
+      padding-bottom: 20px;
     }
+    ;
+  }
 
-    .vertical-section-container {
-      max-width: 1200px;
-    }
+  .vertical-section-container {
+    max-width: 1200px;
+  }
 
-    request-panel {
-      background-color: #fff;
-      min-height: 100vh;
-    }
+  request-panel {
+    background-color: #fff;
+    min-height: calc(100vh - 200px);
+  }
   </style>
 </head>
+
 <body unresolved>
-  <div class="vertical-section-container centered">
-    <h3>The `request-panel`</h3>
-    <demo-snippet>
-      <template is="dom-bind" id="demo1">
-        <request-panel request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]"></request-panel>
-        <paper-toggle-button on-tap="_toggleTyped">Request is saved request in the datastore</paper-toggle-button>
-      </template>
-    </demo-snippet>
-  </div>
-  <cookie-jar></cookie-jar>
-  <url-history-saver></url-history-saver>
-  <demo-transport></demo-transport>
-  <variables-manager></variables-manager>
-  <oauth2-authorization></oauth2-authorization>
-  <oauth1-authorization></oauth1-authorization>
-  <paper-toast id="transportToast" text="transport-request event handled"></paper-toast>
-  <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
-  <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
-  <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
-  <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
-  <paper-toast id="varUpdate" text="Update variable value event handled"></paper-toast>
-  <paper-toast id="varStore" text="Store variable value event handled"></paper-toast>
+  <template is="dom-bind" id="demo">
+    <div class="vertical-section-container centered">
+      <request-panel request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]"></request-panel>
+      <paper-toggle-button on-tap="_toggleTyped">Request is saved request in the datastore</paper-toggle-button>
+      <section>
+        <h4>Load request</h4>
+        <paper-dropdown-menu label="Request preset">
+          <paper-listbox class="dropdown-content" selected="{{restoredRequest}}" attr-for-selected="data-type">
+            <paper-item data-type="get">Simple GET request</paper-item>
+            <paper-item data-type="post">Simple POST request</paper-item>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </section>
+    </div>
+    <cookie-jar></cookie-jar>
+    <url-history-saver></url-history-saver>
+    <demo-transport></demo-transport>
+    <variables-manager></variables-manager>
+    <oauth2-authorization></oauth2-authorization>
+    <oauth1-authorization></oauth1-authorization>
+    <paper-toast id="transportToast" text="transport-request event handled"></paper-toast>
+    <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
+    <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
+    <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
+    <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
+    <paper-toast id="varUpdate" text="Update variable value event handled"></paper-toast>
+    <paper-toast id="varStore" text="Store variable value event handled"></paper-toast>
+  </template>
   <script>
   var Demo = {
     sendEvent: function(type, details, cancelable, node) {
@@ -107,6 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       value: e.detail.url
     }, true);
   });
+
   function openToast(id) {
     document.getElementById(id).opened = true;
   }
@@ -130,6 +142,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     openToast('varUpdate');
   });
   (function(scope) {
+    /* global chance */
+
     scope.request = {
       url: window.location.href,
       method: 'GET'
@@ -145,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       scope.request = r;
     };
     var redirectUrl = location.href.replace(/request-panel\/demo\/(index\.html)?/,
-        'oauth-authorization/oauth-popup.html');
+      'oauth-authorization/oauth-popup.html');
     scope.oauth2RedirectUri = redirectUrl;
     var latestActions;
     window.addEventListener('report-response', function(e) {
@@ -155,13 +169,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* global RequestLogicRunner */
       const runner = new RequestLogicRunner(latestActions);
       runner.run(e.detail.request, e.detail.response)
-      .then(() => console.log('Request action executed'));
+        .then(() => console.log('Request action executed'));
     });
 
     window.addEventListener('transport-request', function(e) {
       latestActions = e.detail.actions;
     });
-  })(document.querySelector('#demo1'));
+
+    scope.observers = ['_restoredRequestChanged(restoredRequest)'];
+    scope._restoredRequestChanged = function(restoredRequest) {
+      var opts = {};
+      switch (restoredRequest) {
+        case 'post':
+          opts.method = 'POST';
+          opts.withBody = true;
+          break;
+      }
+      scope.generateRequest(opts);
+    };
+
+    function genHeaders(opts) {
+      var str = '';
+      for (var i = 0; i < chance.integer({min: 1, max: 7}); i++) {
+        str += 'x-' + chance.word() + ': ' + chance.word() + '\n';
+      }
+      if (opts.withBody) {
+        str += 'content-type: application/xml';
+      }
+      return str;
+    }
+    function getMethod(opts) {
+      if (opts.method) {
+        return opts.method;
+      }
+      if (opts.withBody) {
+        return ['POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'][chance.integer({min: 0, max: 4})];
+      }
+      return ['GET', 'HEAD'][chance.integer({min: 0, max: 1})];
+    }
+    scope.generateRequest = function(opts) {
+      scope.set(['request', 'method'], getMethod(opts));
+      scope.set(['request', 'url'], chance.url());
+      if (opts.withBody) {
+        scope.set(['request', 'payload'], 'Demo page');
+      } else {
+        scope.set(['request', 'payload'], '');
+      }
+      scope.set(['request', 'headers'], genHeaders(opts));
+      scope.set(['request', 'method'], getMethod(opts));
+    };
+  })(document.getElementById('demo'));
   </script>
 </body>
+
 </html>
