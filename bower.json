@@ -48,7 +48,8 @@
     "arc-icons": "advanced-rest-client/arc-icons#^1.0.23",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#<2",
     "request-hooks-logic": "advanced-rest-client/request-hooks-logic#^0.1.1",
-    "oauth-authorization": "advanced-rest-client/oauth-authorization#^0.2.9"
+    "oauth-authorization": "advanced-rest-client/oauth-authorization#^0.2.9",
+    "chance": "^1.0.13"
   },
   "ignore": [
     "**/.*",
