@@ -23,7 +23,6 @@ the License.
 <link rel="import" href="../uuid-generator/uuid-generator.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
-<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../request-hooks-logic/request-hooks-logic.html">
 <link rel="import" href="request-logic.html">
 
@@ -216,15 +215,9 @@ Custom property|Description|Default
     </div>
     <arc-status-bar>
       <template is="dom-if" if="[[!noSave]]">
-        <span prefix>
-          <paper-icon-button class="save-action" icon="arc:save" on-tap="_saveRequest"></paper-icon-button>
-          <paper-tooltip animation-delay="200" position="top" offset="0">Save this request object</paper-tooltip>
-        </span>
+        <paper-icon-button prefix class="save-action" icon="arc:save" on-tap="_saveRequest" title="Save current request object"></paper-icon-button>
         <template is="dom-if" if="[[isDirty]]">
-          <span prefix>
-            <span class="dirty" on-tap=""></span>
-            <paper-tooltip animation-delay="200" position="top" offset="0">Changes in the request object detected</paper-tooltip>
-          </span>
+          <span class="dirty" prefix title="Changes in the request object are not saved"></span>
         </template>
       </template>
     </arc-status-bar>
