@@ -31,7 +31,6 @@
     "uuid-generator": "advanced-rest-client/uuid-generator#^1.0.4",
     "variables-evaluator": "advanced-rest-client/variables-evaluator#^0.2.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#<2",
-    "paper-tooltip": "PolymerElements/paper-tooltip#<2",
     "request-hooks-logic": "advanced-rest-client/request-hooks-logic#^0.1.1"
   },
   "devDependencies": {
