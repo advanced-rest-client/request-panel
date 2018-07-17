@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>request-panel test</title>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../request-panel.html">
+</head>
+
+<body>
+  <test-fixture id="Basic">
+    <template>
+      <request-panel></request-panel>
+    </template>
+  </test-fixture>
+  <script>
+  suite('request-panel', () => {
+    function appendRequestData(element, request) {
+      request = request || {};
+      const editor = element.shadowRoot.querySelector('request-editor');
+      editor.httpMethod = request.method || 'get';
+      editor.url = request.url || 'https://domain.com';
+      editor.headers = request.headers || '';
+      editor.payload = request.payload;
+    }
+    suite('Initialization', () => {
+      test('responseIsXhr is true by default', () => {
+        const element = fixture('Basic');
+        assert.isTrue(element.responseIsXhr);
+      });
+
+      test('hasResponse is undefined', () => {
+        const element = fixture('Basic');
+        assert.isUndefined(element.hasResponse);
+      });
+
+      test('api-request is dispatched', (done) => {
+        const element = fixture('Basic');
+        flush(() => {
+          appendRequestData(element);
+          element.addEventListener('api-request', () => {
+            done();
+          });
+          const editor = element.shadowRoot.querySelector('request-editor');
+          editor._sendRequest();
+        });
+      });
+    });
+
+    suite('Response handling', () => {
+      function propagate(element) {
+        let headers = 'content-type: text/plain\nlocation: ';
+        headers += 'https://other.domain.com\ncontent-length: 30';
+        const detail = {
+          request: {
+            url: 'https://domain.com/',
+            method: 'GET',
+            headers: 'accept: text/plain'
+          },
+          response: {
+            status: 200,
+            statusText: 'OK',
+            payload: 'Hello world',
+            headers: 'content-type: text/plain'
+          },
+          loadingTime: 124.12345678,
+          isError: false,
+          isXhr: false,
+          sentHttpMessage: 'GET / HTTP/1.1\nHost: domain.com\naccept: text/plain\n\n\n',
+          redirects: [{
+            status: 301,
+            statusText: 'Not here',
+            payload: 'Go to https://other.domain.com',
+            headers: headers
+          }],
+          timing: {
+            blocked: 12.0547856,
+            dns: 0.12,
+            connect: 112.21458762,
+            send: 4.4748989,
+            wait: 15.8436988,
+            receive: 65.125412256,
+            ssl: 10
+          },
+          redirectsTiming: [{
+            blocked: 12.0547856,
+            dns: 0.12,
+            connect: 112.21458762,
+            send: 4.4748989,
+            wait: 15.8436988,
+            receive: 65.125412256,
+            ssl: 10
+          }]
+        };
+        element._propagateResponse(detail);
+      }
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        flush(() => done());
+      });
+      test('hasResponse is set', () => {
+        propagate(element);
+        assert.isTrue(element.hasResponse);
+      });
+      test('isErrorResponse is false', () => {
+        propagate(element);
+        assert.isFalse(element.isErrorResponse);
+      });
+      test('responseError is indefined', () => {
+        propagate(element);
+        assert.isUndefined(element.responseError, 'error is undefined');
+      });
+      test('loadingTime is set', () => {
+        propagate(element);
+        assert.equal(element.loadingTime, 124.12345678);
+      });
+      test('request is set', () => {
+        propagate(element);
+        assert.typeOf(element.request, 'object');
+      });
+      test('response is set', () => {
+        propagate(element);
+        assert.typeOf(element.response, 'object');
+      });
+      test('responseIsXhr is false', () => {
+        propagate(element);
+        assert.isFalse(element.responseIsXhr);
+      });
+      test('redirects is set', () => {
+        propagate(element);
+        assert.typeOf(element.redirects, 'array');
+      });
+      test('redirectsTiming is set', () => {
+        propagate(element);
+        assert.typeOf(element.redirectsTiming, 'array');
+      });
+      test('timing is set', () => {
+        propagate(element);
+        assert.typeOf(element.timing, 'object');
+      });
+      test('source message is set', () => {
+        propagate(element);
+        assert.typeOf(element.sourceMessage, 'string');
+      });
+
+      test('Calling clearResponse() clears response', () => {
+        propagate(element);
+        element.clearResponse();
+        assert.isUndefined(element.isErrorResponse);
+        assert.isUndefined(element.responseError);
+        assert.isUndefined(element.loadingTime);
+        assert.isUndefined(element.request);
+        assert.isUndefined(element.response);
+        assert.isUndefined(element.responseIsXhr);
+        assert.isUndefined(element.redirects);
+        assert.isUndefined(element.redirectsTiming);
+        assert.isUndefined(element.timing);
+        assert.isUndefined(element.sourceMessage);
+      });
+    });
+  });
+  </script>
+</body>
+
+</html>

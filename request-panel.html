@@ -1,6 +1,6 @@
 <!--
 @license
-Copyright 2017 The Advanced REST client authors <arc@mulesoft.com>
+Copyright 2018 The Advanced REST client authors <arc@mulesoft.com>
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
 the License at
@@ -11,152 +11,19 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../arc-status-bar/arc-status-bar.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../request-editor/request-editor.html">
 <link rel="import" href="../response-view/response-view.html">
-<link rel="import" href="../paper-toast/paper-toast.html">
-<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
 <link rel="import" href="../events-target-behavior/events-target-behavior.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
-<link rel="import" href="../uuid-generator/uuid-generator.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../arc-icons/arc-icons.html">
-<link rel="import" href="../request-hooks-logic/request-hooks-logic.html">
-<link rel="import" href="request-logic.html">
 
-<!--
-A full request and response view for the Advanced REST client
-
-# Example
-
-```
-<request-panel handlers-timeout="2000"></request-panel>
-```
-
-Note: This element internally uses `variables-evaluator` element but it doesn't
-use `variables-manager` and it soulf be included into the app if variables should
-be evaluated correctly.
-
-## Request lifecycle
-
-Detailed description: <https://github.com/jarrodek/ChromeRestClient/issues/1010>
-
-### before-request event
-
-Before sending a request the `before-request` custom event is fired. The event contains the `promises` array on the detail object where all promises should be kept. Handlers can modify any part of the request message.
-
-This event is cancellable. If the event has been cancelled by any of the listeners then the request fails. Handlers may set a reason property on the event's detail object to display a reason to the user.
-
-The handler have a timeout set from the `handlers-timeout` attribute of the element to complete any scheduled tasks. If a handler requires more time to execute (eg. request debugger) it should set a `timeout` property on the Promise object. It is a non-normative property for this object but it will help control the workflow properly. The request will be fired after the number of milliseconds of the highest timeout value. If 0 is set then the request will be halted until `continue-request` event is fired.
-
-The request data in the event are already evaluated by the `variables-evaluator`
-element so handlers receive final request parameters.
-
-#### Properties
-
-The details object has following properties:
-
--   `url` (`string`)- Request URL.
--   `headers` (`string`) - Headers to be send.
--   `payload` (`string`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
--   `method` (`string`) - HTTP method.
--   `promises` (`array`) - An array where promises must be added
--   `reason` (`string`) - reason of cancelling the event.
--   `auth` (`object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
--   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
-
-### transport-request
-
-A non-cancelable, immutable request object.
-This event is meant to be handled by the transport library that is attached to the DOM and handles the event.
-
-#### Properties
-
-The details object has following properties:
-
--   `url` (`string`)- Request URL.
--   `headers` (`String`) - Headers to be send.
--   `payload` (`String`) - Message body if the request can carry a body. GET and HEAD request will ignore this property.
--   `method` (`String`) - HTTP method.
--   `auth` (`Object`) - an authorization data that will be passed to the transport library (`socket-fetch`)
--   `id` (`String`) - Request ID. It is an UUID for the request. The id is reported back by the transport library in all its events.
-
-### response-ready event
-
-Event fired when the transport library finishes a request and both request and response object are ready.
-Event is fired just before reporting the response to the user.  It can be cancelled but the response won't be presented to the user. The element that cancels the response should take an action that is visible to the user (eg, redirect, chain request etc). This event is synchronous so any async work on the response object won't be possible.
-
-The request and response are Fetch's API `Request` and `Response` object. Body from both of the objects can be read only once so any handler that have to read the response / request body have to call `body.clone()` function that returns new `Body` object that can be read. If the handler use the body without cloning the object the response won't be reported to the user.
-
-#### Properties
-
--   `request` (`Request`) - The request object as defined in the Fetch API spec.
--   `response` (`Response`) - The response object as defined in the Fetch API spec.
--   `isXhr` (`Boolean`) - If not set the element assumes it's true. Indicated if the transport method doesn't support advanced timings and redirects information.
--   `error` (`Error`) - When the request / response is errored (`request.ok` equals `false`) then the error object should be set with the human readable message that will be displayed to the user.
--   `loadingTime` (`Number`) - The response full loading time
--   `timings` (`Object`) - HAR 1.2 timings object
--   `redirect-timings` (`Array`) - Array of `timings` objects with timings of reach redirect. Elements in the array are ordered and each item corresponds to the one in `redirects` array
--   `redirects` (`Array`) - Array of `Response` objects. Elements in the array are ordered and each item corresponds to the one in `redirects-timings` array. Additionally the Response item should have a `requestUrl` property which corresponds to an URL to which the redirected request went to.
--   `sourceMessage` (`String`) - A source message that has been sent to the server.
--   `auth` (`Object`) - Returned by the transport library auth object
-
-### headers-received event
-
-Cancellable event fired by the transport library after headers has been received
-from the server. All work must be done synchronously.
-If the event is cancelled then the request is canceled. Handlers should take a
-proper action action visible to the user (redirect, display UI).
-
-#### Properties
-
--   `value` (`Headers`) Headers received from the server as a Fetch's [headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers) object
-
-### before-redirect event
-
-Cancelable event fired by the transport library when a redirect about to occur.
-All work must be done synchronously.
-If the event is cancelled then the request is canceled. Handlers should take a
-proper action action visible to the user (redirect, display UI).
-
-### report-response
-
-A non-cancelable, immutable response object with properties the same as the `response-ready` event. This event is intended to the request-panel only to report final response after applying any transformation on the response at `response-ready` event.
-Because browser can't guarantee event handlers execution order this shouldn't be done in the `response-ready` event or otherwise this would influence the performance (the response panel would compute the response each time the object change).
-
-## Styling
-
-`<request-panel>` provides the following custom properties and mixins for styling:
-
-Custom property|Description|Default
----------- | ------------------ | ------
-`--request-panel`|Mixin applied to the element|`{}`
-`--request-panel-main-content` | Mixin applied to the container for the request and the resposnse panels | `{}`
-`--request-panel-progress-color` | Color of the progress bar that indicate loading state | `#00A2DF`
-`--request-panel-progress` | Mixin applied to the progress bar | `{}`
-`--request-panel-status-bar` | Mixin applied to the status bar | `{}`
-`--request-panel-status-bar-left` | Left position of the status bar. | `0`
-
-@group UI Elements
-@element request-panel
-@demo demo/index.html
--->
 <dom-module id="request-panel">
   <template>
     <style>
-     :host {
-      @apply --layout-vertical;
+    :host {
+      display: block;
       @apply --request-panel;
-    }
-
-    .data-area {
-      @apply --layout-flex;
-      padding: 0px 24px 24px 24px;
-      overflow: auto;
-
-      @apply --request-panel-main-content;
     }
 
     paper-progress {
@@ -165,507 +32,310 @@ Custom property|Description|Default
 
       @apply --request-panel-progress;
     }
-
-    arc-status-bar {
-      left: var(--request-panel-status-bar-left, 0);
-      @apply --request-panel-status-bar;
-    }
-
-    .dirty {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: var(--request-panel-dirty-color, #FF8A65);
-    }
-
-    .save-action {
-      color: var(--request-panel-save-button-color, rgba(0, 0, 0, 0.54));
-    }
     </style>
-    <div class="data-area">
-      <request-editor
-        loading-request="[[loading]]"
-        headers="{{request.headers}}"
-        method="{{request.method}}"
-        payload="{{request.payload}}"
-        url="{{request.url}}"
-        request-actions="{{request.requestActions}}"
-        response-actions="{{request.responseActions}}"
-        auth-settings="{{request.auth}}"
-        query-model="{{request.queryModel}}"
-        oauth2-redirect-uri="[[oauth2RedirectUri]]"
-        xhr-extension="[[xhrExtension]]"
-        events-target="[[eventsTarget]]"></request-editor>
-      <template is="dom-if" if="[[loading]]">
-        <paper-progress indeterminate></paper-progress>
-      </template>
-      <template is="dom-if" if="[[hasResponse]]">
-        <response-view
-          request="[[transportRequest]]"
-          response="[[response]]"
-          response-error="[[responseError]]"
-          is-xhr="[[responseIsXhr]]"
-          loading-time="{{loadingTime}}"
-          redirects="[[redirects]]"
-          redirect-timings="[[redirectTimings]]"
-          response-timings="[[timings]]"
-          sent-http-message="[[sourceMessage]]"></response-view>
-      </template>
-    </div>
-    <arc-status-bar>
-      <template is="dom-if" if="[[!noSave]]">
-        <paper-icon-button prefix class="save-action" icon="arc:save" on-tap="_saveRequest" title="Save current request object"></paper-icon-button>
-        <template is="dom-if" if="[[isDirty]]">
-          <span class="dirty" prefix title="Changes in the request object are not saved"></span>
-        </template>
-      </template>
-    </arc-status-bar>
-    <paper-toast id="errorToast"></paper-toast>
-    <paper-toast id="cancelToast"></paper-toast>
-    <uuid-generator id="uuid"></uuid-generator>
-    <request-logic id="logic"
-      loading="{{loading}}"
-      request="[[request]]"
-      events-target="[[eventTarget]]"
-      last-request-id="{{lastRequestId}}"
-      handlers-timeout="[[handlersTimeout]]"
-      on-request-cancelled="_cancelationHandler"
-      on-request-error="_errorHandler"></request-logic>
+    <request-editor
+      loading-request="[[loading]]"
+      headers="{{editorRequest.headers}}"
+      method="{{editorRequest.method}}"
+      payload="{{editorRequest.payload}}"
+      url="{{editorRequest.url}}"
+      request-actions="{{editorRequest.requestActions}}"
+      response-actions="{{editorRequest.responseActions}}"
+      auth-settings="{{editorRequest.auth}}"
+      query-model="{{editorRequest.queryModel}}"
+      oauth2-redirect-uri="[[oauth2RedirectUri]]"
+      xhr-extension="[[xhrExtension]]"
+      events-target="[[eventsTarget]]"></request-editor>
+    <template is="dom-if" if="[[loading]]">
+      <paper-progress indeterminate></paper-progress>
+    </template>
+    <template is="dom-if" if="[[hasResponse]]">
+      <response-view
+        request="[[request]]"
+        response="[[response]]"
+        response-error="[[responseError]]"
+        is-error="[[isErrorResponse]]"
+        is-xhr="[[responseIsXhr]]"
+        loading-time="{{loadingTime}}"
+        redirects="[[redirects]]"
+        redirect-timings="[[redirectsTiming]]"
+        response-timings="[[timing]]"
+        sent-http-message="[[sourceMessage]]"></response-view>
+    </template>
   </template>
   <script>
-  Polymer({
-    is: 'request-panel',
-
-    behaviors: [ArcBehaviors.EventsTargetBehavior],
-
-    /**
-     * Before sending the request the `before-request` custom event is fired.
-     * The event contains the `promises` array on the detail object where all
-     * promises should be kept. Handlers can modify any part of the request
-     * message.
-     *
-     * This event is cancellable. If the event has been cancelled by any of the
-     * listeners then the request fails. Handlers may set a reason property on
-     * the event's detail object to display a reason to the user.
-     *
-     * The handler have a timeout set from the `handlers-timeout` attribute
-     * of the element to complete any scheduled tasks. If a handler requires
-     * more time to execute (eg. request debugger) it should set a `timeout`
-     * property on the Promise object. It is a non-normative property for
-     * this object but it will help control the workflow properly. The request
-     * will be fired after the number of milliseconds of the highest timeout
-     * value. If 0 is set then the request will be halted until
-     * `continue-request` event is fired.
-     *
-     * @event before-request
-     * @param {String} url Request URL.
-     * @param {String} headers Headers to be send.
-     * @param {String} payload Message body if the request can carry a body.
-     * GET and HEAD request will ignore this property.
-     * @param {String} method HTTP method.
-     * @param {Array} promises An array where promises must be added
-     * @param {String} reason The reason of cancelation. Must be set by the
-     * handler.
-     * @param {?Object} auth An authorization data that will be passed to the
-     * transport library (`socket-fetch`)
-     */
-
-    /**
-     * A non-cancelable, immutable request object.
-     * This event is meant to be handled by the transport library that is
-     * attached to the DOM and handles the event.
-     *
-     * @event transport-request
-     * @param {String} url Request URL.
-     * @param {String} headers Headers to be send.
-     * @param {String} payload Message body if the request can carry a body.
-     * GET and HEAD request will ignore this property.
-     * @param {String} method HTTP method.
-     * @param {?Object} auth An authorization data that will be passed to the
-     * transport library (`socket-fetch`)
-     */
-    /**
-     * Fired when the save action has been requested in the UI.
-     * This event is cancelable.
-     *
-     * @event request-save-state
-     */
-    properties: {
-      /**
-       * The request object with current request editor state.
-       * It contains the following properties:
-       * - headers {String}
-       * - method {String}
-       * - url {String}
-       * - payload {String|FormData|File}
-       *
-       * To listen for a change to this object use `request-data-changed`
-       * custom ebent fired from the `request-editor` element.
-       */
-      request: Object,
-      /**
-       * Number of milliseconds after which the `before-request` event handlers
-       * will be cancelled and the request continue without waiting for the
-       * result. When set to `0`, `null`, `undefined` or `false` the timeoout
-       * is not applied and the element waits with the request until
-       * `continue-request` event is fired.
-       *
-       * Default is 2000 ms set in the `request-logic` element.
-       */
-      handlersTimeout: Number,
-      /**
-       * Computed value. If true then the request is loading.
-       * This resets each time the request status changes.
-       */
-      loading: Boolean,
-      /**
-       * Current before-request handlers timeout ID
-       */
-      _currentTimeout: Number,
-      /**
-       * If set the element listens for the `continue-request` event and
-       * sends the request if it wasn't already.
-       */
-      _awaitingContinue: Boolean,
-      /**
-       * Set to `true` if the cancel request event has been fired.
-       */
-      _cancelled: Boolean,
-      /**
-       * Created by the transport `Request` object as defined in the Fetch
-       * API spec.
-       */
-      transportRequest: {
-        type: Request,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * Created by the transport the `Response` object as defined in the
-       * Fetch API spec.
-       */
-      response: {
-        type: Response,
-        notify: true,
-        readOnly: true
-      },
-      // True if the response is made by the Fetch / XHR api.
-      responseIsXhr: {
-        type: Boolean,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * An error object associated with the response when error.
-       */
-      responseError: {
-        type: Object,
-        notify: true,
-        readOnly: true
-      },
-      // Computed value, true, when the response object is set.
-      hasResponse: {
-        type: Boolean,
-        computed: '_computeHasResponse(response)'
-      },
-      // Response full loading time.
-      loadingTime: {
-        type: Number,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * If the transport method is able to collect detailed information about request timings
-       * then this value will be set. It's the `timings` property from the HAR 1.2 spec.
-       */
-      timings: {
-        type: Object,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * If the transport method is able to collect detailed information about redirects timings
-       * then this value will be set. It's a list of `timings` property from the HAR 1.2 spec.
-       */
-      redirectTimings: {
-        type: Array,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * It will be set if the transport method can generate information about redirections.
-       */
-      redirects: {
-        type: Array,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * Http message sent to the server.
-       *
-       * This information should be available only in case of advanced HTTP transport.
-       */
-      sourceMessage: {
-        type: String,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * If set then it renders an option in request context menu to
-       * toggle to XHR request via the extension. This information is passed
-       * to the request editor element.
-       *
-       * It's only relevant to ARC Chrome app.
-       */
-      xhrExtension: Boolean,
-      /**
-       * A flag that determines if the request object have changed since it has
-       * been loaded into the panel.
-       * It is only set if request has type set.
-       * This should be reset by the application when the request object is saved.
-       */
-      isDirty: {
-        type: Boolean,
-        notify: true,
-        readOnly: true
-      },
-      /**
-       * If set then "save request" controlls are not rendered.
-       */
-      noSave: {
-        type: Boolean,
-        value: false
-      },
-      // Last generated ID for the request.
-      lastRequestId: String,
-      /**
-       * Redirect URL for the OAuth2 authorization.
-       * If can be also set by dispatching `oauth2-redirect-url-changed`
-       * with `value` property on the `detail` object.
-       */
-      oauth2RedirectUri: String
-    },
-
-    listeners: {
-      'send-request': '_sendRequestHandler',
-      'abort-request': '_abortRequestHandler',
-      'request-clear-state': '_reset',
-      'url-change-action': '_changeUrlHandler'
-    },
-
-    observers: [
-      '_updateDirtyState(request.*)'
-    ],
-
-    _attachListeners: function(node) {
-      this.listen(node, 'report-response', '_reportResponseHandler');
-    },
-
-    _detachListeners: function(node) {
-      this.unlisten(node, 'report-response', '_reportResponseHandler');
-    },
-
-    ready: function() {
-      if (!this.request) {
-        this.request = {};
-      }
-    },
-
-    _sendRequestHandler: function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.send();
-    },
-
-    _abortRequestHandler: function() {
-      this.$.logic.cancel();
-      this._reportCancelation();
-    },
-    /**
-     * Sends current request
-     * @return {Promise} A promise resolved when the `before-request` custom
-     * event is dispatched.
-     */
-    send: function() {
-      return this.$.logic.send();
-    },
-
-    _reset: function() {
-      this.setResponseData();
-      this.$.logic.reset();
-    },
+  /**
+   * A full request and response view for the Advanced REST client.
+   *
+   * ## Breaking changes in version 2
+   *
+   * - does not contain any logic responsible for making a request
+   * - does not contain any logic responsible for request and response actions
+   * - does not evaluate variables
+   * - It only renders view for both request and response panels
+   *
+   * ## Styling
+   *
+   * `<request-panel>` provides the following custom properties and mixins for
+   * styling:
+   *
+   * Custom property|Description|Default
+   * ---------- | ------------------ | ------
+   * `--request-panel`|Mixin applied to the element|`{}`
+   * `--request-panel-progress-color` | Color of the progress bar | `#00A2DF`
+   * `--request-panel-progress` | Mixin applied to the progress bar | `{}`
+   *
+   * @polymer
+   * @customElement
+   * @memberof UiElements
+   * @appliesMixin ArcBehaviors.EventsTargetBehavior
+   */
+  class RequestPanel extends ArcBehaviors.EventsTargetBehavior(Polymer.Element) {
+    static get is() { return 'request-panel'; }
+    static get properties() {
+      return {
+        /**
+         * A request object that is generated in request edtor.
+         * It contains the following properties:
+         * - url
+         * - method
+         * - headers
+         * - payload
+         * - queryModel
+         * - pathModel
+         */
+        editorRequest: {
+          type: Object,
+          notify: true,
+          value: function() {
+            return {};
+          }
+        },
+        /**
+         * Computed value. If true then the request is loading.
+         * This resets each time the request status changes.
+         */
+        loading: Boolean,
+        /**
+         * Created by the transport ARFC `request` object
+         */
+        request: Object,
+        /**
+         * Created by the transport ARC `response` object.
+         */
+        response: Object,
+        /**
+         * Computed value, true, when the response object is set.
+         */
+        hasResponse: {
+          type: Boolean,
+          computed: '_computeHasResponse(response)'
+        },
+        /**
+         * If set then it renders an option in request context menu to
+         * toggle to XHR request via the extension. This information is passed
+         * to the request editor element.
+         *
+         * It's only relevant to ARC Chrome appeditorRequest.
+         */
+        xhrExtension: Boolean,
+        /**
+         * Redirect URL for the OAuth2 authorization.
+         * If can be also set by dispatching `oauth2-redirect-url-changed`
+         * with `value` property on the `detail` object.
+         */
+        oauth2RedirectUri: String,
+        /**
+         * A flag indincating request error.
+         */
+        isErrorResponse: Boolean,
+        /**
+         * True if the response is made by the Fetch / XHR api.
+         */
+        responseIsXhr: {
+          type: Boolean,
+          value: true
+        },
+        /**
+         * An error object associated with the response when error.
+         */
+        responseError: Object,
+        /**
+         * Response full loading time. This information is received from the
+         * transport library.
+         */
+        loadingTime: Number,
+        /**
+         * If the transport method is able to collect detailed information about request timings
+         * then this value will be set. It's the `timings` property from the HAR 1.2 spec.
+         */
+        timing: Object,
+        /**
+         * If the transport method is able to collect detailed information about redirects timings
+         * then this value will be set. It's a list of `timings` property from the HAR 1.2 spec.
+         */
+        redirectsTiming: Array,
+        /**
+         * It will be set if the transport method can generate information about redirections.
+         */
+        redirects: Array,
+        /**
+         * Http message sent to the server.
+         *
+         * This information should be available only in case of advanced HTTP transport.
+         */
+        sourceMessage: String,
+        /**
+         * ID of latest request.
+         * It is received from the `api-request-editor` when `api-request`
+         * event is dispatched. When `api-response` event is handled
+         * the id is compared and if match it dispays the result.
+         *
+         * This system allows to use different request panels on single app
+         * and don't mix the results.
+         *
+         * @type {String|Number}
+         */
+        lastRequestId: String
+      };
+    }
 
     /**
-     * Opens the cancelation message toast
-     * @param {?String} reason Message to display. Optional.
+     * @constructor
      */
-    _reportCancelation: function(reason) {
-      this._reset();
-      reason = reason || 'The request has been canceled';
-      var t = this.$.cancelToast;
-      t.text = reason;
-      t.opened = true;
-    },
+    constructor() {
+      super();
+      this._apiResponseHandler = this._apiResponseHandler.bind(this);
+      this._sendRequestHandler = this._sendRequestHandler.bind(this);
+      this._changeUrlHandler = this._changeUrlHandler.bind(this);
+      this._abortHandler = this._abortHandler.bind(this);
+      this._clearHandler = this._clearHandler.bind(this);
+    }
 
-    _cancelationHandler: function(e) {
-      this._reportCancelation(e.detail.message);
-    },
+    _attachListeners(node) {
+      node.addEventListener('api-response', this._apiResponseHandler);
+      this.addEventListener('api-request', this._sendRequestHandler);
+      this.addEventListener('url-change-action', this._changeUrlHandler);
+      this.addEventListener('abort-api-request', this._abortHandler);
+      this.addEventListener('request-clear-state', this._clearHandler);
+    }
 
-    _errorHandler: function(e) {
-      var t = this.$.errorToast;
-      t.text = e.detail.message;
-      t.opened = true;
-    },
-
+    _detachListeners(node) {
+      node.removeEventListener('api-response', this._apiResponseHandler);
+      this.removeEventListener('api-request', this._sendRequestHandler);
+      this.removeEventListener('url-change-action', this._changeUrlHandler);
+      this.removeEventListener('abort-api-request', this._abortHandler);
+      this.removeEventListener('request-clear-state', this._clearHandler);
+    }
     /**
-     * Handler for the `report-request` event.
-     * Sets the response information to render.
+     * Computes if there is a reponse object.
      *
-     * @param {CustomEvent} e Event fired by the transport library.
+     * @param {Object} response ARC response objects
+     * @return {Boolean}
      */
-    _reportResponseHandler: function(e) {
-      this.reportResponse(e.detail);
-    },
+    _computeHasResponse(response) {
+      return !!response;
+    }
     /**
-     * Reports the response.
+     * A handler for the API call.
      *
-     * @param {Object} arcResponse arcResponse object returned by the transport.
-     * @return {Promise} Resolved promise when response actions were executed
-     * and response displayed.
+     * @param {CustomEvent} e `api-request` event
      */
-    reportResponse: function(arcResponse) {
-      let p;
-      if (this.request.responseActions && this.request.responseActions.length) {
-        p = this._processResponseActions(arcResponse.request, arcResponse.response);
-      } else {
-        p = Promise.resolve();
-      }
-      return p.catch(() => {}).then(() => {
-        this.setResponseData(arcResponse);
-      });
-    },
-
+    _sendRequestHandler(e) {
+      this.lastRequestId = e.detail.id;
+      this.loading = true;
+    }
     /**
-     * Executes response action before displaying the results.
-     *
-     * @param {Request} request
-     * @param {Response} response
+     * Handler for the `abort-api-request` custom event.
+     * Clears loading state and `lastRequestId` property.
      */
-    _processResponseActions: function(request, response) {
-      /* global RequestLogicRunner */
-      var p = this.request.responseActions.map((action) =>
-        this._evaluateAction(action));
-      return Promise.all(p)
-      .then((actions) => {
-        const runner = new RequestLogicRunner(actions);
-        return runner.run(request, response);
-      });
-    },
+    _abortHandler() {
+      this.lastRequestId = undefined;
+      this.loading = false;
+    }
     /**
-     * Uses `variables-evaluator` to evaluate variables in the action.
-     *
-     * @param {Object} action Action model. It will create a copy of the object.
+     * Handler for the `request-clear-state` custom event.
+     * Clears loading state and `lastRequestId` property.
      */
-    _evaluateAction: function(action) {
-      action = this._copyAction(action);
-      // this.$.logic.evalElement.cache = undefined;
-      // this.$.logic.evalElement.context = undefined;
-      let mainProps = ['destination', 'source'];
-      let iteratorProps = ['condition', 'source'];
-      return this.$.logic.evalElement.evaluateVariables(action, mainProps)
-      .then(() => {
-        if (action.iterator) {
-          return this.$.logic.evalElement.evaluateVariables(action.iterator, iteratorProps);
-        }
-      })
-      .then(() => action);
-    },
-    /**
-     * Creates a copy of the actio object.
-     *
-     * @param {Object} action Action model
-     * @return {Object} Deep copy of the action model.
-     */
-    _copyAction: function(action) {
-      let result = Object.assign({}, action);
-      if (result.iterator) {
-        result.iterator = Object.assign({}, result.iterator);
-      }
-      if (result.conditions && result.conditions.length) {
-        result.conditions = result.conditions.map((cond) => {
-          return Object.assign({}, cond);
-        });
-      }
-      return result;
-    },
+    _clearHandler() {
+      this.lastRequestId = undefined;
+      this.loading = false;
+    }
 
     /**
-     * Sets the response data for the response panel.
+     * Handler for the `api-response` custom event. Sets values on the response
+     * panel when response is ready.
      *
-     * @param {?Object} obj Properties described in `response-ready` event.
-     * Passing empty object or not setting the object resets the panel state.
+     * @param {CustomEvent} e
      */
-    setResponseData: function(obj) {
-      if (obj && obj.id !== this.lastRequestId) {
+    _apiResponseHandler(e) {
+      if (this.lastRequestId !== e.detail.id) {
         return;
       }
       this.loading = false;
-      obj = obj || {};
-      var isXhr = obj.isXhr === undefined ? true : obj.isXhr;
-      this._setResponseIsXhr(isXhr);
-      this._setResponse(obj.response);
-      this._setResponseError(obj.error);
-      this._setTransportRequest(obj.request);
-      this._setLoadingTime(obj.loadingTime);
-      this._setTimings(obj.timings);
-      this._setRedirectTimings(obj.redirectTimings);
-      this._setRedirects(obj.redirects);
-      this._setSourceMessage(obj.sourceMessage);
-    },
-
-    // Computes if there is a reponse object.
-    _computeHasResponse: function(response) {
-      return !!response;
-    },
-
-    _updateDirtyState: function(record) {
-      if (!record || !record.base) {
-        this._setIsDirty(false);
-        return;
-      }
-      if (record.path === 'request') {
-        // new object has been set. Whatever it's type it is not dirty.
-        this._setIsDirty(false);
-        return;
-      }
-      var request = record.base;
-      if (!request.type) {
-        return;
-      }
-      if (request.type !== 'history') {
-        this._setIsDirty(true);
-      }
-    },
+      this._propagateResponse(e.detail);
+    }
     /**
-     * Dispatches cancelable `request-save-state` custom event to indicate that
-     * the save data action has been performed by the user.
+     * Propagate `api-response` detail object.
+     *
+     * @param {Object} data Event's detail object
      */
-    _saveRequest: function() {
-      this.fire('request-save-state', undefined, {
-        cancelable: true
-      });
-    },
+    _propagateResponse(data) {
+      this.isErrorResponse = data.isError;
+      this.responseError = data.isError ? data.error : undefined;
+      this.loadingTime = data.loadingTime;
+      this.request = data.request;
+      this.response = data.response;
+      const isXhr = data.isXhr === false ? false : true;
+      this.responseIsXhr = isXhr;
+      this.redirects = isXhr ? undefined : data.redirects;
+      this.redirectsTiming = isXhr ? undefined : data.redirectsTiming;
+      this.timing = isXhr ? undefined : data.timing;
+      this.sourceMessage = data.sentHttpMessage;
+    }
     /**
      * Updates value of the request URL from `url-change-action`
      * custom event.
      */
-    _changeUrlHandler: function(e) {
+    _changeUrlHandler(e) {
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
-      this.set('request.url', e.detail.url);
+      this.set('editorRequest.url', e.detail.url);
     }
-  });
+
+    /**
+     * Clears response panel.
+     */
+    clearResponse() {
+      this.isErrorResponse = undefined;
+      this.responseError = undefined;
+      if (this.loadingTime) {
+        this.loadingTime = undefined;
+      }
+      if (this.request) {
+        this.request = undefined;
+      }
+      if (this.response) {
+        this.response = undefined;
+      }
+      if (this.responseIsXhr !== undefined) {
+        this.responseIsXhr = undefined;
+      }
+      if (this.redirects) {
+        this.redirects = undefined;
+      }
+      if (this.redirectsTiming) {
+        this.redirectsTiming = undefined;
+      }
+      if (this.timing) {
+        this.timing = undefined;
+      }
+      if (this.sourceMessage) {
+        this.sourceMessage = undefined;
+      }
+    }
+  }
+  window.customElements.define(RequestPanel.is, RequestPanel);
   </script>
 </dom-module>
