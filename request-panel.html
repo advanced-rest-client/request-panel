@@ -212,16 +212,16 @@ the License.
       this._clearHandler = this._clearHandler.bind(this);
     }
 
-    _attachListeners(node) {
-      node.addEventListener('api-response', this._apiResponseHandler);
+    _attachListeners() {
+      window.addEventListener('api-response', this._apiResponseHandler);
       this.addEventListener('api-request', this._sendRequestHandler);
       this.addEventListener('url-change-action', this._changeUrlHandler);
       this.addEventListener('abort-api-request', this._abortHandler);
       this.addEventListener('request-clear-state', this._clearHandler);
     }
 
-    _detachListeners(node) {
-      node.removeEventListener('api-response', this._apiResponseHandler);
+    _detachListeners() {
+      window.removeEventListener('api-response', this._apiResponseHandler);
       this.removeEventListener('api-request', this._sendRequestHandler);
       this.removeEventListener('url-change-action', this._changeUrlHandler);
       this.removeEventListener('abort-api-request', this._abortHandler);
