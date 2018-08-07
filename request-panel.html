@@ -45,7 +45,9 @@ the License.
       query-model="{{editorRequest.queryModel}}"
       oauth2-redirect-uri="[[oauth2RedirectUri]]"
       xhr-extension="[[xhrExtension]]"
-      events-target="[[eventsTarget]]"></request-editor>
+      events-target="[[eventsTarget]]">
+      <slot name="request-context-menu" slot="request-context-menu"></slot>
+    </request-editor>
     <template is="dom-if" if="[[loading]]">
       <paper-progress indeterminate></paper-progress>
     </template>
