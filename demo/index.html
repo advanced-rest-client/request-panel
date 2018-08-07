@@ -23,7 +23,6 @@
   }
   </script>
   <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-  <link rel="import" href="api-console-styles.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../app-pouchdb/pouchdb.html">
   <link rel="import" href="../../neon-animation/web-animations.html">
@@ -36,11 +35,26 @@
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
   <link rel="import" href="../../paper-listbox/paper-listbox.html">
   <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../arc-electron-default-theme/arc-electron-default-theme.html">
   <link rel="import" href="../request-panel.html">
   <script type="text/javascript" src="../../chance/chance.js"></script>
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
-    :root {
+    body,
+    html {
+      background-color: #e5e5e5;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    .card {
+      @apply --shadow-elevation-4dp;
+      padding: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      background-color: #fff;
     }
 
     .vertical-section-container {
@@ -72,8 +86,10 @@
   <dom-bind id="demo">
     <template>
       <div class="vertical-section-container centered">
-        <request-panel editor-request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]"></request-panel>
-        <section>
+        <section class="card">
+          <request-panel editor-request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]"></request-panel>
+        </section>
+        <section class="card">
           <h4>Load request</h4>
           <paper-dropdown-menu label="Request preset">
             <paper-listbox slot="dropdown-content" on-selected-changed="_restoredRequestChanged" attr-for-selected="data-type">
