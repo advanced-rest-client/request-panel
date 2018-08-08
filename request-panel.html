@@ -44,8 +44,8 @@ the License.
       auth-settings="{{editorRequest.auth}}"
       query-model="{{editorRequest.queryModel}}"
       oauth2-redirect-uri="[[oauth2RedirectUri]]"
-      xhr-extension="[[xhrExtension]]"
-      events-target="[[eventsTarget]]">
+      events-target="[[eventsTarget]]"
+      readonly="[[readonly]]">
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>
     <template is="dom-if" if="[[loading]]">
@@ -93,7 +93,7 @@ the License.
    * @appliesMixin ArcBehaviors.EventsTargetBehavior
    */
   class RequestPanel extends ArcBehaviors.EventsTargetBehavior(Polymer.Element) {
-    static get is() { return 'request-panel'; }
+    static get is() {return 'request-panel';}
     static get properties() {
       return {
         /**
@@ -198,7 +198,21 @@ the License.
          *
          * @type {String|Number}
          */
-        lastRequestId: String
+        lastRequestId: String,
+        /**
+         * When set it sets `eventsTarget` to itself and all editor event
+         * listeners strats listening on this node.
+         * This prohibits editors from getting data from the outside ot this
+         * component.
+         */
+        boundEvents: {
+          type: Boolean,
+          observer: '_boundEventsChanged'
+        },
+        /**
+         * When set it renders editors in read only mode.
+         */
+        readonly: Boolean
       };
     }
 
@@ -298,6 +312,8 @@ the License.
     /**
      * Updates value of the request URL from `url-change-action`
      * custom event.
+     *
+     * @param {Event} e
      */
     _changeUrlHandler(e) {
       e.preventDefault();
@@ -335,6 +351,12 @@ the License.
       }
       if (this.sourceMessage) {
         this.sourceMessage = undefined;
+      }
+    }
+
+    _boundEventsChanged(value) {
+      if (value) {
+        this.eventsTarget = this;
       }
     }
   }
