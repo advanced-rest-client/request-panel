@@ -27,9 +27,9 @@
       editor.payload = request.payload;
     }
     suite('Initialization', () => {
-      test('responseIsXhr is true by default', () => {
+      test('responseMeta is not computed', () => {
         const element = fixture('Basic');
-        assert.isTrue(element.responseIsXhr);
+        assert.isUndefined(element.responseMeta);
       });
 
       test('hasResponse is undefined', () => {
@@ -50,7 +50,95 @@
       });
     });
 
-    suite('Response handling', () => {
+    suite('XHR response handling', () => {
+      function propagate(element) {
+        const detail = {
+          request: {
+            url: 'https://domain.com/',
+            method: 'GET',
+            headers: 'accept: text/plain'
+          },
+          response: {
+            status: 200,
+            statusText: 'OK',
+            payload: 'Hello world',
+            headers: 'content-type: text/plain'
+          },
+          loadingTime: 124.12345678,
+          isError: false,
+          isXhr: true
+        };
+        element._propagateResponse(detail);
+      }
+
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        flush(() => done());
+      });
+
+      test('hasResponse is set', () => {
+        propagate(element);
+        assert.isTrue(element.hasResponse);
+      });
+
+      test('responseMeta is set', () => {
+        propagate(element);
+        assert.typeOf(element.responseMeta, 'object');
+      });
+
+      test('isErrorResponse is false', () => {
+        propagate(element);
+        assert.isFalse(element.isErrorResponse);
+      });
+
+      test('responseError is undefined', () => {
+        propagate(element);
+        assert.isUndefined(element.responseError, 'error is undefined');
+      });
+
+      test('request is set', () => {
+        propagate(element);
+        assert.typeOf(element.request, 'object');
+      });
+
+      test('response is set', () => {
+        propagate(element);
+        assert.typeOf(element.response, 'object');
+      });
+
+      test('loadingTime is set', () => {
+        propagate(element);
+        assert.equal(element.responseMeta.loadingTime, 124.12345678);
+      });
+
+      test('responseIsXhr is true', () => {
+        propagate(element);
+        assert.isTrue(element.responseMeta.responseIsXhr);
+      });
+
+      test('redirects is undefined', () => {
+        propagate(element);
+        assert.isUndefined(element.responseMeta.redirects);
+      });
+
+      test('redirectsTiming is undefined', () => {
+        propagate(element);
+        assert.isUndefined(element.responseMeta.redirectsTiming, 'array');
+      });
+
+      test('timing is undefined', () => {
+        propagate(element);
+        assert.isUndefined(element.responseMeta.timing, 'object');
+      });
+
+      test('source message is undefined', () => {
+        propagate(element);
+        assert.isUndefined(element.responseMeta.sourceMessage, 'string');
+      });
+    });
+
+    suite('Advanced response handling', () => {
       function propagate(element) {
         let headers = 'content-type: text/plain\nlocation: ';
         headers += 'https://other.domain.com\ncontent-length: 30';
@@ -102,49 +190,65 @@
         element = fixture('Basic');
         flush(() => done());
       });
+
       test('hasResponse is set', () => {
         propagate(element);
         assert.isTrue(element.hasResponse);
       });
+
+      test('responseMeta is set', () => {
+        propagate(element);
+        assert.typeOf(element.responseMeta, 'object');
+      });
+
       test('isErrorResponse is false', () => {
         propagate(element);
         assert.isFalse(element.isErrorResponse);
       });
-      test('responseError is indefined', () => {
+
+      test('responseError is undefined', () => {
         propagate(element);
         assert.isUndefined(element.responseError, 'error is undefined');
       });
-      test('loadingTime is set', () => {
-        propagate(element);
-        assert.equal(element.loadingTime, 124.12345678);
-      });
+
       test('request is set', () => {
         propagate(element);
         assert.typeOf(element.request, 'object');
       });
+
       test('response is set', () => {
         propagate(element);
         assert.typeOf(element.response, 'object');
       });
+
+      test('loadingTime is set', () => {
+        propagate(element);
+        assert.equal(element.responseMeta.loadingTime, 124.12345678);
+      });
+
       test('responseIsXhr is false', () => {
         propagate(element);
-        assert.isFalse(element.responseIsXhr);
+        assert.isFalse(element.responseMeta.responseIsXhr);
       });
+
       test('redirects is set', () => {
         propagate(element);
-        assert.typeOf(element.redirects, 'array');
+        assert.typeOf(element.responseMeta.redirects, 'array');
       });
+
       test('redirectsTiming is set', () => {
         propagate(element);
-        assert.typeOf(element.redirectsTiming, 'array');
+        assert.typeOf(element.responseMeta.redirectsTiming, 'array');
       });
+
       test('timing is set', () => {
         propagate(element);
-        assert.typeOf(element.timing, 'object');
+        assert.typeOf(element.responseMeta.timing, 'object');
       });
+
       test('source message is set', () => {
         propagate(element);
-        assert.typeOf(element.sourceMessage, 'string');
+        assert.typeOf(element.responseMeta.sourceMessage, 'string');
       });
 
       test('Calling clearResponse() clears response', () => {
@@ -152,14 +256,78 @@
         element.clearResponse();
         assert.isUndefined(element.isErrorResponse);
         assert.isUndefined(element.responseError);
-        assert.isUndefined(element.loadingTime);
         assert.isUndefined(element.request);
         assert.isUndefined(element.response);
-        assert.isUndefined(element.responseIsXhr);
-        assert.isUndefined(element.redirects);
-        assert.isUndefined(element.redirectsTiming);
-        assert.isUndefined(element.timing);
-        assert.isUndefined(element.sourceMessage);
+        assert.deepEqual(element.responseMeta, {});
+      });
+    });
+
+    suite('Response error handling', () => {
+      function propagate(element) {
+        const detail = {
+          request: {
+            url: 'https://domain.com/',
+            method: 'GET',
+            headers: 'accept: text/plain'
+          },
+          response: {
+            status: 0,
+            statusText: 'NOT OK',
+            payload: 'Hello world',
+            headers: 'content-type: text/plain'
+          },
+          loadingTime: 124.12345678,
+          isError: true,
+          error: new Error('test-error'),
+          isXhr: true
+        };
+        element._propagateResponse(detail);
+      }
+
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        flush(() => done());
+      });
+
+      test('hasResponse is set', () => {
+        propagate(element);
+        assert.isTrue(element.hasResponse);
+      });
+
+      test('responseMeta is set', () => {
+        propagate(element);
+        assert.typeOf(element.responseMeta, 'object');
+      });
+
+      test('isErrorResponse is true', () => {
+        propagate(element);
+        assert.isTrue(element.isErrorResponse);
+      });
+
+      test('responseError is set', () => {
+        propagate(element);
+        assert.typeOf(element.responseError, 'error');
+      });
+
+      test('request is set', () => {
+        propagate(element);
+        assert.typeOf(element.request, 'object');
+      });
+
+      test('response is set', () => {
+        propagate(element);
+        assert.typeOf(element.response, 'object');
+      });
+
+      test('loadingTime is set', () => {
+        propagate(element);
+        assert.equal(element.responseMeta.loadingTime, 124.12345678);
+      });
+
+      test('responseIsXhr is true', () => {
+        propagate(element);
+        assert.isTrue(element.responseMeta.responseIsXhr);
       });
     });
   });
