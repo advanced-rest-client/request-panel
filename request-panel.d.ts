@@ -76,13 +76,25 @@ declare namespace UiElements {
     readonly hasResponse: boolean|null|undefined;
 
     /**
-     * If set then it renders an option in request context menu to
-     * toggle to XHR request via the extension. This information is passed
-     * to the request editor element.
-     *
-     * It's only relevant to ARC Chrome appeditorRequest.
+     * Request and response meta data passed to the response view.
+     * Keys:
+     * - responseIsXhr (Boolean) - True if the response is made by the
+     * Fetch or XHR api.
+     * - loadingTime (Number) - Response full loading time. This information
+     * is received from the transport library.
+     * - timing {Object} - If the transport method is able to collect
+     * detailed information about request timings then this value will
+     * be set. It's the `timings` property from the HAR 1.2 spec.
+     * - redirectsTiming (Array) - If the transport method is able to
+     * collect detailed information about redirects timings then this value
+     * will be set. It's a list of `timings` property from the HAR 1.2 spec.
+     * - redirects (Array) - It will be set if the transport method can
+     * generate information about redirections.
+     * - sourceMessage (String) - Http message sent to the server.
+     * This information should be available only in case of advanced
+     * HTTP transport.
      */
-    xhrExtension: boolean|null|undefined;
+    responseMeta: object|null|undefined;
 
     /**
      * Redirect URL for the OAuth2 authorization.
@@ -97,44 +109,9 @@ declare namespace UiElements {
     isErrorResponse: boolean|null|undefined;
 
     /**
-     * True if the response is made by the Fetch / XHR api.
-     */
-    responseIsXhr: boolean|null|undefined;
-
-    /**
      * An error object associated with the response when error.
      */
     responseError: object|null|undefined;
-
-    /**
-     * Response full loading time. This information is received from the
-     * transport library.
-     */
-    loadingTime: number|null|undefined;
-
-    /**
-     * If the transport method is able to collect detailed information about request timings
-     * then this value will be set. It's the `timings` property from the HAR 1.2 spec.
-     */
-    timing: object|null|undefined;
-
-    /**
-     * If the transport method is able to collect detailed information about redirects timings
-     * then this value will be set. It's a list of `timings` property from the HAR 1.2 spec.
-     */
-    redirectsTiming: any[]|null|undefined;
-
-    /**
-     * It will be set if the transport method can generate information about redirections.
-     */
-    redirects: any[]|null|undefined;
-
-    /**
-     * Http message sent to the server.
-     *
-     * This information should be available only in case of advanced HTTP transport.
-     */
-    sourceMessage: string|null|undefined;
 
     /**
      * ID of latest request.
@@ -146,8 +123,26 @@ declare namespace UiElements {
      * and don't mix the results.
      */
     lastRequestId: String|Number|null;
-    _attachListeners(node: any): void;
-    _detachListeners(node: any): void;
+
+    /**
+     * When set it sets `eventsTarget` to itself and all editor event
+     * listeners strats listening on this node.
+     * This prohibits editors from getting data from the outside ot this
+     * component.
+     */
+    boundEvents: boolean|null|undefined;
+
+    /**
+     * When set it renders editors in read only mode.
+     */
+    readonly: boolean|null|undefined;
+
+    /**
+     * Request editor UI state object.
+     */
+    editorState: object|null;
+    _attachListeners(): void;
+    _detachListeners(): void;
 
     /**
      * Computes if there is a reponse object.
@@ -192,12 +187,13 @@ declare namespace UiElements {
      * Updates value of the request URL from `url-change-action`
      * custom event.
      */
-    _changeUrlHandler(e: any): void;
+    _changeUrlHandler(e: Event|null): void;
 
     /**
      * Clears response panel.
      */
     clearResponse(): void;
+    _boundEventsChanged(value: any): void;
   }
 }
 
