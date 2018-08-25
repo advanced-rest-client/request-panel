@@ -230,6 +230,26 @@ the License.
       this.removeEventListener('request-clear-state', this._clearHandler);
     }
     /**
+     * Runs current request.
+     * Note, it does not validate the state of the request.
+     */
+    send() {
+      this.shadowRoot.querySelector('request-editor').send();
+    }
+
+    /**
+     * Calls abort on the request editor.
+     */
+    abort() {
+      this.shadowRoot.querySelector('request-editor').abort();
+    }
+    /**
+     * Calls `clearRequest()` method of the `request-editor`
+     */
+    clear() {
+      this.shadowRoot.querySelector('request-editor').clearRequest();
+    }
+    /**
      * Computes if there is a reponse object.
      *
      * @param {Object} response ARC response objects
