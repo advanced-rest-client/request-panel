@@ -45,7 +45,7 @@
             done();
           });
           const editor = element.shadowRoot.querySelector('request-editor');
-          editor._sendRequest();
+          editor.send();
         });
       });
     });
