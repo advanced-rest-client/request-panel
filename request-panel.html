@@ -130,7 +130,7 @@ the License.
          */
         hasResponse: {
           type: Boolean,
-          computed: '_computeHasResponse(response)'
+          computed: '_computeHasResponse(response, isErrorResponse)'
         },
         /**
          * Request and response meta data passed to the response view.
@@ -251,10 +251,11 @@ the License.
      * Computes if there is a reponse object.
      *
      * @param {Object} response ARC response objects
+     * @param {Boolean} isErrorResponse
      * @return {Boolean}
      */
-    _computeHasResponse(response) {
-      return !!response;
+    _computeHasResponse(response, isErrorResponse) {
+      return !!response || !!isErrorResponse;
     }
     /**
      * A handler for the API call.
