@@ -1,5 +1,5 @@
 {
-  "name": "request-panel",
+  "name": "@advanced-rest-client/request-panel",
   "version": "2.0.0-preview",
   "license": "Apache-2.0",
   "description": "A full request and response view for the Advanced REST client",
