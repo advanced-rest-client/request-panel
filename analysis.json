@@ -56,15 +56,15 @@
         {
           "name": "editorRequest",
           "type": "Object | null | undefined",
-          "description": "A request object that is generated in request edtor.\nIt contains the following properties:\n- url\n- method\n- headers\n- payload\n- queryModel\n- pathModel",
+          "description": "A request object that is generated in request edtor.\nIt contains the following properties:\n- url\n- method\n- headers\n- payload\n- pathModel",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 109,
+              "line": 108,
               "column": 8
             },
             "end": {
-              "line": 115,
+              "line": 114,
               "column": 9
             }
           },
@@ -83,11 +83,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 120,
+              "line": 119,
               "column": 8
             },
             "end": {
-              "line": 120,
+              "line": 119,
               "column": 24
             }
           },
@@ -104,11 +104,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 124,
+              "line": 123,
               "column": 8
             },
             "end": {
-              "line": 124,
+              "line": 123,
               "column": 23
             }
           },
@@ -125,11 +125,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 128,
+              "line": 127,
               "column": 8
             },
             "end": {
-              "line": 128,
+              "line": 127,
               "column": 46
             }
           },
@@ -147,11 +147,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 132,
+              "line": 131,
               "column": 8
             },
             "end": {
-              "line": 135,
+              "line": 134,
               "column": 9
             }
           },
@@ -169,11 +169,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 155,
+              "line": 154,
               "column": 8
             },
             "end": {
-              "line": 155,
+              "line": 154,
               "column": 50
             }
           },
@@ -191,11 +191,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 161,
+              "line": 160,
               "column": 8
             },
             "end": {
-              "line": 161,
+              "line": 160,
               "column": 33
             }
           },
@@ -212,11 +212,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 165,
+              "line": 164,
               "column": 8
             },
             "end": {
-              "line": 165,
+              "line": 164,
               "column": 54
             }
           },
@@ -234,11 +234,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 169,
+              "line": 168,
               "column": 8
             },
             "end": {
-              "line": 169,
+              "line": 168,
               "column": 51
             }
           },
@@ -256,11 +256,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 181,
+              "line": 180,
               "column": 8
             },
             "end": {
-              "line": 181,
+              "line": 180,
               "column": 29
             }
           },
@@ -277,11 +277,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 188,
+              "line": 187,
               "column": 8
             },
             "end": {
-              "line": 191,
+              "line": 190,
               "column": 9
             }
           },
@@ -299,11 +299,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 195,
+              "line": 194,
               "column": 8
             },
             "end": {
-              "line": 195,
+              "line": 194,
               "column": 25
             }
           },
@@ -320,11 +320,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 200,
+              "line": 199,
               "column": 8
             },
             "end": {
-              "line": 200,
+              "line": 199,
               "column": 49
             }
           },
@@ -334,6 +334,28 @@
               "attributeType": "Object"
             }
           }
+        },
+        {
+          "name": "narrow",
+          "type": "boolean | null | undefined",
+          "description": "If set it renders the view in the narrow layout.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 203,
+              "column": 8
+            },
+            "end": {
+              "line": 203,
+              "column": 45
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
         }
       ],
       "methods": [
@@ -415,11 +437,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 216,
+              "line": 219,
               "column": 4
             },
             "end": {
-              "line": 222,
+              "line": 225,
               "column": 5
             }
           },
@@ -435,11 +457,71 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 224,
+              "line": 227,
               "column": 4
             },
             "end": {
-              "line": 230,
+              "line": 233,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "send",
+          "description": "Runs current request.\nNote, it does not validate the state of the request.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 238,
+              "column": 4
+            },
+            "end": {
+              "line": 240,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "abort",
+          "description": "Calls abort on the request editor.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 245,
+              "column": 4
+            },
+            "end": {
+              "line": 247,
+              "column": 5
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "clear",
+          "description": "Calls `clearRequest()` method of the `request-editor`",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 251,
+              "column": 4
+            },
+            "end": {
+              "line": 253,
               "column": 5
             }
           },
@@ -455,11 +537,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 237,
+              "line": 261,
               "column": 4
             },
             "end": {
-              "line": 239,
+              "line": 263,
               "column": 5
             }
           },
@@ -469,6 +551,10 @@
               "name": "response",
               "type": "Object",
               "description": "ARC response objects"
+            },
+            {
+              "name": "isErrorResponse",
+              "type": "Boolean"
             }
           ],
           "return": {
@@ -481,11 +567,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 245,
+              "line": 269,
               "column": 4
             },
             "end": {
-              "line": 248,
+              "line": 272,
               "column": 5
             }
           },
@@ -507,11 +593,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 253,
+              "line": 277,
               "column": 4
             },
             "end": {
-              "line": 256,
+              "line": 280,
               "column": 5
             }
           },
@@ -527,11 +613,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 261,
+              "line": 285,
               "column": 4
             },
             "end": {
-              "line": 264,
+              "line": 288,
               "column": 5
             }
           },
@@ -547,11 +633,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 272,
+              "line": 296,
               "column": 4
             },
             "end": {
-              "line": 278,
+              "line": 302,
               "column": 5
             }
           },
@@ -572,11 +658,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 284,
+              "line": 308,
               "column": 4
             },
             "end": {
-              "line": 298,
+              "line": 322,
               "column": 5
             }
           },
@@ -598,11 +684,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 305,
+              "line": 329,
               "column": 4
             },
             "end": {
-              "line": 310,
+              "line": 334,
               "column": 5
             }
           },
@@ -623,11 +709,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 315,
+              "line": 339,
               "column": 4
             },
             "end": {
-              "line": 325,
+              "line": 349,
               "column": 5
             }
           },
@@ -643,11 +729,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 327,
+              "line": 351,
               "column": 4
             },
             "end": {
-              "line": 331,
+              "line": 355,
               "column": 5
             }
           },
@@ -671,7 +757,7 @@
           "column": 2
         },
         "end": {
-          "line": 332,
+          "line": 356,
           "column": 3
         }
       },
@@ -699,14 +785,14 @@
         },
         {
           "name": "editor-request",
-          "description": "A request object that is generated in request edtor.\nIt contains the following properties:\n- url\n- method\n- headers\n- payload\n- queryModel\n- pathModel",
+          "description": "A request object that is generated in request edtor.\nIt contains the following properties:\n- url\n- method\n- headers\n- payload\n- pathModel",
           "sourceRange": {
             "start": {
-              "line": 109,
+              "line": 108,
               "column": 8
             },
             "end": {
-              "line": 115,
+              "line": 114,
               "column": 9
             }
           },
@@ -718,11 +804,11 @@
           "description": "Computed value. If true then the request is loading.\nThis resets each time the request status changes.",
           "sourceRange": {
             "start": {
-              "line": 120,
+              "line": 119,
               "column": 8
             },
             "end": {
-              "line": 120,
+              "line": 119,
               "column": 24
             }
           },
@@ -734,11 +820,11 @@
           "description": "Created by the transport ARFC `request` object",
           "sourceRange": {
             "start": {
-              "line": 124,
+              "line": 123,
               "column": 8
             },
             "end": {
-              "line": 124,
+              "line": 123,
               "column": 23
             }
           },
@@ -750,11 +836,11 @@
           "description": "Created by the transport ARC `response` object.",
           "sourceRange": {
             "start": {
-              "line": 128,
+              "line": 127,
               "column": 8
             },
             "end": {
-              "line": 128,
+              "line": 127,
               "column": 46
             }
           },
@@ -766,11 +852,11 @@
           "description": "Computed value, true, when the response object is set.",
           "sourceRange": {
             "start": {
-              "line": 132,
+              "line": 131,
               "column": 8
             },
             "end": {
-              "line": 135,
+              "line": 134,
               "column": 9
             }
           },
@@ -782,11 +868,11 @@
           "description": "Request and response meta data passed to the response view.\nKeys:\n- responseIsXhr (Boolean) - True if the response is made by the\nFetch or XHR api.\n- loadingTime (Number) - Response full loading time. This information\nis received from the transport library.\n- timing {Object} - If the transport method is able to collect\ndetailed information about request timings then this value will\nbe set. It's the `timings` property from the HAR 1.2 spec.\n- redirectsTiming (Array) - If the transport method is able to\ncollect detailed information about redirects timings then this value\nwill be set. It's a list of `timings` property from the HAR 1.2 spec.\n- redirects (Array) - It will be set if the transport method can\ngenerate information about redirections.\n- sourceMessage (String) - Http message sent to the server.\nThis information should be available only in case of advanced\nHTTP transport.",
           "sourceRange": {
             "start": {
-              "line": 155,
+              "line": 154,
               "column": 8
             },
             "end": {
-              "line": 155,
+              "line": 154,
               "column": 50
             }
           },
@@ -798,11 +884,11 @@
           "description": "Redirect URL for the OAuth2 authorization.\nIf can be also set by dispatching `oauth2-redirect-url-changed`\nwith `value` property on the `detail` object.",
           "sourceRange": {
             "start": {
-              "line": 161,
+              "line": 160,
               "column": 8
             },
             "end": {
-              "line": 161,
+              "line": 160,
               "column": 33
             }
           },
@@ -814,11 +900,11 @@
           "description": "A flag indincating request error.",
           "sourceRange": {
             "start": {
-              "line": 165,
+              "line": 164,
               "column": 8
             },
             "end": {
-              "line": 165,
+              "line": 164,
               "column": 54
             }
           },
@@ -830,11 +916,11 @@
           "description": "An error object associated with the response when error.",
           "sourceRange": {
             "start": {
-              "line": 169,
+              "line": 168,
               "column": 8
             },
             "end": {
-              "line": 169,
+              "line": 168,
               "column": 51
             }
           },
@@ -846,11 +932,11 @@
           "description": "ID of latest request.\nIt is received from the `api-request-editor` when `api-request`\nevent is dispatched. When `api-response` event is handled\nthe id is compared and if match it dispays the result.\n\nThis system allows to use different request panels on single app\nand don't mix the results.",
           "sourceRange": {
             "start": {
-              "line": 181,
+              "line": 180,
               "column": 8
             },
             "end": {
-              "line": 181,
+              "line": 180,
               "column": 29
             }
           },
@@ -862,11 +948,11 @@
           "description": "When set it sets `eventsTarget` to itself and all editor event\nlisteners strats listening on this node.\nThis prohibits editors from getting data from the outside ot this\ncomponent.",
           "sourceRange": {
             "start": {
-              "line": 188,
+              "line": 187,
               "column": 8
             },
             "end": {
-              "line": 191,
+              "line": 190,
               "column": 9
             }
           },
@@ -878,11 +964,11 @@
           "description": "When set it renders editors in read only mode.",
           "sourceRange": {
             "start": {
-              "line": 195,
+              "line": 194,
               "column": 8
             },
             "end": {
-              "line": 195,
+              "line": 194,
               "column": 25
             }
           },
@@ -894,16 +980,32 @@
           "description": "Request editor UI state object.",
           "sourceRange": {
             "start": {
-              "line": 200,
+              "line": 199,
               "column": 8
             },
             "end": {
-              "line": 200,
+              "line": 199,
               "column": 49
             }
           },
           "metadata": {},
           "type": "Object"
+        },
+        {
+          "name": "narrow",
+          "description": "If set it renders the view in the narrow layout.",
+          "sourceRange": {
+            "start": {
+              "line": 203,
+              "column": 8
+            },
+            "end": {
+              "line": 203,
+              "column": 45
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
         }
       ],
       "events": [
