@@ -45,7 +45,8 @@ the License.
       oauth2-redirect-uri="[[oauth2RedirectUri]]"
       events-target="[[eventsTarget]]"
       readonly="[[readonly]]"
-      state="{{editorState}}">
+      state="{{editorState}}"
+      narrow="[[narrow]]">
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>
     <template is="dom-if" if="[[loading]]">
@@ -196,7 +197,11 @@ the License.
          * Request editor UI state object.
          * @type {Object}
          */
-        editorState: {type: Object, notify: true}
+        editorState: {type: Object, notify: true},
+        /**
+         * If set it renders the view in the narrow layout.
+         */
+        narrow: {type: Boolean, value: false}
       };
     }
 
