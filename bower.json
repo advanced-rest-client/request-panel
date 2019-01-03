@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "request-editor": "advanced-rest-client/request-editor#2.0.0-preview",
+    "request-editor": "advanced-rest-client/request-editor#^2.0.0",
     "response-view": "advanced-rest-client/response-view#^2.0.0",
     "events-target-behavior": "advanced-rest-client/events-target-behavior#^2.0.0",
     "paper-progress": "PolymerElements/paper-progress#^2.0.0"
@@ -29,16 +29,18 @@
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
-    "variables-manager": "advanced-rest-client/variables-manager#2.0.0-preview",
-    "variables-evaluator": "advanced-rest-client/variables-evaluator#2.0.0-preview",
-    "url-history-saver": "advanced-rest-client/url-history-saver#2.0.0-preview",
+    "variables-manager": "advanced-rest-client/variables-manager#^2.0.0",
+    "variables-evaluator": "advanced-rest-client/variables-evaluator#^2.0.0",
+    "arc-models": "advanced-rest-client/arc-models#2.0.0-preview",
     "paper-toast": "PolymerElements/paper-toast#^2.0.0",
     "arc-icons": "advanced-rest-client/arc-icons#^2.0.0",
     "oauth-authorization": "advanced-rest-client/oauth-authorization#^2.0.0",
     "chance": "^1.0.13",
     "app-pouchdb": "PolymerElements/app-pouchdb#^2.1.1",
     "web-animations-js": "web-animations/web-animations-js#^2.3",
-    "arc-electron-default-theme": "advanced-rest-client/arc-electron-default-theme#2.0.0-preview"
+    "iron-media-query": "PolymerElements/iron-media-query#^2.0.0",
+    "arc-electron-default-theme": "advanced-rest-client/arc-electron-default-theme#2.0.0-preview",
+    "jexl": "advanced-rest-client/Jexl#^2.0.0"
   },
   "ignore": [
     "**/.*",

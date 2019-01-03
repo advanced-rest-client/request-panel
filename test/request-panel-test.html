@@ -50,6 +50,226 @@
       });
     });
 
+    suite('send()', () => {
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        element.request = {
+          url: 'https://domain.com/',
+          method: 'GET',
+          headers: 'accept: text/plain'
+        };
+        flush(() => done());
+      });
+
+      test('Calls send() on the editor', () => {
+        const node = element.shadowRoot.querySelector('request-editor');
+        const spy = sinon.spy(node, 'send');
+        element.send();
+        assert.isTrue(spy.called);
+      });
+    });
+
+    suite('abort()', () => {
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        element.request = {
+          url: 'https://domain.com/',
+          method: 'GET',
+          headers: 'accept: text/plain'
+        };
+        flush(() => done());
+      });
+
+      test('Calls abort() on the editor', () => {
+        const node = element.shadowRoot.querySelector('request-editor');
+        const spy = sinon.spy(node, 'abort');
+        element.abort();
+        assert.isTrue(spy.called);
+      });
+    });
+
+    suite('clear()', () => {
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        element.request = {
+          url: 'https://domain.com/',
+          method: 'GET',
+          headers: 'accept: text/plain'
+        };
+        flush(() => done());
+      });
+
+      test('Calls clearRequest() on the editor', () => {
+        const node = element.shadowRoot.querySelector('request-editor');
+        const spy = sinon.spy(node, 'clearRequest');
+        element.clear();
+        assert.isTrue(spy.called);
+      });
+    });
+
+    suite('_abortHandler()', () => {
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        element.lastRequestId = 'test-id';
+        element.loading = true;
+        flush(() => done());
+      });
+
+      test('Clears lastRequestId', () => {
+        element._abortHandler();
+        assert.isUndefined(element.lastRequestId);
+      });
+
+      test('Clears loading', () => {
+        element._abortHandler();
+        assert.isFalse(element.loading);
+      });
+
+      test('Calls _abortHandler from the event', () => {
+        const editor = element.shadowRoot.querySelector('request-editor');
+        editor.dispatchEvent(new CustomEvent('abort-api-request', {
+          bubbles: true,
+          composed: true
+        }));
+        assert.isUndefined(element.lastRequestId);
+        assert.isFalse(element.loading);
+      });
+    });
+
+    suite('_clearHandler()', () => {
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        element.lastRequestId = 'test-id';
+        element.loading = true;
+        flush(() => done());
+      });
+
+      test('Clears lastRequestId', () => {
+        element._clearHandler();
+        assert.isUndefined(element.lastRequestId);
+      });
+
+      test('Clears loading', () => {
+        element._clearHandler();
+        assert.isFalse(element.loading);
+      });
+
+      test('Calls _clearHandler from the event', () => {
+        const editor = element.shadowRoot.querySelector('request-editor');
+        editor.dispatchEvent(new CustomEvent('request-clear-state', {
+          bubbles: true,
+          composed: true
+        }));
+        assert.isUndefined(element.lastRequestId);
+        assert.isFalse(element.loading);
+      });
+    });
+
+    suite('_apiResponseHandler()', () => {
+      function fire() {
+        const detail = {
+          id: 'test-id',
+          request: {
+            url: 'https://domain.com/',
+            method: 'GET',
+            headers: 'accept: text/plain'
+          },
+          response: {
+            status: 200,
+            statusText: 'OK',
+            payload: 'Hello world',
+            headers: 'content-type: text/plain'
+          },
+          loadingTime: 124.12345678,
+          isError: false,
+          isXhr: true
+        };
+        const e = new CustomEvent('api-response', {
+          bubbles: true,
+          detail
+        });
+        document.body.dispatchEvent(e);
+      }
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        element.lastRequestId = 'test-id';
+        element.loading = true;
+        flush(() => done());
+      });
+
+      test('Ignores event when different id', () => {
+        element.lastRequestId = 'other-id';
+        fire();
+        assert.isTrue(element.loading);
+      });
+
+      test('Clears loading', () => {
+        fire();
+        assert.isFalse(element.loading);
+      });
+
+      test('Propagates the response', () => {
+        fire();
+        assert.isTrue(element.hasResponse);
+        assert.typeOf(element.responseMeta, 'object');
+      });
+    });
+
+    suite('_changeUrlHandler()', () => {
+      function fire(element) {
+        const e = new CustomEvent('url-change-action', {
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+          detail: {
+            url: 'http://test.com'
+          }
+        });
+        element.dispatchEvent(e);
+        return e;
+      }
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        flush(() => done());
+      });
+
+      test('Sets new URL', () => {
+        const e = fire(element);
+        assert.equal(element.editorRequest.url, e.detail.url);
+      });
+
+      test('Event is cancelled', () => {
+        const e = fire(element);
+        assert.isTrue(e.defaultPrevented);
+      });
+    });
+
+    suite('_boundEventsChanged()', () => {
+      let element;
+      setup((done) => {
+        element = fixture('Basic');
+        flush(() => done());
+      });
+
+      test('Does nothing when argument is false', () => {
+        const old = element.eventsTarget;
+        element._boundEventsChanged(false);
+        assert.isTrue(element.eventsTarget === old);
+      });
+
+      test('Sets self as event target when argument is true', () => {
+        element._boundEventsChanged(true);
+        assert.isTrue(element.eventsTarget === element);
+      });
+    });
+
     suite('XHR response handling', () => {
       function propagate(element) {
         const detail = {

@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "description": "A full request and response view for the Advanced REST client",
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.5.1"
+    "@polymer/gen-typescript-declarations": "^1.6.0"
   },
   "private": false,
   "main": "request-panel.html",
