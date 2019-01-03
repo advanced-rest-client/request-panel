@@ -1,3 +1,35 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/advanced-rest-client/request-panel/compare/0.4.11...2.0.0) (2019-01-03)
+
+
+### Breaking
+
+* Replacing response meta data with single object ([fdbe8189aacb0648f2c14ee871c51f741006f11a](https://github.com/advanced-rest-client/request-panel/commit/fdbe8189aacb0648f2c14ee871c51f741006f11a))
+* Upgrade to Polymer 2, redesigned API ([c5d1b759d5f3725f772f3af1336e67fd20e623f2](https://github.com/advanced-rest-client/request-panel/commit/c5d1b759d5f3725f772f3af1336e67fd20e623f2))
+
+### Docs
+
+* Updating documentation ([3f6e6b30fe7567057291914f780504c504ceb531](https://github.com/advanced-rest-client/request-panel/commit/3f6e6b30fe7567057291914f780504c504ceb531))
+
+### Fix
+
+* Fixin support for errored requests ([555749aa8ef4d05d153876fdeeb8e80c143af2b0](https://github.com/advanced-rest-client/request-panel/commit/555749aa8ef4d05d153876fdeeb8e80c143af2b0))
+* Fixing sauce labs configuration ([84d6a0e2492928b32dbc2dcd14993af9364fc435](https://github.com/advanced-rest-client/request-panel/commit/84d6a0e2492928b32dbc2dcd14993af9364fc435))
+
+### New
+
+* Adding `editorState` property ([7195605fb1135764480fb1d4be3010c692677dce](https://github.com/advanced-rest-client/request-panel/commit/7195605fb1135764480fb1d4be3010c692677dce))
+* Adding public API from request editor ([a1014c7daab05abc9643edf703ff37c1279a617c](https://github.com/advanced-rest-client/request-panel/commit/a1014c7daab05abc9643edf703ff37c1279a617c))
+
+### Update
+
+* Adding `readonly` and `boundEvents` properties ([206c02e0eb8f283ef242379a2591786204ef96a1](https://github.com/advanced-rest-client/request-panel/commit/206c02e0eb8f283ef242379a2591786204ef96a1))
+* Adding slot support for request context actions ([b0b27375b137af183c7ec1c05d877d19c933c653](https://github.com/advanced-rest-client/request-panel/commit/b0b27375b137af183c7ec1c05d877d19c933c653))
+* The element now listens for `api-response` on window ([80f113f0a44a04cc642a690d66f0ee1bb7c14877](https://github.com/advanced-rest-client/request-panel/commit/80f113f0a44a04cc642a690d66f0ee1bb7c14877))
+* Updating styles for demo page ([703ef6abc40225752dbd79c510bf25aec31d94fc](https://github.com/advanced-rest-client/request-panel/commit/703ef6abc40225752dbd79c510bf25aec31d94fc))
+
+
+
 <a name="0.4.12"></a>
 ## [0.4.12](https://github.com/advanced-rest-client/request-panel/compare/0.4.11...0.4.12) (2018-02-26)
 

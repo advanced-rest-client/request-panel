@@ -1,22 +1,13 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <html>
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
   <title>request-panel demo</title>
   <script>
-  if (location.search.indexOf('response_type') !== -1 && location.search.indexOf('redirect_uri') !== -1) {
+  if (location.search.indexOf('response_type') !== -1 &&
+    location.search.indexOf('redirect_uri') !== -1) {
     // OAUTH DEMO
     var p = new URLSearchParams(location.search);
     var state = p.get('state');
@@ -31,98 +22,225 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     location.href = red;
   }
   </script>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="api-console-styles.html">
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../app-pouchdb/pouchdb.html">
+  <link rel="import" href="../../neon-animation/web-animations.html">
   <link rel="import" href="../../variables-evaluator/variables-evaluator.html">
   <link rel="import" href="../../variables-manager/variables-manager.html">
-  <link rel="import" href="../../url-history-saver/url-history-saver.html">
-  <link rel="import" href="../../cookie-jar/cookie-jar.html">
   <link rel="import" href="../../paper-toast/paper-toast.html">
-  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
-  <link rel="import" href="../../request-hooks-logic/request-hooks-logic.html">
   <link rel="import" href="../../oauth-authorization/oauth2-authorization.html">
   <link rel="import" href="../../oauth-authorization/oauth1-authorization.html">
+  <link rel="import" href="../../arc-models/url-history-model.html">
+  <link rel="import" href="../../arc-models/variables-model.html">
+  <link rel="import" href="../../jexl/jexl.html">
+  <link rel="import" href="../../iron-media-query/iron-media-query.html">
   <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
   <link rel="import" href="../../paper-listbox/paper-listbox.html">
   <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../arc-electron-default-theme/arc-electron-default-theme.html">
   <link rel="import" href="../request-panel.html">
-  <link rel="import" href="demo-transport.html">
   <script type="text/javascript" src="../../chance/chance.js"></script>
-  <style is="custom-style" include="demo-pages-shared-styles">
-  :root {
-    --demo-snippet-demo: {
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    body,
+    html {
+      background-color: #e5e5e5;
+      height: 100vh;
+      margin: 0;
       padding: 0;
-      background-color: #CDDC39;
-      padding-bottom: 20px;
     }
-    ;
-  }
 
-  .vertical-section-container {
-    max-width: 1200px;
-  }
+    .card {
+      @apply --shadow-elevation-4dp;
+      padding: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      background-color: #fff;
+    }
 
-  request-panel {
-    background-color: #fff;
-    min-height: calc(100vh - 200px);
-  }
-  </style>
+    .vertical-section-container {
+      max-width: 1000px;
+    }
+
+    request-panel {
+      background-color: #fff;
+      min-height: calc(100vh - 200px);
+    }
+    </style>
+  </custom-style>
 </head>
 
 <body unresolved>
-  <template is="dom-bind" id="demo">
-    <div class="vertical-section-container centered">
-      <request-panel request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]"></request-panel>
-      <paper-toggle-button on-tap="_toggleTyped">Request is saved request in the datastore</paper-toggle-button>
-      <section>
-        <h4>Load request</h4>
-        <paper-dropdown-menu label="Request preset">
-          <paper-listbox class="dropdown-content" selected="{{restoredRequest}}" attr-for-selected="data-type">
-            <paper-item data-type="get">Simple GET request</paper-item>
-            <paper-item data-type="post">Simple POST request</paper-item>
-          </paper-listbox>
-        </paper-dropdown-menu>
-      </section>
-    </div>
-    <cookie-jar></cookie-jar>
-    <url-history-saver></url-history-saver>
-    <demo-transport></demo-transport>
-    <variables-manager></variables-manager>
-    <oauth2-authorization></oauth2-authorization>
-    <oauth1-authorization></oauth1-authorization>
-    <paper-toast id="transportToast" text="transport-request event handled"></paper-toast>
-    <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
-    <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
-    <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
-    <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
-    <paper-toast id="varUpdate" text="Update variable value event handled"></paper-toast>
-    <paper-toast id="varStore" text="Store variable value event handled"></paper-toast>
-  </template>
+  <url-history-model></url-history-model>
+  <variables-model></variables-model>
+  <variables-manager></variables-manager>
+  <variables-evaluator id="eval" no-before-request></variables-evaluator>
+  <oauth2-authorization></oauth2-authorization>
+  <oauth1-authorization></oauth1-authorization>
+  <paper-toast id="transportToast" text="api-request event handled"></paper-toast>
+  <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
+  <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
+  <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
+  <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
+  <paper-toast id="varUpdate" text="Update variable value event handled"></paper-toast>
+  <paper-toast id="varStore" text="Store variable value event handled"></paper-toast>
+
+  <dom-bind id="demo">
+    <template>
+      <iron-media-query query="(max-width: 768px)" query-matches="{{narrow}}"></iron-media-query>
+      <div class="vertical-section-container centered">
+        <section class="card">
+          <request-panel editor-request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]" narrow="[[narrow]]"></request-panel>
+        </section>
+        <section class="card">
+          <h4>Load request</h4>
+          <paper-dropdown-menu label="Request preset">
+            <paper-listbox slot="dropdown-content" on-selected-changed="_restoredRequestChanged" attr-for-selected="data-type">
+              <paper-item data-type="get">Simple GET request</paper-item>
+              <paper-item data-type="post">Simple POST request</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </section>
+      </div>
+    </template>
+  </dom-bind>
   <script>
-  var Demo = {
+  const Demo = {
     sendEvent: function(type, details, cancelable, node) {
-      var event = new CustomEvent(type, {
+      const e = new CustomEvent(type, {
         detail: details,
         cancelable: cancelable || false,
         bubbles: true
       });
-      (node || document.body).dispatchEvent(event);
-      return event;
-    }
+      (node || document.body).dispatchEvent(e);
+      return e;
+    },
+
+    sendRequest: function(request) {
+      return Demo._preparePreRequestVariables(request)
+      .then((override) => {
+        Demo._notifyVariablesChange(override);
+        const _eval = document.getElementById('eval');
+        return _eval.processBeforeRequest(request, override);
+      })
+      .then((request) => {
+        const init = {
+          method: request.method,
+          headers: Demo.createHeaders(request.headers)
+        };
+        if (['GET', 'HEAD'].indexOf(request.method) === -1 && request.payload) {
+          init.body = request.payload;
+        }
+        Demo.rsp = {
+          id: request.id,
+          request: request,
+          response: {},
+          isXhr: true,
+          loadingTime: 0
+        };
+        const startTime = Date.now();
+        return fetch(request.url, init)
+        .then((response) => {
+          Demo.rsp.loadingTime = Date.now() - startTime;
+          let headers = '';
+          response.headers.forEach((value, name) => {
+            headers += `${name}: ${value}\n`;
+          });
+          Demo.rsp.response.headers = headers;
+          Demo.rsp.response.status = response.status;
+          Demo.rsp.response.statusText = response.statusText;
+          Demo.rsp.response.url = response.url;
+          return response.text();
+        })
+        .then((body) => {
+          Demo.rsp.response.payload = body;
+          document.body.dispatchEvent(new CustomEvent('api-response', {
+            bubbles: true,
+            detail: Demo.rsp
+          }));
+        })
+        .catch((cause) => {
+          Demo.rsp.isError = true;
+          Demo.rsp.error = cause;
+          Demo.rsp.loadingTime = Date.now() - startTime;
+          document.body.dispatchEvent(new CustomEvent('api-response', {
+            bubbles: true,
+            detail: Demo.rsp
+          }));
+        });
+      });
+    },
+    createHeaders: function(data) {
+      const headers = new Headers();
+      if (data) {
+        data.split('\n').forEach((line) => {
+          const pair = line.split(':');
+          const n = pair[0] ? pair[0].trim() : '';
+          if (!n) {
+            return;
+          }
+          const v = pair[1] ? pair[1].trim() : '';
+          headers.append(n, v);
+        });
+      }
+      return headers;
+    },
+    /**
+     * Prepares scripts context override values for variables evaluator.
+     * If there are actions defined for the `beforeRequest` key then it will
+     * get list of variables and create the override object.
+     *
+     * @param {Object} request ARC request object
+     * @return {Promise} Promise resolved to an object of variables
+     * or undefined if actions not defined.
+     */
+    _preparePreRequestVariables: function(request) {
+      const actions = request.requestActions;
+      if (!actions) {
+        return Promise.resolve();
+      }
+      const vars = actions.variables;
+      if (!vars || !vars.length) {
+        return Promise.resolve();
+      }
+      const result = {};
+      vars.forEach(function(item) {
+        if (item.enabled === false) {
+          return;
+        }
+        result[item.variable] = item.value;
+      });
+      const _eval = document.getElementById('eval');
+      return _eval.evaluateVariables(result);
+    },
+    /**
+     * Notifies variable change event listeners
+     * @param {Object} obj
+     */
+    _notifyVariablesChange: function(obj) {
+      if (!obj) {
+        return;
+      }
+      Object.keys(obj).forEach(function(key) {
+        const detail = {
+          variable: key,
+          value: obj[key]
+        };
+        document.body.dispatchEvent(new CustomEvent('variable-update-action', {
+          composed: true,
+          bubbles: true,
+          detail
+        }));
+      }, this);
+    },
   };
-  window.addEventListener('transport-request', function(e) {
-    document.getElementById('transportToast').opened = true;
-    Demo.sendEvent('url-history-store', {
-      value: e.detail.url
-    }, true);
-  });
 
   function openToast(id) {
     document.getElementById(id).opened = true;
   }
-  window.addEventListener('abort-request', function() {
+  window.addEventListener('abort-api-request', function() {
     openToast('requestAbort');
   });
   window.addEventListener('request-clear-state', function() {
@@ -141,44 +259,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   window.addEventListener('variable-update-action', function() {
     openToast('varUpdate');
   });
+
+  window.addEventListener('api-request', function(e) {
+    document.getElementById('transportToast').opened = true;
+    Demo.sendEvent('url-history-store', {
+      value: e.detail.url
+    }, true);
+
+    Demo.sendRequest(e.detail);
+  });
   (function(scope) {
     /* global chance */
-
     scope.request = {
       url: window.location.href,
       method: 'GET'
     };
-    scope._toggleTyped = function() {
-      var r;
-      r = Object.assign({}, scope.request);
-      if (r.type) {
-        delete r.type;
-      } else {
-        r.type = 'saved';
-      }
-      scope.request = r;
-    };
-    var redirectUrl = location.href.replace(/request-panel\/demo\/(index\.html)?/,
+    const redirectUrl = location.href.replace(/request-panel\/demo\/(index\.html)?/,
       'oauth-authorization/oauth-popup.html');
     scope.oauth2RedirectUri = redirectUrl;
-    var latestActions;
-    window.addEventListener('report-response', function(e) {
-      if (!latestActions || !latestActions.length) {
-        return;
-      }
-      /* global RequestLogicRunner */
-      const runner = new RequestLogicRunner(latestActions);
-      runner.run(e.detail.request, e.detail.response)
-        .then(() => console.log('Request action executed'));
-    });
-
-    window.addEventListener('transport-request', function(e) {
-      latestActions = e.detail.actions;
-    });
-
-    scope.observers = ['_restoredRequestChanged(restoredRequest)'];
-    scope._restoredRequestChanged = function(restoredRequest) {
-      var opts = {};
+    scope._restoredRequestChanged = function(e) {
+      const restoredRequest = e.detail.value;
+      const opts = {};
       switch (restoredRequest) {
         case 'post':
           opts.method = 'POST';
@@ -189,8 +290,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     };
 
     function genHeaders(opts) {
-      var str = '';
-      for (var i = 0; i < chance.integer({min: 1, max: 7}); i++) {
+      let str = '';
+      for (let i = 0; i < chance.integer({min: 1, max: 7}); i++) {
         str += 'x-' + chance.word() + ': ' + chance.word() + '\n';
       }
       if (opts.withBody) {
