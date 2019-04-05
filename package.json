@@ -1,22 +1,51 @@
 {
-  "name": "@advanced-rest-client/request-panel",
-  "version": "2.0.0",
-  "license": "Apache-2.0",
   "description": "A full request and response view for the Advanced REST client",
-  "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.6.0"
+  "keywords": [
+    "web-components",
+    "polymer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/request-panel.git"
   },
-  "private": false,
-  "main": "request-panel.html",
+  "name": "@advanced-rest-client/request-panel",
+  "version": "3.0.0-preview.1",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@advanced-rest-client/arc-electron-default-theme": "^3.0.0-preview.2",
+    "@advanced-rest-client/arc-icons": "^3.0.0-preview.2",
+    "@advanced-rest-client/arc-models": "^3.0.0-preview.3",
+    "@advanced-rest-client/oauth-authorization": "^3.0.0-preview.3",
+    "@advanced-rest-client/variables-evaluator": "^3.0.0-preview.2",
+    "@advanced-rest-client/variables-manager": "^3.0.0-preview.1",
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@polymer/gen-typescript-declarations": "^1.6.0",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@polymer/iron-media-query": "^3.0.0",
+    "@polymer/paper-toast": "^3.0.0",
+    "@polymer/test-fixture": "^4.0.2",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "babel-plugin-minify-mangle-names": "^0.5.0",
+    "browserify": "^16.2.3",
+    "chai": "^4.2.0",
+    "fs-extra": "^7.0.1",
+    "jexl": "^2.1.1",
+    "chance": "^1.0.18",
+    "mocha": "^5.2.0",
+    "sinon": "^7.2.3",
+    "uglify-js": "^3.5.2",
+    "wct-mocha": "^1.0.0",
+    "web-animations-js": "^2.3.1"
+  },
+  "main": "request-panel.js",
   "scripts": {
     "lint": "polymer lint request-panel.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"request-panel:local-test\"",
     "test": "polymer test --plugin local",
-    "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/advanced-rest-client/request-panel.git"
+    "update-types": "gen-typescript-declarations --deleteExisting --outDir .",
+    "prepare": "node dev-lib/prepare.js"
   },
   "bugs": {
     "url": "https://github.com/advanced-rest-client/request-panel/issues",
@@ -25,5 +54,16 @@
   "authors": [
     "Pawel Psztyc",
     "The Advanced REST client authors <arc@mulesoft.com>"
-  ]
+  ],
+  "contributors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
+  "dependencies": {
+    "@advanced-rest-client/events-target-mixin": "^3.0.0-preview.3",
+    "@advanced-rest-client/request-editor": "^3.0.0-preview.1",
+    "@advanced-rest-client/response-view": "^3.0.0-preview.2",
+    "@polymer/paper-progress": "^3.0.0",
+    "@polymer/polymer": "^3.0.0"
+  }
 }

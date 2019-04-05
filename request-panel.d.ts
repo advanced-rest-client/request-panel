@@ -5,19 +5,12 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   request-panel.html
+ *   request-panel.js
  */
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
-
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../request-editor/request-editor.d.ts" />
-/// <reference path="../response-view/response-view.d.ts" />
-/// <reference path="../events-target-behavior/events-target-behavior.d.ts" />
-/// <reference path="../paper-progress/paper-progress.d.ts" />
-/// <reference path="../paper-icon-button/paper-icon-button.d.ts" />
 
 declare namespace UiElements {
 
@@ -38,12 +31,10 @@ declare namespace UiElements {
    *
    * Custom property|Description|Default
    * ---------- | ------------------ | ------
-   * `--request-panel`|Mixin applied to the element|`{}`
    * `--request-panel-progress-color` | Color of the progress bar | `#00A2DF`
-   * `--request-panel-progress` | Mixin applied to the progress bar | `{}`
    */
   class RequestPanel extends
-    ArcBehaviors.EventsTargetBehavior(
+    EventsTargetMixin(
     Object) {
 
     /**
@@ -221,6 +212,11 @@ declare namespace UiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "request-panel": UiElements.RequestPanel;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "request-panel": UiElements.RequestPanel;
+  }
 }
+
+export {};

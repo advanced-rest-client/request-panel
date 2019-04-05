@@ -2,57 +2,10 @@
   "schema_version": "1.0.0",
   "elements": [
     {
-      "description": "A full request and response view for the Advanced REST client.\n\n## Breaking changes in version 2\n\n- does not contain any logic responsible for making a request\n- does not contain any logic responsible for request and response actions\n- does not evaluate variables\n- It only renders view for both request and response panels\n\n## Styling\n\n`<request-panel>` provides the following custom properties and mixins for\nstyling:\n\nCustom property|Description|Default\n---------- | ------------------ | ------\n`--request-panel`|Mixin applied to the element|`{}`\n`--request-panel-progress-color` | Color of the progress bar | `#00A2DF`\n`--request-panel-progress` | Mixin applied to the progress bar | `{}`",
+      "description": "A full request and response view for the Advanced REST client.\n\n## Breaking changes in version 2\n\n- does not contain any logic responsible for making a request\n- does not contain any logic responsible for request and response actions\n- does not evaluate variables\n- It only renders view for both request and response panels\n\n## Styling\n\n`<request-panel>` provides the following custom properties and mixins for\nstyling:\n\nCustom property|Description|Default\n---------- | ------------------ | ------\n`--request-panel-progress-color` | Color of the progress bar | `#00A2DF`",
       "summary": "",
-      "path": "request-panel.html",
+      "path": "request-panel.js",
       "properties": [
-        {
-          "name": "eventsTarget",
-          "type": "Object | null | undefined",
-          "description": "Events handlers target. By default the element listens on\n`window` object. If set, all events listeners will be attached to this\nobject instead of `window`.",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "../events-target-behavior/events-target-behavior.html",
-            "start": {
-              "line": 73,
-              "column": 8
-            },
-            "end": {
-              "line": 76,
-              "column": 9
-            }
-          },
-          "metadata": {
-            "polymer": {
-              "observer": "\"_eventsTargetChanged\"",
-              "attributeType": "Object"
-            }
-          },
-          "inheritedFrom": "ArcBehaviors.EventsTargetBehavior"
-        },
-        {
-          "name": "_oldEventsTarget",
-          "type": "Object | null | undefined",
-          "description": "An event target used to attach listeners.",
-          "privacy": "protected",
-          "sourceRange": {
-            "file": "../events-target-behavior/events-target-behavior.html",
-            "start": {
-              "line": 78,
-              "column": 8
-            },
-            "end": {
-              "line": 78,
-              "column": 32
-            }
-          },
-          "metadata": {
-            "polymer": {
-              "attributeType": "Object"
-            }
-          },
-          "inheritedFrom": "ArcBehaviors.EventsTargetBehavior"
-        },
         {
           "name": "editorRequest",
           "type": "Object | null | undefined",
@@ -60,12 +13,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 108,
-              "column": 8
+              "line": 102,
+              "column": 6
             },
             "end": {
-              "line": 114,
-              "column": 9
+              "line": 108,
+              "column": 7
             }
           },
           "metadata": {
@@ -83,12 +36,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 119,
-              "column": 8
+              "line": 113,
+              "column": 6
             },
             "end": {
-              "line": 119,
-              "column": 24
+              "line": 113,
+              "column": 22
             }
           },
           "metadata": {
@@ -104,12 +57,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 123,
-              "column": 8
+              "line": 117,
+              "column": 6
             },
             "end": {
-              "line": 123,
-              "column": 23
+              "line": 117,
+              "column": 21
             }
           },
           "metadata": {
@@ -125,12 +78,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 127,
-              "column": 8
+              "line": 121,
+              "column": 6
             },
             "end": {
-              "line": 127,
-              "column": 46
+              "line": 121,
+              "column": 44
             }
           },
           "metadata": {
@@ -147,12 +100,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 131,
-              "column": 8
+              "line": 125,
+              "column": 6
             },
             "end": {
-              "line": 134,
-              "column": 9
+              "line": 128,
+              "column": 7
             }
           },
           "metadata": {
@@ -169,12 +122,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 154,
-              "column": 8
+              "line": 148,
+              "column": 6
             },
             "end": {
-              "line": 154,
-              "column": 50
+              "line": 148,
+              "column": 48
             }
           },
           "metadata": {
@@ -191,12 +144,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 160,
-              "column": 8
+              "line": 154,
+              "column": 6
             },
             "end": {
-              "line": 160,
-              "column": 33
+              "line": 154,
+              "column": 31
             }
           },
           "metadata": {
@@ -212,12 +165,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 164,
-              "column": 8
+              "line": 158,
+              "column": 6
             },
             "end": {
-              "line": 164,
-              "column": 54
+              "line": 158,
+              "column": 52
             }
           },
           "metadata": {
@@ -234,12 +187,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 168,
-              "column": 8
+              "line": 162,
+              "column": 6
             },
             "end": {
-              "line": 168,
-              "column": 51
+              "line": 162,
+              "column": 49
             }
           },
           "metadata": {
@@ -256,12 +209,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 180,
-              "column": 8
+              "line": 174,
+              "column": 6
             },
             "end": {
-              "line": 180,
-              "column": 29
+              "line": 174,
+              "column": 27
             }
           },
           "metadata": {
@@ -277,12 +230,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 187,
-              "column": 8
+              "line": 181,
+              "column": 6
             },
             "end": {
-              "line": 190,
-              "column": 9
+              "line": 184,
+              "column": 7
             }
           },
           "metadata": {
@@ -299,12 +252,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 194,
-              "column": 8
+              "line": 188,
+              "column": 6
             },
             "end": {
-              "line": 194,
-              "column": 25
+              "line": 188,
+              "column": 23
             }
           },
           "metadata": {
@@ -320,12 +273,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 199,
-              "column": 8
+              "line": 193,
+              "column": 6
             },
             "end": {
-              "line": 199,
-              "column": 49
+              "line": 193,
+              "column": 47
             }
           },
           "metadata": {
@@ -342,12 +295,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 203,
-              "column": 8
+              "line": 197,
+              "column": 6
             },
             "end": {
-              "line": 203,
-              "column": 45
+              "line": 197,
+              "column": 43
             }
           },
           "metadata": {
@@ -360,89 +313,17 @@
       ],
       "methods": [
         {
-          "name": "connectedCallback",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "../events-target-behavior/events-target-behavior.html",
-            "start": {
-              "line": 81,
-              "column": 4
-            },
-            "end": {
-              "line": 84,
-              "column": 6
-            }
-          },
-          "metadata": {},
-          "params": [],
-          "return": {
-            "type": "void"
-          },
-          "inheritedFrom": "ArcBehaviors.EventsTargetBehavior"
-        },
-        {
-          "name": "disconnectedCallback",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "file": "../events-target-behavior/events-target-behavior.html",
-            "start": {
-              "line": 86,
-              "column": 5
-            },
-            "end": {
-              "line": 91,
-              "column": 6
-            }
-          },
-          "metadata": {},
-          "params": [],
-          "return": {
-            "type": "void"
-          },
-          "inheritedFrom": "ArcBehaviors.EventsTargetBehavior"
-        },
-        {
-          "name": "_eventsTargetChanged",
-          "description": "Removes old handlers (if any) and attaches listeners on new event\nevent target.",
-          "privacy": "protected",
-          "sourceRange": {
-            "file": "../events-target-behavior/events-target-behavior.html",
-            "start": {
-              "line": 99,
-              "column": 4
-            },
-            "end": {
-              "line": 105,
-              "column": 5
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "eventsTarget",
-              "type": "?Node",
-              "description": "Event target to set handlers on. If not set it\nwill set handlers on the `window` object."
-            }
-          ],
-          "return": {
-            "type": "void"
-          },
-          "inheritedFrom": "ArcBehaviors.EventsTargetBehavior"
-        },
-        {
           "name": "_attachListeners",
           "description": "",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 219,
-              "column": 4
+              "line": 213,
+              "column": 2
             },
             "end": {
-              "line": 225,
-              "column": 5
+              "line": 219,
+              "column": 3
             }
           },
           "metadata": {},
@@ -457,12 +338,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 227,
-              "column": 4
+              "line": 221,
+              "column": 2
             },
             "end": {
-              "line": 233,
-              "column": 5
+              "line": 227,
+              "column": 3
             }
           },
           "metadata": {},
@@ -477,12 +358,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 238,
-              "column": 4
+              "line": 232,
+              "column": 2
             },
             "end": {
-              "line": 240,
-              "column": 5
+              "line": 234,
+              "column": 3
             }
           },
           "metadata": {},
@@ -497,12 +378,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 245,
-              "column": 4
+              "line": 239,
+              "column": 2
             },
             "end": {
-              "line": 247,
-              "column": 5
+              "line": 241,
+              "column": 3
             }
           },
           "metadata": {},
@@ -517,12 +398,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 251,
-              "column": 4
+              "line": 245,
+              "column": 2
             },
             "end": {
-              "line": 253,
-              "column": 5
+              "line": 247,
+              "column": 3
             }
           },
           "metadata": {},
@@ -537,12 +418,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 261,
-              "column": 4
+              "line": 255,
+              "column": 2
             },
             "end": {
-              "line": 263,
-              "column": 5
+              "line": 257,
+              "column": 3
             }
           },
           "metadata": {},
@@ -567,12 +448,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 269,
-              "column": 4
+              "line": 263,
+              "column": 2
             },
             "end": {
-              "line": 272,
-              "column": 5
+              "line": 266,
+              "column": 3
             }
           },
           "metadata": {},
@@ -593,12 +474,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 277,
-              "column": 4
+              "line": 271,
+              "column": 2
             },
             "end": {
-              "line": 280,
-              "column": 5
+              "line": 274,
+              "column": 3
             }
           },
           "metadata": {},
@@ -613,12 +494,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 285,
-              "column": 4
+              "line": 279,
+              "column": 2
             },
             "end": {
-              "line": 288,
-              "column": 5
+              "line": 282,
+              "column": 3
             }
           },
           "metadata": {},
@@ -633,12 +514,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 296,
-              "column": 4
+              "line": 290,
+              "column": 2
             },
             "end": {
-              "line": 302,
-              "column": 5
+              "line": 296,
+              "column": 3
             }
           },
           "metadata": {},
@@ -658,12 +539,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 308,
-              "column": 4
+              "line": 302,
+              "column": 2
             },
             "end": {
-              "line": 322,
-              "column": 5
+              "line": 316,
+              "column": 3
             }
           },
           "metadata": {},
@@ -684,12 +565,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 329,
-              "column": 4
+              "line": 323,
+              "column": 2
             },
             "end": {
-              "line": 334,
-              "column": 5
+              "line": 328,
+              "column": 3
             }
           },
           "metadata": {},
@@ -709,12 +590,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 339,
-              "column": 4
+              "line": 333,
+              "column": 2
             },
             "end": {
-              "line": 349,
-              "column": 5
+              "line": 343,
+              "column": 3
             }
           },
           "metadata": {},
@@ -729,12 +610,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 351,
-              "column": 4
+              "line": 345,
+              "column": 2
             },
             "end": {
-              "line": 355,
-              "column": 5
+              "line": 349,
+              "column": 3
             }
           },
           "metadata": {},
@@ -753,12 +634,12 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 95,
-          "column": 2
+          "line": 44,
+          "column": 0
         },
         "end": {
-          "line": 356,
-          "column": 3
+          "line": 350,
+          "column": 1
         }
       },
       "privacy": "public",
@@ -766,34 +647,16 @@
       "name": "UiElements.RequestPanel",
       "attributes": [
         {
-          "name": "events-target",
-          "description": "Events handlers target. By default the element listens on\n`window` object. If set, all events listeners will be attached to this\nobject instead of `window`.",
-          "sourceRange": {
-            "file": "../events-target-behavior/events-target-behavior.html",
-            "start": {
-              "line": 73,
-              "column": 8
-            },
-            "end": {
-              "line": 76,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "type": "Object | null | undefined",
-          "inheritedFrom": "ArcBehaviors.EventsTargetBehavior"
-        },
-        {
           "name": "editor-request",
           "description": "A request object that is generated in request edtor.\nIt contains the following properties:\n- url\n- method\n- headers\n- payload\n- pathModel",
           "sourceRange": {
             "start": {
-              "line": 108,
-              "column": 8
+              "line": 102,
+              "column": 6
             },
             "end": {
-              "line": 114,
-              "column": 9
+              "line": 108,
+              "column": 7
             }
           },
           "metadata": {},
@@ -804,12 +667,12 @@
           "description": "Computed value. If true then the request is loading.\nThis resets each time the request status changes.",
           "sourceRange": {
             "start": {
-              "line": 119,
-              "column": 8
+              "line": 113,
+              "column": 6
             },
             "end": {
-              "line": 119,
-              "column": 24
+              "line": 113,
+              "column": 22
             }
           },
           "metadata": {},
@@ -820,12 +683,12 @@
           "description": "Created by the transport ARFC `request` object",
           "sourceRange": {
             "start": {
-              "line": 123,
-              "column": 8
+              "line": 117,
+              "column": 6
             },
             "end": {
-              "line": 123,
-              "column": 23
+              "line": 117,
+              "column": 21
             }
           },
           "metadata": {},
@@ -836,12 +699,12 @@
           "description": "Created by the transport ARC `response` object.",
           "sourceRange": {
             "start": {
-              "line": 127,
-              "column": 8
+              "line": 121,
+              "column": 6
             },
             "end": {
-              "line": 127,
-              "column": 46
+              "line": 121,
+              "column": 44
             }
           },
           "metadata": {},
@@ -852,12 +715,12 @@
           "description": "Computed value, true, when the response object is set.",
           "sourceRange": {
             "start": {
-              "line": 131,
-              "column": 8
+              "line": 125,
+              "column": 6
             },
             "end": {
-              "line": 134,
-              "column": 9
+              "line": 128,
+              "column": 7
             }
           },
           "metadata": {},
@@ -868,12 +731,12 @@
           "description": "Request and response meta data passed to the response view.\nKeys:\n- responseIsXhr (Boolean) - True if the response is made by the\nFetch or XHR api.\n- loadingTime (Number) - Response full loading time. This information\nis received from the transport library.\n- timing {Object} - If the transport method is able to collect\ndetailed information about request timings then this value will\nbe set. It's the `timings` property from the HAR 1.2 spec.\n- redirectsTiming (Array) - If the transport method is able to\ncollect detailed information about redirects timings then this value\nwill be set. It's a list of `timings` property from the HAR 1.2 spec.\n- redirects (Array) - It will be set if the transport method can\ngenerate information about redirections.\n- sourceMessage (String) - Http message sent to the server.\nThis information should be available only in case of advanced\nHTTP transport.",
           "sourceRange": {
             "start": {
-              "line": 154,
-              "column": 8
+              "line": 148,
+              "column": 6
             },
             "end": {
-              "line": 154,
-              "column": 50
+              "line": 148,
+              "column": 48
             }
           },
           "metadata": {},
@@ -884,12 +747,12 @@
           "description": "Redirect URL for the OAuth2 authorization.\nIf can be also set by dispatching `oauth2-redirect-url-changed`\nwith `value` property on the `detail` object.",
           "sourceRange": {
             "start": {
-              "line": 160,
-              "column": 8
+              "line": 154,
+              "column": 6
             },
             "end": {
-              "line": 160,
-              "column": 33
+              "line": 154,
+              "column": 31
             }
           },
           "metadata": {},
@@ -900,12 +763,12 @@
           "description": "A flag indincating request error.",
           "sourceRange": {
             "start": {
-              "line": 164,
-              "column": 8
+              "line": 158,
+              "column": 6
             },
             "end": {
-              "line": 164,
-              "column": 54
+              "line": 158,
+              "column": 52
             }
           },
           "metadata": {},
@@ -916,12 +779,12 @@
           "description": "An error object associated with the response when error.",
           "sourceRange": {
             "start": {
-              "line": 168,
-              "column": 8
+              "line": 162,
+              "column": 6
             },
             "end": {
-              "line": 168,
-              "column": 51
+              "line": 162,
+              "column": 49
             }
           },
           "metadata": {},
@@ -932,12 +795,12 @@
           "description": "ID of latest request.\nIt is received from the `api-request-editor` when `api-request`\nevent is dispatched. When `api-response` event is handled\nthe id is compared and if match it dispays the result.\n\nThis system allows to use different request panels on single app\nand don't mix the results.",
           "sourceRange": {
             "start": {
-              "line": 180,
-              "column": 8
+              "line": 174,
+              "column": 6
             },
             "end": {
-              "line": 180,
-              "column": 29
+              "line": 174,
+              "column": 27
             }
           },
           "metadata": {},
@@ -948,12 +811,12 @@
           "description": "When set it sets `eventsTarget` to itself and all editor event\nlisteners strats listening on this node.\nThis prohibits editors from getting data from the outside ot this\ncomponent.",
           "sourceRange": {
             "start": {
-              "line": 187,
-              "column": 8
+              "line": 181,
+              "column": 6
             },
             "end": {
-              "line": 190,
-              "column": 9
+              "line": 184,
+              "column": 7
             }
           },
           "metadata": {},
@@ -964,12 +827,12 @@
           "description": "When set it renders editors in read only mode.",
           "sourceRange": {
             "start": {
-              "line": 194,
-              "column": 8
+              "line": 188,
+              "column": 6
             },
             "end": {
-              "line": 194,
-              "column": 25
+              "line": 188,
+              "column": 23
             }
           },
           "metadata": {},
@@ -980,12 +843,12 @@
           "description": "Request editor UI state object.",
           "sourceRange": {
             "start": {
-              "line": 199,
-              "column": 8
+              "line": 193,
+              "column": 6
             },
             "end": {
-              "line": 199,
-              "column": 49
+              "line": 193,
+              "column": 47
             }
           },
           "metadata": {},
@@ -996,12 +859,12 @@
           "description": "If set it renders the view in the narrow layout.",
           "sourceRange": {
             "start": {
-              "line": 203,
-              "column": 8
+              "line": 197,
+              "column": 6
             },
             "end": {
-              "line": 203,
-              "column": 45
+              "line": 197,
+              "column": 43
             }
           },
           "metadata": {},
@@ -1050,25 +913,10 @@
         "cssVariables": [],
         "selectors": []
       },
-      "slots": [
-        {
-          "description": "",
-          "name": "request-context-menu",
-          "range": {
-            "start": {
-              "line": 49,
-              "column": 6
-            },
-            "end": {
-              "line": 49,
-              "column": 75
-            }
-          }
-        }
-      ],
+      "slots": [],
       "tagname": "request-panel",
       "mixins": [
-        "ArcBehaviors.EventsTargetBehavior"
+        "EventsTargetMixin"
       ]
     }
   ]

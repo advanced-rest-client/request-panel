@@ -3,6 +3,8 @@
     "tasks/*",
     "demo/*",
     "test/*",
+    "dev-lib/*",
+    "coverage/**",
     "index.html"
   ]
 }
