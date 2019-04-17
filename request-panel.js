@@ -67,7 +67,8 @@ class RequestPanel extends EventsTargetMixin(PolymerElement) {
       events-target="[[eventsTarget]]"
       readonly="[[readonly]]"
       state="{{editorState}}"
-      narrow="[[narrow]]">
+      narrow="[[narrow]]"
+      ignore-content-on-get="[[ignoreContentOnGet]]">
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>
     <template is="dom-if" if="[[loading]]">
@@ -195,7 +196,14 @@ class RequestPanel extends EventsTargetMixin(PolymerElement) {
       /**
        * If set it renders the view in the narrow layout.
        */
-      narrow: {type: Boolean, value: false}
+      narrow: {type: Boolean, value: false},
+      /**
+       * When set it will ignore all `content-*` headers when the request method
+       * is either `GET` or `HEAD`.
+       * When not set or `false` it renders warning dialog.
+       * @type {Boolean}
+       */
+      ignoreContentOnGet: Boolean
     };
   }
 
