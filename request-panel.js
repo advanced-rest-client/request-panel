@@ -86,8 +86,7 @@ class RequestPanel extends EventsTargetMixin(PolymerElement) {
         redirect-timings="[[responseMeta.redirectsTiming]]"
         response-timings="[[responseMeta.timing]]"
         sent-http-message="[[responseMeta.sourceMessage]]"></response-view>
-    </template>
-`;
+    </template>`;
   }
 
   static get properties() {
