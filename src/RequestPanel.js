@@ -169,8 +169,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
   }
 
   set boundEvents(value) {
-    /* istanbul ignore if */
     const old = this._boundEvents;
+    /* istanbul ignore if */
     if (old === value) {
       return;
     }
@@ -183,8 +183,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
   }
 
   set response(value) {
-    /* istanbul ignore if */
     const old = this._response;
+    /* istanbul ignore if */
     if (old === value) {
       return;
     }
@@ -202,8 +202,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
   }
 
   set responseMeta(value) {
-    /* istanbul ignore if */
     const old = this._responseMeta;
+    /* istanbul ignore if */
     if (old === value) {
       return;
     }
@@ -221,8 +221,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
   }
 
   set isErrorResponse(value) {
-    /* istanbul ignore if */
     const old = this._isErrorResponse;
+    /* istanbul ignore if */
     if (old === value) {
       return;
     }
@@ -240,8 +240,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
   }
 
   set responseError(value) {
-    /* istanbul ignore if */
     const old = this._responseError;
+    /* istanbul ignore if */
     if (old === value) {
       return;
     }
@@ -490,9 +490,9 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       .headers="${request.headers}"
       @headers-changed="${this._headersHandler}"
       .beforeActions="${request.requestActions}"
-      @beforeactions-changed="${request._requestActionsChanged}"
+      @requestactions-changed="${this._requestActionsChanged}"
       .afterActions="${request.responseActions}"
-      @afteractions-changed="${this._responseActionsChanged}"
+      @responseactions-changed="${this._responseActionsChanged}"
     >
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>
