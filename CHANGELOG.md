@@ -422,3 +422,7 @@
 
 
 
+# [3.0.0](https://github.com/advanced-rest-client/request-panel/compare/0.4.11...3.0.0) (2019-09-18)
+
+
+
