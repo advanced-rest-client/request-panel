@@ -1,347 +1,207 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-  <title>request-panel demo</title>
-  <script type="module">
-    if (location.search.indexOf('response_type') !== -1 &&
-      location.search.indexOf('redirect_uri') !== -1) {
-      // OAUTH DEMO
-      var p = new URLSearchParams(location.search);
-      var state = p.get('state');
-      var type = p.get('response_type');
-      var red = p.get('redirect_uri');
-      red += '?state=' + state;
-      if (type === 'token') {
-        red += '&access_token=ya.12345.asdfghh';
-      } else {
-        red += '&code=12345Zasdfghh';
-      }
-      location.href = red;
-    }
-  </script>
-
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../../../web-animations-js/web-animations-next.min.js"></script>
-
-  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/variables-evaluator/variables-evaluator.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/variables-manager/variables-manager.js"></script>
-  <script type="module" src="../../../@polymer/paper-toast/paper-toast.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/oauth-authorization/oauth2-authorization.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/oauth-authorization/oauth1-authorization.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/arc-models/url-history-model.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/arc-models/variables-model.js"></script>
-  <script type="module" src="../../../@polymer/iron-media-query/iron-media-query.js"></script>
-  <script type="module" src="../../../@polymer/paper-dropdown-menu/paper-dropdown-menu.js"></script>
-  <script type="module" src="../../../@polymer/paper-listbox/paper-listbox.js"></script>
-  <script type="module" src="../../../@polymer/paper-item/paper-item.js"></script>
-  <script type="module" src="../../../@advanced-rest-client/arc-electron-default-theme/arc-electron-default-theme.js"></script>
-  <script type="module" src="../request-panel.js"></script>
-
-  <script type="text/javascript" src="../../../chance/chance.js"></script>
-  <script type="text/javascript" src="../dev-lib/jexl.min.js"></script>
-
-  <!-- CodeMirror + modes loader -->
-  <script src="../../../codemirror/lib/codemirror.js"></script>
-  <script src="../../../codemirror/addon/mode/loadmode.js"></script>
-  <script src="../../../codemirror/mode/meta.js"></script>
-  <!--Default set of parsers, add as many as you need -->
-  <script src="../../../codemirror/mode/javascript/javascript.js"></script>
-  <script src="../../../codemirror/mode/xml/xml.js"></script>
-  <script src="../../../codemirror/mode/htmlmixed/htmlmixed.js"></script>
-  <!-- JSON linter -->
-  <script src="../../../jsonlint/lib/jsonlint.js"></script>
-  <script src="../../../codemirror/addon/lint/lint.js"></script>
-  <script src="../../../codemirror/addon/lint/json-lint.js"></script>
-  <!-- Headers hint support -->
-  <script src="../../../@advanced-rest-client/code-mirror-hint/headers-addon.js"></script>
-  <script src="../../../@advanced-rest-client/code-mirror-hint/show-hint.js"></script>
-  <script src="../../../@advanced-rest-client/code-mirror-hint/hint-http-headers.js"></script>
-
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>Request editor demo</title>
   <script>
-  CodeMirror.modeURL = '../../../codemirror/mode/%N/%N.js';
+  if (location.search.indexOf('response_type') !== -1 &&
+    location.search.indexOf('redirect_uri') !== -1) {
+    // OAUTH DEMO
+    const p = new URLSearchParams(location.search);
+    const state = p.get('state');
+    const type = p.get('response_type');
+    let red = p.get('redirect_uri');
+    red += '?state=' + state;
+    if (type === 'token') {
+      red += '&access_token=ya.12345.asdfghh';
+    } else {
+      red += '&code=12345Zasdfghh';
+    }
+    location.href = red;
+  }
+  </script>
+  <script src="../node_modules/web-animations-js/web-animations.min.js"></script>
+  <script type="text/javascript" src="../dev-lib/jexl.min.js"></script>
+  <script src="../node_modules/jsonlint/lib/jsonlint.js"></script>
+  <script src="../node_modules/codemirror/lib/codemirror.js"></script>
+  <script src="../node_modules/codemirror/addon/mode/loadmode.js"></script>
+  <script src="../node_modules/codemirror/mode/meta.js"></script>
+  <script src="../node_modules/codemirror/mode/javascript/javascript.js"></script>
+  <script src="../node_modules/codemirror/mode/xml/xml.js"></script>
+  <script src="../node_modules/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+  <script src="../node_modules/codemirror/addon/lint/lint.js"></script>
+  <script src="../node_modules/codemirror/addon/lint/json-lint.js"></script>
+  <link rel="stylesheet" href="../node_modules/codemirror/addon/lint/lint.css" />
+  <script>
+  /* global CodeMirror */
+  CodeMirror.modeURL = '../node_modules/codemirror/mode/%N/%N.js';
   </script>
 
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-    body,
-    html {
-      background-color: #e5e5e5;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-    }
+  <style>
+  .centered[role="main"] {
+    max-width: 1400px;
+  }
 
-    .card {
-      @apply --shadow-elevation-4dp;
-      padding: 20px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      box-sizing: border-box;
-      background-color: #fff;
-    }
+  request-panel {
+    width: 900px;
+  }
 
-    .vertical-section-container {
-      max-width: 1000px;
-    }
+  body.styled {
+    --anypoiont-dropdown-shaddow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    --anypoiont-autocomplete-dropdown-shaddow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    --primary-color: #00A2DF;
+    --arc-font-body1-font-size: 14px;
+    --arc-font-body1-font-weight: 400;
+    --arc-font-body1-line-height: 20px;
+    --arc-font-headline-font-size: 24px;
+    --arc-font-headline-font-weight: 400;
+    --arc-font-headline-letter-spacing: -.012em;
+    --arc-font-headline-line-height: 32px;
+    --arc-font-subhead-font-size: 16px;
+    --arc-font-subhead-font-weight: 400;
+    --arc-font-subhead-line-height: 24px;
+    --arc-font-title-font-size: 20px;
+    --arc-font-title-font-weight: 500;
+    --arc-font-title-line-height: 28px;
+    --arc-font-body1-font-size: 15px;
+    --arc-font-body1-font-weight: 400;
+    --arc-font-body1-line-height: 20px;
+    --action-button-background-color: var(--primary-color);
+    --action-button-background-image: none;
+    --action-button-color: #fff;
+    --action-button-transition: background-color 300ms linear;
+    --action-button-hover-background-color: #04b3f5;
+    --action-button-hover-color: #fff;
+    --action-button-disabled-background-color: #eaeaea;
+    --action-button-disabled-color: #a8a8a8;
+  }
+  html body.styled.dark {
+    background-color: #424242;
+    height: 100vh;
+    color: #fff;
+    --action-button-background-color: #fff;
+    --action-button-color: var(--primary-color);
+    --secondary-action-button-color: #fff;
+    --primary-color: #BBDEFB;
+    --anypoint-color-primary: var(--primary-color);
+    --primary-text-color: #fff;
+    --error-color: #F4511E;
+    --paper-toggle-button-label-color: #fff;
+    --paper-listbox-background-color: #424242;
+    --paper-listbox-color: #fff;
+    --google-drive-list-view-file-icon-color: rgba(255, 255, 255, 0.54);
+    --google-drive-list-view-search-icon-color: rgba(255, 255, 255, 0.54);
+    --paper-item-body-secondary-color: rgba(255, 255, 255, 0.64);
+    --action-button-background-color: #212121;
+    --action-button-color: #fff;
+    --action-button-hover-background-color: #212121;
+    --action-button-hover-color: #04b3f5;
+    --google-drive-list-view-selected-background-color: #757575;
+    --paper-input-container-color: rgba(255, 255, 255, 0.64);
+    --paper-toggle-button-label-color: #fff;
+    --error-message-icon-color: rgba(255, 255, 255, 0.64);
+    --error-message-color: #fff;
 
-    request-panel {
-      background-color: #fff;
-      min-height: calc(100vh - 200px);
-    }
-    </style>
-  </custom-style>
+    --secondary-text-color: #616161;
+    --primary-background-color: #424242;
+    --anypoint-input-legacy-label-color: #F5F5F5;
+    --arc-interactive-demo-options-color: #F5F5F5;
+    --anypoint-checkbox-label-color:  #F5F5F5;
+    --anypoint-input-background-color: #494949;
+    --anypoint-input-label-color: #fff;
+    --anypoint-input-input-color: #fff;
+    --anypoint-input-border-bottom-color: #fff;
+    --anypoint-input-focused-border-bottom-color: #fff;
+    --anypoint-input-label-background-color: rgb(66, 66, 66);
+    --anypoint-input-legacy-focus-background-color: #3a3b3c;
+    --anypoint-input-legacy-focus-border-color: #178bea;
+    --anypoint-input-info-message-color: #fff;
+    --inline-documentation-background-color: #3a3a3a;
+    --anypoint-dropdown-menu-background-color: #494949;
+    --anypoint-dropdown-menu-label-background-color: var(--primary-background-color);
+    --anypoint-listbox-background-color: #494949;
+    --anypoint-dropdown-menu-focus-background-color: #9E9E9E;
+    --anypoint-dropdown-menu-label-color: #fff;
+    --anypoint-dropdown-menu-info-message-color: #fff;
+    --anypoint-item-hover-background-color: #9E9E9E;
+    --anypoiont-autocomplete-background-color: #494949;
+    --anypoint-icon-button-emphasis-low-color: #fff;
+    --from-row-action-icon-color: #fff;
+    --icon-button-color: #fff;
+    --api-form-action-icon-color: #fff;
+    --api-form-action-button-color: #fff;
+    --anypoint-icon-button-emphasis-low-color: #fff;
+    --anypoiont-autocomplete-background-color: #494949;
+    --auth-method-oauth2-redirect-info-color: #fff;
+    --from-row-action-icon-color: #fff;
+    --inline-documentation-color: #fff;
+
+    --code-mirror-background-color: #37474F;
+    --code-mirror-string-color: #C3E88D;
+    --code-mirror-punctuation-color: #EEFFFF;
+    --code-mirror-atom-color: #F07178;
+    --code-mirror-number-color: #F78C6A;
+    --code-mirror-cursor-color: #009688;
+    --code-mirror-gutters-background-color:#212121;
+    --code-mirror-variable-color: #fff;
+    --code-mirror-selected-background-color: #7c7c7c;
+    --code-mirror-focused-selected-background-color: #2196f3;
+    --code-mirror-meta-color: #EEEEEE;
+    --code-mirror-attribute-color: #84c9ff;
+    --code-mirror-tag-color: #ff7c7c;
+    --code-mirror-qualifier-color: #BDBDBD;
+    --code-mirror-variable2-color: #fff;
+    --code-mirror-property-color: #FFCB6B;
+    --code-mirror-keyword-color: #C792EA;
+
+    --request-editor-panel-background-color: #424242;
+    --request-editor-panel-border: 1px #757575 solid;
+    --request-actions-panel-empty-screen-color: #fff;
+    --request-action-iterator-editor-background-color: #212121;
+    --request-action-iterator-editor-info-color: #fff;
+    --request-condition-editor-background-color: #212121;
+
+    --code-color: #fff;
+    --code-background-color: #212121;
+    --code-type-number-value-color: #eb67b0;
+    --code-token-comment-value-color: #C792EA;
+    --code-property-value-color: #F07178
+    --code-keyword-value-color: #C3E88D;
+    --code-type-text-value-color: #FFCB6B;
+
+    --http-code-snippet-code-text-shadow: #fff;
+    --http-code-snippet-container-background-color: var(--code-background-color);
+    --http-code-snippet-code-function-color: #82AAFF;
+    --http-code-snippet-code-keyword-color: #C792EA;
+    --http-code-snippet-code-cdata-color: #adb9c5;
+    --response-status-view-loading-time-color: #fff;
+
+    --anypoint-button-emphasis-high-background-color: #fff;
+    --anypoint-button-emphasis-high-focus-background-color: #E3F2FD;
+    --anypoint-button-emphasis-low-focus-color: var(--primary-color);
+    --anypoint-button-emphasis-high-hover-background-color: var(--primary-color);
+    --anypoint-button-hover-background-color: var(--primary-color);
+    --anypoint-button-emphasis-high-color: #2196f3;
+    --anypoint-button-color: #2196f3;
+    --anypoint-input-compatibility-label-color: #fff;
+    --anypoint-dropdown-menu-compatibility-label-color: #fff;
+    --url-input-editor-query-title-color: #fff;
+    --anypoint-button-color: #FF9800;
+    --anypoint-checkbox-checked-color: #FF9800;
+    --anypoint-checkbox-checked-color: #FF9800;
+    --anypoint-switch-active-color: #FF9800;
+
+    --anypoint-dialog-title-color: #fff;
+    --anypoint-dialog-content-color: rgba(255, 255, 255, 0.74);
+  }
+  </style>
 </head>
 
-<body unresolved="">
-  <url-history-model></url-history-model>
-  <variables-model></variables-model>
-  <variables-manager></variables-manager>
-  <variables-evaluator id="eval" no-before-request jexl-path="ArcVariables.JexlDev"></variables-evaluator>
-  <oauth2-authorization></oauth2-authorization>
-  <oauth1-authorization></oauth1-authorization>
-  <paper-toast id="transportToast" text="api-request event handled"></paper-toast>
-  <paper-toast id="requestAbort" text="Request abort event detected"></paper-toast>
-  <paper-toast id="clearToast" text="Clear request state detected"></paper-toast>
-  <paper-toast id="saveToast" text="Save request state detected"></paper-toast>
-  <paper-toast id="xhrToast" text="Toggle XHR request state changed"></paper-toast>
-  <paper-toast id="varUpdate" text="Update variable value event handled"></paper-toast>
-  <paper-toast id="varStore" text="Store variable value event handled"></paper-toast>
-
-  <dom-bind id="demo">
-    <template>
-      <iron-media-query query="(max-width: 768px)" query-matches="{{narrow}}"></iron-media-query>
-      <div class="vertical-section-container centered">
-        <section class="card">
-          <request-panel editor-request="[[request]]" oauth2-redirect-uri="[[oauth2RedirectUri]]" narrow="[[narrow]]"></request-panel>
-        </section>
-        <section class="card">
-          <h4>Load request</h4>
-          <paper-dropdown-menu label="Request preset">
-            <paper-listbox slot="dropdown-content" on-selected-changed="_restoredRequestChanged" attr-for-selected="data-type">
-              <paper-item data-type="get">Simple GET request</paper-item>
-              <paper-item data-type="post">Simple POST request</paper-item>
-            </paper-listbox>
-          </paper-dropdown-menu>
-        </section>
-      </div>
-    </template>
-  </dom-bind>
-  <script type="module">
-  const Demo = {
-    sendEvent: function(type, details, cancelable, node) {
-      const e = new CustomEvent(type, {
-        detail: details,
-        cancelable: cancelable || false,
-        bubbles: true
-      });
-      (node || document.body).dispatchEvent(e);
-      return e;
-    },
-
-    sendRequest: function(request) {
-      return Demo._preparePreRequestVariables(request)
-      .then((override) => {
-        Demo._notifyVariablesChange(override);
-        const _eval = document.getElementById('eval');
-        return _eval.processBeforeRequest(request, override);
-      })
-      .then((request) => {
-        const init = {
-          method: request.method,
-          headers: Demo.createHeaders(request.headers)
-        };
-        if (['GET', 'HEAD'].indexOf(request.method) === -1 && request.payload) {
-          init.body = request.payload;
-        }
-        Demo.rsp = {
-          id: request.id,
-          request: request,
-          response: {},
-          isXhr: true,
-          loadingTime: 0
-        };
-        const startTime = Date.now();
-        return fetch(request.url, init)
-        .then((response) => {
-          Demo.rsp.loadingTime = Date.now() - startTime;
-          let headers = '';
-          response.headers.forEach((value, name) => {
-            headers += `${name}: ${value}\n`;
-          });
-          Demo.rsp.response.headers = headers;
-          Demo.rsp.response.status = response.status;
-          Demo.rsp.response.statusText = response.statusText;
-          Demo.rsp.response.url = response.url;
-          return response.text();
-        })
-        .then((body) => {
-          Demo.rsp.response.payload = body;
-          document.body.dispatchEvent(new CustomEvent('api-response', {
-            bubbles: true,
-            detail: Demo.rsp
-          }));
-        })
-        .catch((cause) => {
-          Demo.rsp.isError = true;
-          Demo.rsp.error = cause;
-          Demo.rsp.loadingTime = Date.now() - startTime;
-          document.body.dispatchEvent(new CustomEvent('api-response', {
-            bubbles: true,
-            detail: Demo.rsp
-          }));
-        });
-      });
-    },
-    createHeaders: function(data) {
-      const headers = new Headers();
-      if (data) {
-        data.split('\n').forEach((line) => {
-          const pair = line.split(':');
-          const n = pair[0] ? pair[0].trim() : '';
-          if (!n) {
-            return;
-          }
-          const v = pair[1] ? pair[1].trim() : '';
-          headers.append(n, v);
-        });
-      }
-      return headers;
-    },
-    /**
-     * Prepares scripts context override values for variables evaluator.
-     * If there are actions defined for the `beforeRequest` key then it will
-     * get list of variables and create the override object.
-     *
-     * @param {Object} request ARC request object
-     * @return {Promise} Promise resolved to an object of variables
-     * or undefined if actions not defined.
-     */
-    _preparePreRequestVariables: function(request) {
-      const actions = request.requestActions;
-      if (!actions) {
-        return Promise.resolve();
-      }
-      const vars = actions.variables;
-      if (!vars || !vars.length) {
-        return Promise.resolve();
-      }
-      const result = {};
-      vars.forEach(function(item) {
-        if (item.enabled === false) {
-          return;
-        }
-        result[item.variable] = item.value;
-      });
-      const _eval = document.getElementById('eval');
-      return _eval.evaluateVariables(result);
-    },
-    /**
-     * Notifies variable change event listeners
-     * @param {Object} obj
-     */
-    _notifyVariablesChange: function(obj) {
-      if (!obj) {
-        return;
-      }
-      Object.keys(obj).forEach(function(key) {
-        const detail = {
-          variable: key,
-          value: obj[key]
-        };
-        document.body.dispatchEvent(new CustomEvent('variable-update-action', {
-          composed: true,
-          bubbles: true,
-          detail
-        }));
-      }, this);
-    },
-  };
-
-  function openToast(id) {
-    document.getElementById(id).opened = true;
-  }
-  window.addEventListener('abort-api-request', function() {
-    openToast('requestAbort');
-  });
-  window.addEventListener('request-clear-state', function() {
-    openToast('clearToast');
-  });
-  window.addEventListener('request-save-state', function() {
-    openToast('saveToast');
-  });
-  window.addEventListener('request-use-xhr-changed', function() {
-    openToast('xhrToast');
-  });
-
-  window.addEventListener('variable-store-action', function() {
-    openToast('varStore');
-  });
-  window.addEventListener('variable-update-action', function() {
-    openToast('varUpdate');
-  });
-
-  window.addEventListener('api-request', function(e) {
-    document.getElementById('transportToast').opened = true;
-    Demo.sendEvent('url-history-store', {
-      value: e.detail.url
-    }, true);
-
-    Demo.sendRequest(e.detail);
-  });
-  (function(scope) {
-    /* global chance */
-    scope.request = {
-      url: window.location.href,
-      method: 'GET'
-    };
-    const redirectUrl = location.href.replace(/request-panel\/demo\/(index\.html)?/,
-      'oauth-authorization/oauth-popup.html');
-    scope.oauth2RedirectUri = redirectUrl;
-    scope._restoredRequestChanged = function(e) {
-      const restoredRequest = e.detail.value;
-      const opts = {};
-      switch (restoredRequest) {
-        case 'post':
-          opts.method = 'POST';
-          opts.withBody = true;
-          break;
-      }
-      scope.generateRequest(opts);
-    };
-
-    function genHeaders(opts) {
-      let str = '';
-      for (let i = 0; i < chance.integer({min: 1, max: 7}); i++) {
-        str += 'x-' + chance.word() + ': ' + chance.word() + '\n';
-      }
-      if (opts.withBody) {
-        str += 'content-type: application/xml';
-      }
-      return str;
-    }
-    function getMethod(opts) {
-      if (opts.method) {
-        return opts.method;
-      }
-      if (opts.withBody) {
-        return ['POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'][chance.integer({min: 0, max: 4})];
-      }
-      return ['GET', 'HEAD'][chance.integer({min: 0, max: 1})];
-    }
-    scope.generateRequest = function(opts) {
-      scope.set(['request', 'method'], getMethod(opts));
-      scope.set(['request', 'url'], chance.url());
-      if (opts.withBody) {
-        scope.set(['request', 'payload'], 'Demo page');
-      } else {
-        scope.set(['request', 'payload'], '');
-      }
-      scope.set(['request', 'headers'], genHeaders(opts));
-      scope.set(['request', 'method'], getMethod(opts));
-    };
-  })(document.getElementById('demo'));
-  </script>
+<body>
+  <div id="demo"></div>
+  <script type="module" src="index.js"></script>
 </body>
+
 </html>
