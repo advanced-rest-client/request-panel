@@ -87,6 +87,7 @@ class DemoPage extends ArcDemoPage {
   }
 
   async sendRequest(request) {
+    console.log(request);
     let startTime = Date.now();
     try {
       const override = await this._preparePreRequestVariables(request);

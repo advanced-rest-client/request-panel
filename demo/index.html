@@ -77,15 +77,17 @@
     --action-button-disabled-background-color: #eaeaea;
     --action-button-disabled-color: #a8a8a8;
   }
-  body.styled.dark {
+  html body.styled.dark {
     background-color: #424242;
     height: 100vh;
     color: #fff;
     --action-button-background-color: #fff;
     --action-button-color: var(--primary-color);
     --secondary-action-button-color: #fff;
-    --primary-color: #2196f3;
+    --primary-color: #BBDEFB;
+    --anypoint-color-primary: var(--primary-color);
     --primary-text-color: #fff;
+    --error-color: #F4511E;
     --paper-toggle-button-label-color: #fff;
     --paper-listbox-background-color: #424242;
     --paper-listbox-color: #fff;
@@ -142,19 +144,57 @@
     --code-mirror-atom-color: #F07178;
     --code-mirror-number-color: #F78C6A;
     --code-mirror-cursor-color: #009688;
-    --paper-listbox-background-color: #37474F;
+    --code-mirror-gutters-background-color:#212121;
+    --code-mirror-variable-color: #fff;
+    --code-mirror-selected-background-color: #7c7c7c;
+    --code-mirror-focused-selected-background-color: #2196f3;
+    --code-mirror-meta-color: #EEEEEE;
+    --code-mirror-attribute-color: #84c9ff;
+    --code-mirror-tag-color: #ff7c7c;
+    --code-mirror-qualifier-color: #BDBDBD;
+    --code-mirror-variable2-color: #fff;
+    --code-mirror-property-color: #FFCB6B;
+    --code-mirror-keyword-color: #C792EA;
 
-    --code-background-color: #212121;
+    --request-editor-panel-background-color: #424242;
+    --request-editor-panel-border: 1px #757575 solid;
+    --request-actions-panel-empty-screen-color: #fff;
+    --request-action-iterator-editor-background-color: #212121;
+    --request-action-iterator-editor-info-color: #fff;
+    --request-condition-editor-background-color: #212121;
+
     --code-color: #fff;
+    --code-background-color: #212121;
+    --code-type-number-value-color: #eb67b0;
+    --code-token-comment-value-color: #C792EA;
+    --code-property-value-color: #F07178
+    --code-keyword-value-color: #C3E88D;
+    --code-type-text-value-color: #FFCB6B;
 
     --http-code-snippet-code-text-shadow: #fff;
     --http-code-snippet-container-background-color: var(--code-background-color);
     --http-code-snippet-code-function-color: #82AAFF;
     --http-code-snippet-code-keyword-color: #C792EA;
     --http-code-snippet-code-cdata-color: #adb9c5;
-    --code-type-number-value-color: #eb67b0;
-    --code-mirror-tag-color: #ffffff;
-    --code-mirror-tag-color: #b4b4b4;
+    --response-status-view-loading-time-color: #fff;
+
+    --anypoint-button-emphasis-high-background-color: #fff;
+    --anypoint-button-emphasis-high-focus-background-color: #E3F2FD;
+    --anypoint-button-emphasis-low-focus-color: var(--primary-color);
+    --anypoint-button-emphasis-high-hover-background-color: var(--primary-color);
+    --anypoint-button-hover-background-color: var(--primary-color);
+    --anypoint-button-emphasis-high-color: #2196f3;
+    --anypoint-button-color: #2196f3;
+    --anypoint-input-compatibility-label-color: #fff;
+    --anypoint-dropdown-menu-compatibility-label-color: #fff;
+    --url-input-editor-query-title-color: #fff;
+    --anypoint-button-color: #FF9800;
+    --anypoint-checkbox-checked-color: #FF9800;
+    --anypoint-checkbox-checked-color: #FF9800;
+    --anypoint-switch-active-color: #FF9800;
+
+    --anypoint-dialog-title-color: #fff;
+    --anypoint-dialog-content-color: rgba(255, 255, 255, 0.74);
   }
   </style>
 </head>
@@ -162,7 +202,6 @@
 <body>
   <div id="demo"></div>
   <script type="module" src="index.js"></script>
-  </script>
 </body>
 
 </html>
