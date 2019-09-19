@@ -426,3 +426,12 @@
 
 
 
+## [3.0.1](https://github.com/advanced-rest-client/request-panel/compare/0.4.11...3.0.1) (2019-09-19)
+
+
+### Features
+
+* adding support for request config ([a2579aa](https://github.com/advanced-rest-client/request-panel/commit/a2579aa))
+
+
+
