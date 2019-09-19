@@ -581,7 +581,10 @@ describe('<request-panel>', function() {
           source: 'request.body',
           action: 'assign-variable',
           enabled: true
-        }]
+        }],
+        config: {
+          timeout: 50
+        }
       };
       state = {
         collapseOpened: true,
@@ -599,6 +602,7 @@ describe('<request-panel>', function() {
       assert.equal(panel.headers, request.headers, 'payload is set');
       assert.deepEqual(panel.beforeActions, request.requestActions, 'beforeActions is set');
       assert.deepEqual(panel.afterActions, request.responseActions, 'afterActions is set');
+      assert.deepEqual(panel.config, request.config, 'afterActions is set');
     });
 
     it('updates request url when changed', () => {
@@ -659,6 +663,20 @@ describe('<request-panel>', function() {
         }
       });
       assert.deepEqual(element.editorRequest.responseActions, []);
+    });
+
+    it('updates request config when changed', () => {
+      const panel = element.shadowRoot.querySelector('request-editor');
+      panel._configHandler({
+        detail: {
+          value: {
+            timeout: 25
+          }
+        }
+      });
+      assert.deepEqual(element.editorRequest.config, {
+        timeout: 25
+      });
     });
 
     it('sets the state on the editor', () => {

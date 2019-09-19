@@ -448,6 +448,12 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
     this._notifyRequest();
   }
 
+  _configChanged(e) {
+    const { value } = e.detail;
+    this.editorRequest.config = value;
+    this._notifyRequest();
+  }
+
   render() {
     return html`
     ${this._requestEditorTemplate()}
@@ -493,6 +499,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       @requestactions-changed="${this._requestActionsChanged}"
       .afterActions="${request.responseActions}"
       @responseactions-changed="${this._responseActionsChanged}"
+      .config="${request.config}"
+      @config-changed="${this._configChanged}"
     >
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>
