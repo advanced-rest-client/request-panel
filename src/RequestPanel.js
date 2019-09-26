@@ -311,7 +311,11 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
    * Calls `notifyResize()` on the `request-editor`
    */
   notifyResize() {
-    this.editor.notifyResize();
+    const node = this.editor;
+    // this can be called when the editor is not yet upgraded
+    if (node && node.notifyResize) {
+      node.notifyResize();
+    }
   }
 
   _boundEventsChanged(value) {
