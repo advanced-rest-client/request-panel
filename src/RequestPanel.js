@@ -253,6 +253,12 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       }
     }));
   }
+  /**
+   * @return {RequestEditor} Reference to RequestEditor element.
+   */
+  get editor() {
+    return this.shadowRoot.querySelector('request-editor');
+  }
 
   constructor() {
     super();
@@ -285,20 +291,27 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
    * Note, it does not validate the state of the request.
    */
   send() {
-    this.shadowRoot.querySelector('request-editor').send();
+    this.editor.send();
   }
 
   /**
    * Calls abort on the request editor.
    */
   abort() {
-    this.shadowRoot.querySelector('request-editor').abort();
+    this.editor.abort();
   }
   /**
    * Calls `clearRequest()` method of the `request-editor`
    */
   clear() {
-    this.shadowRoot.querySelector('request-editor').clearRequest();
+    this.editor.clearRequest();
+  }
+
+  /**
+   * Calls `notifyResize()` on the `request-editor`
+   */
+  notifyResize() {
+    this.editor.notifyResize();
   }
 
   _boundEventsChanged(value) {

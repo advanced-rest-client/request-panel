@@ -105,6 +105,25 @@ describe('<request-panel>', function() {
     });
   });
 
+  describe('notifyResize()', () => {
+    let element;
+    beforeEach(async () => {
+      element = await basicFixture();
+      element.request = {
+        url: 'https://domain.com/',
+        method: 'GET',
+        headers: 'accept: text/plain'
+      };
+    });
+
+    it('Calls notifyResize() on the editor', () => {
+      const node = element.shadowRoot.querySelector('request-editor');
+      const spy = sinon.spy(node, 'notifyResize');
+      element.notifyResize();
+      assert.isTrue(spy.called);
+    });
+  });
+
   describe('_abortHandler()', () => {
     let element;
     beforeEach(async () => {
