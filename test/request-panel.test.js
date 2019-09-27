@@ -619,8 +619,8 @@ describe('<request-panel>', function() {
       assert.equal(panel.method, request.method, 'method is set');
       assert.equal(panel.payload, request.payload, 'payload is set');
       assert.equal(panel.headers, request.headers, 'payload is set');
-      assert.deepEqual(panel.beforeActions, request.requestActions, 'beforeActions is set');
-      assert.deepEqual(panel.afterActions, request.responseActions, 'afterActions is set');
+      assert.deepEqual(panel.requestActions, request.requestActions, 'beforeActions is set');
+      assert.deepEqual(panel.responseActions, request.responseActions, 'afterActions is set');
       assert.deepEqual(panel.config, request.config, 'afterActions is set');
     });
 
