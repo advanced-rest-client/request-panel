@@ -476,3 +476,19 @@
 
 
 
+# [3.1.0](https://github.com/advanced-rest-client/request-panel/compare/0.4.11...3.1.0) (2019-10-25)
+
+
+### Bug Fixes
+
+* adding type check when calling notifyResize ([8bab93c](https://github.com/advanced-rest-client/request-panel/commit/8bab93c9de515e7993eddddd066cdd4997feef59))
+* fixing setting up request/response actions ([8324384](https://github.com/advanced-rest-client/request-panel/commit/83243841dbd5f3821d3f76e3085e07427c88e98d))
+
+
+### Features
+
+* adding `notifyResize()` function ([c929e17](https://github.com/advanced-rest-client/request-panel/commit/c929e17864ffae83ec0928fef4c6385dd9b12731))
+* adding support for request config ([a2579aa](https://github.com/advanced-rest-client/request-panel/commit/a2579aa30aa8487261e6cfd1f956f8c4e1b6d0e0))
+
+
+
