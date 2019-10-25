@@ -1,4 +1,4 @@
-import { fixture, assert, html } from '@open-wc/testing';
+import { fixture, assert, html, aTimeout } from '@open-wc/testing';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import * as sinon from 'sinon/pkg/sinon-esm.js';
 import '../request-panel.js';
@@ -589,7 +589,7 @@ describe('<request-panel>', function() {
         url: 'https://api.com',
         headers: 'x-test: true',
         payload: 'test',
-        requestActions:{
+        requestActions: {
           variables: [{
             enabled: true,
             value: 'test-value',
@@ -603,6 +603,14 @@ describe('<request-panel>', function() {
         }],
         config: {
           timeout: 50
+        },
+        auth: {
+          method: 'Basic Authentication',
+          settings: {
+            hash: 'dGVzdDpwd2Q=',
+            password: 'pwd',
+            username: 'test'
+          }
         }
       };
       state = {
@@ -622,6 +630,8 @@ describe('<request-panel>', function() {
       assert.deepEqual(panel.requestActions, request.requestActions, 'beforeActions is set');
       assert.deepEqual(panel.responseActions, request.responseActions, 'afterActions is set');
       assert.deepEqual(panel.config, request.config, 'afterActions is set');
+      assert.deepEqual(panel.authMethod, request.auth.method, 'authMethod is set');
+      assert.deepEqual(panel.authSettings, request.auth.settings, 'authSettings is set');
     });
 
     it('updates request url when changed', () => {
@@ -696,6 +706,24 @@ describe('<request-panel>', function() {
       assert.deepEqual(element.editorRequest.config, {
         timeout: 25
       });
+    });
+
+    it('updates auth config when selecting auth method', async () => {
+      const editor = element.shadowRoot.querySelector('request-editor');
+      const panel = editor.shadowRoot.querySelector('authorization-panel');
+      panel.selected = 1;
+      await aTimeout();
+      const authPanel = panel.shadowRoot.querySelector('auth-method-basic');
+      authPanel.username = 'test-username';
+      authPanel.password = 'test-password';
+      await aTimeout(100);
+      assert.deepEqual(element.editorRequest.auth.settings, {
+        username: 'test-username',
+        password: 'test-password',
+        hash: 'dGVzdC11c2VybmFtZTp0ZXN0LXBhc3N3b3Jk'
+      }, 'auth.settings is set');
+      assert.equal(element.editorRequest.auth.method,
+          'Basic Authentication', 'auth.settings is set');
     });
 
     it('sets the state on the editor', () => {

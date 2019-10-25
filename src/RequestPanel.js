@@ -471,6 +471,24 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
     this._notifyRequest();
   }
 
+  _authSettingsChanged(e) {
+    const { value } = e.detail;
+    if (!this.editorRequest.auth) {
+      this.editorRequest.auth = {};
+    }
+    this.editorRequest.auth.settings = value;
+    this._notifyRequest();
+  }
+
+  _authMethodChanged(e) {
+    const { value } = e.detail;
+    if (!this.editorRequest.auth) {
+      this.editorRequest.auth = {};
+    }
+    this.editorRequest.auth.method = value;
+    this._notifyRequest();
+  }
+
   render() {
     return html`
     ${this._requestEditorTemplate()}
@@ -492,6 +510,7 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       ignoreContentOnGet
     } = this;
     const request = this.editorRequest || {};
+    const auth = request.auth || {};
     return html`
     <request-editor
       ?compatibility="${compatibility}"
@@ -518,6 +537,10 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       @responseactions-changed="${this._responseActionsChanged}"
       .config="${request.config}"
       @config-changed="${this._configChanged}"
+      .authMethod="${auth.method}"
+      @authmethod-changed="${this._authMethodChanged}"
+      .authSettings="${auth.settings}"
+      @authsettings-changed="${this._authSettingsChanged}"
     >
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>

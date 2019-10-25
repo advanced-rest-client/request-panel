@@ -31,6 +31,7 @@ class DemoPage extends ArcDemoPage {
     this._toggleMainOption = this._toggleMainOption.bind(this);
     this._narrowHandler = this._narrowHandler.bind(this);
     this._requestHandler = this._requestHandler.bind(this);
+    this._editorrequestHandler = this._editorrequestHandler.bind(this);
 
     this.oauth2RedirectUri = location.href;
 
@@ -200,6 +201,10 @@ class DemoPage extends ArcDemoPage {
     return headers;
   }
 
+  _editorrequestHandler(e) {
+    console.log(e.detail.value);
+  }
+
   _demoTemplate() {
     const {
       demoStates,
@@ -231,6 +236,7 @@ class DemoPage extends ArcDemoPage {
             ?narrow="${narrow}"
             .oauth2RedirectUri="${oauth2RedirectUri}"
             .editorRequest="${request}"
+            @editorrequest="${this._editorrequestHandler}"
             slot="content"
           ></request-panel>
 
