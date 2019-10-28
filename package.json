@@ -1,7 +1,7 @@
 {
   "name": "@advanced-rest-client/request-panel",
   "description": "A HTTP request editor",
-  "version": "3.1.2",
+  "version": "4.0.0-preview.1",
   "license": "Apache-2.0",
   "main": "request-panel.js",
   "keywords": [
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@advanced-rest-client/events-target-mixin": "^3.0.0",
-    "@advanced-rest-client/request-editor": "^3.1.2",
+    "@advanced-rest-client/request-editor": "^4.0.0-preview.3",
     "@advanced-rest-client/response-view": "^3.0.2",
     "@polymer/paper-progress": "^3.0.0",
     "lit-element": "^2.2.1"
