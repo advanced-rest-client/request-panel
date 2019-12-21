@@ -78,6 +78,7 @@ declare namespace UiElements {
      * An error object associated with the response when error.
      */
     responseError: object|null|undefined;
+    readonly editor: RequestEditor|null;
 
     /**
      * A request object that is generated in request edtor.
@@ -168,6 +169,11 @@ declare namespace UiElements {
      * Calls `clearRequest()` method of the `request-editor`
      */
     clear(): void;
+
+    /**
+     * Calls `notifyResize()` on the `request-editor`
+     */
+    notifyResize(): void;
     _boundEventsChanged(value: any): void;
 
     /**
@@ -213,13 +219,15 @@ declare namespace UiElements {
      */
     clearResponse(): void;
     _stateHandler(e: any): void;
-    _notifyRequest(e: any): void;
+    _notifyRequest(): void;
     _urlHandler(e: any): void;
     _methodHandler(e: any): void;
     _payloadHandler(e: any): void;
     _headersHandler(e: any): void;
     _requestActionsChanged(e: any): void;
     _responseActionsChanged(e: any): void;
+    _configChanged(e: any): void;
+    _authSettingsChanged(e: any): void;
     render(): any;
     _requestEditorTemplate(): any;
     _responseTemplate(): any;

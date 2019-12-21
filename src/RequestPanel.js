@@ -421,7 +421,7 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
     }));
   }
 
-  _notifyRequest(e) {
+  _notifyRequest() {
     this.dispatchEvent(new CustomEvent('editorrequest', {
       detail: {
         value: this.editorRequest
@@ -472,20 +472,11 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
   }
 
   _authSettingsChanged(e) {
-    const { value } = e.detail;
-    if (!this.editorRequest.auth) {
-      this.editorRequest.auth = {};
-    }
-    this.editorRequest.auth.settings = value;
-    this._notifyRequest();
-  }
-
-  _authMethodChanged(e) {
-    const { value } = e.detail;
-    if (!this.editorRequest.auth) {
-      this.editorRequest.auth = {};
-    }
-    this.editorRequest.auth.method = value;
+    const { auth, authType } = e.target;
+    this.editorRequest.auth = {
+      settings: auth,
+      type: authType,
+    };
     this._notifyRequest();
   }
 
@@ -522,25 +513,24 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       oauth2RedirectUri="${oauth2RedirectUri}"
       .eventsTarget="${eventsTarget}"
       .state="${editorState}"
-      @state="${this._stateHandler}"
       .url="${request.url}"
-      @url-changed="${this._urlHandler}"
       .method="${request.method}"
-      @method-changed="${this._methodHandler}"
       .payload="${request.payload}"
-      @payload-changed="${this._payloadHandler}"
       .headers="${request.headers}"
-      @headers-changed="${this._headersHandler}"
       .requestActions="${request.requestActions}"
-      @requestactions-changed="${this._requestActionsChanged}"
       .responseActions="${request.responseActions}"
-      @responseactions-changed="${this._responseActionsChanged}"
       .config="${request.config}"
+      .authType="${auth.type || auth.method}"
+      .auth="${auth.settings}"
+      @state="${this._stateHandler}"
+      @url-changed="${this._urlHandler}"
+      @method-changed="${this._methodHandler}"
+      @payload-changed="${this._payloadHandler}"
+      @headers-changed="${this._headersHandler}"
+      @requestactions-changed="${this._requestActionsChanged}"
+      @responseactions-changed="${this._responseActionsChanged}"
       @config-changed="${this._configChanged}"
-      .authMethod="${auth.method}"
-      @authmethod-changed="${this._authMethodChanged}"
-      .authSettings="${auth.settings}"
-      @authsettings-changed="${this._authSettingsChanged}"
+      @auth-changed="${this._authSettingsChanged}"
     >
       <slot name="request-context-menu" slot="request-context-menu"></slot>
     </request-editor>
