@@ -156,6 +156,10 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
        * Enables material's outlined theme for inputs.
        */
       outlined: { type: Boolean },
+      /**
+       * Enables "import" button in client certificate authorization panel
+       */
+      clientCertificateImport: { type: Boolean },
     };
   }
 
@@ -498,7 +502,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       eventsTarget,
       editorState,
       narrow,
-      ignoreContentOnGet
+      ignoreContentOnGet,
+      clientCertificateImport,
     } = this;
     const request = this.editorRequest || {};
     const auth = request.auth || {};
@@ -509,6 +514,7 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       ?narrow="${narrow}"
       ?readOnly="${readOnly}"
       ?ignoreContentOnGet="${ignoreContentOnGet}"
+      ?clientCertificateImport="${clientCertificateImport}"
       collapseOpened
       oauth2RedirectUri="${oauth2RedirectUri}"
       .eventsTarget="${eventsTarget}"

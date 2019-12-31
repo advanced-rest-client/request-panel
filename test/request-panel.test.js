@@ -1,6 +1,6 @@
 import { fixture, assert, html, aTimeout } from '@open-wc/testing';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
-import * as sinon from 'sinon/pkg/sinon-esm.js';
+import * as sinon from 'sinon';
 import '../request-panel.js';
 
 describe('<request-panel>', function() {
@@ -15,6 +15,12 @@ describe('<request-panel>', function() {
       <request-panel
         .editorRequest="${request}"
         .editorState="${editorState}"></request-panel>
+    `);
+  }
+
+  async function clientCertificateImportFixture() {
+    return await fixture(html`
+      <request-panel clientCertificateImport></request-panel>
     `);
   }
 
@@ -734,6 +740,20 @@ describe('<request-panel>', function() {
       const tab = panel.shadowRoot.querySelector('anypoint-tab');
       MockInteractions.tap(tab);
       assert.equal(element.editorState.selectedTab, 0);
+    });
+  });
+
+  describe('#clientCertificateImport', () => {
+    it('propagates clientCertificateImport property', async () => {
+      const element = await clientCertificateImportFixture();
+      const editor = element.shadowRoot.querySelector('request-editor');
+      assert.isTrue(editor.clientCertificateImport);
+    });
+
+    it('propagates only when set', async () => {
+      const element = await basicFixture();
+      const editor = element.shadowRoot.querySelector('request-editor');
+      assert.isUndefined(editor.clientCertificateImport);
     });
   });
 });
