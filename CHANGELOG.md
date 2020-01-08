@@ -969,3 +969,19 @@
  [22dd927](https://github.com/advanced-rest-client/request-panel/commit/22dd9274f3ffbd4e54d67682cabd173d54b84898) by Pawel Psztyc
 
 
+<a name="4.0.2"></a>
+## [4.0.2](https://github.com/advanced-rest-client/request-panel/compare/4.0.0...4.0.2) (2020-01-08)
+
+### Build
+
+* bumping version [52f25ed](https://github.com/advanced-rest-client/request-panel/commit/52f25ed0a70d25fa3a03b2fd31e22501ace0da3b) by Pawel
+* bumping version [2a506aa](https://github.com/advanced-rest-client/request-panel/commit/2a506aaa3653f50630a5604a1121fcd95c11c3e0) by Pawel Psztyc
+
+
+### Update
+
+* updating auth data to match rest of the application data struct [ef8d7b5](https://github.com/advanced-rest-client/request-panel/commit/ef8d7b5de55a9a59ec4b3acbe75dcac8fa1ed11b) by Pawel
+* [ci skip] automated merge master->stage. syncing main branches [f6effa9](https://github.com/advanced-rest-client/request-panel/commit/f6effa95c706b18021558d2e61b0d549408c1c23) by Ci agent
+* adding `clientCertificateImport` property [9fe86be](https://github.com/advanced-rest-client/request-panel/commit/9fe86be2810d5a261f24a25a46558ad2238a6bbd) by Pawel Psztyc
+
+
