@@ -610,12 +610,10 @@ describe('<request-panel>', function() {
         config: {
           timeout: 50
         },
+        authType: 'basic',
         auth: {
-          type: 'basic',
-          settings: {
-            password: 'pwd',
-            username: 'test'
-          }
+          password: 'pwd',
+          username: 'test'
         }
       };
       state = {
@@ -635,8 +633,8 @@ describe('<request-panel>', function() {
       assert.deepEqual(panel.requestActions, request.requestActions, 'beforeActions is set');
       assert.deepEqual(panel.responseActions, request.responseActions, 'afterActions is set');
       assert.deepEqual(panel.config, request.config, 'afterActions is set');
-      assert.deepEqual(panel.authType, request.auth.type, 'authMethod is set');
-      assert.deepEqual(panel.auth, request.auth.settings, 'authSettings is set');
+      assert.equal(panel.authType, request.authType, 'authType is set');
+      assert.deepEqual(panel.auth, request.auth, 'auth settings is set');
     });
 
     it('updates request url when changed', () => {
@@ -722,11 +720,11 @@ describe('<request-panel>', function() {
       authPanel.username = 'test-username';
       authPanel.password = 'test-password';
       authPanel.dispatchEvent(new CustomEvent('change'));
-      assert.deepEqual(element.editorRequest.auth.settings, {
+      assert.deepEqual(element.editorRequest.auth, {
         username: 'test-username',
         password: 'test-password',
       }, 'auth.settings is set');
-      assert.equal(element.editorRequest.auth.type,
+      assert.equal(element.editorRequest.authType,
           'basic', 'auth.settings is set');
     });
 

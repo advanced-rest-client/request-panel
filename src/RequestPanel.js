@@ -477,10 +477,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
 
   _authSettingsChanged(e) {
     const { auth, authType } = e.target;
-    this.editorRequest.auth = {
-      settings: auth,
-      type: authType,
-    };
+    this.editorRequest.auth = auth;
+    this.editorRequest.authType = authType;
     this._notifyRequest();
   }
 
@@ -506,7 +504,6 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       clientCertificateImport,
     } = this;
     const request = this.editorRequest || {};
-    const auth = request.auth || {};
     return html`
     <request-editor
       ?compatibility="${compatibility}"
@@ -526,8 +523,8 @@ export class RequestPanel extends EventsTargetMixin(LitElement) {
       .requestActions="${request.requestActions}"
       .responseActions="${request.responseActions}"
       .config="${request.config}"
-      .authType="${auth.type || auth.method}"
-      .auth="${auth.settings}"
+      .authType="${request.authType}"
+      .auth="${request.auth}"
       @state="${this._stateHandler}"
       @url-changed="${this._urlHandler}"
       @method-changed="${this._methodHandler}"
