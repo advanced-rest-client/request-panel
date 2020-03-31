@@ -985,3 +985,31 @@
 * adding `clientCertificateImport` property [9fe86be](https://github.com/advanced-rest-client/request-panel/commit/9fe86be2810d5a261f24a25a46558ad2238a6bbd) by Pawel Psztyc
 
 
+<a name="5.0.0"></a>
+# [5.0.0](https://github.com/advanced-rest-client/request-panel/compare/4.0.1...5.0.0) (2020-03-31)
+
+## Build
+
+* bumping major version [b0bd777](https://github.com/advanced-rest-client/request-panel/commit/b0bd7772c343b7daf112174d4d18d0fded4b0ae1) by Pawel
+* bumping version [52f25ed](https://github.com/advanced-rest-client/request-panel/commit/52f25ed0a70d25fa3a03b2fd31e22501ace0da3b) by Pawel
+
+
+## Continuous integration
+
+* fixing Travis config [9f008e4](https://github.com/advanced-rest-client/request-panel/commit/9f008e4144db120f30fb6b7aebb2ad612f0e13b2) by Pawel
+
+
+## Update
+
+* upgrading demo page [ab457c6](https://github.com/advanced-rest-client/request-panel/commit/ab457c6b28bf6d81b6273c5d2384370c4a5cb0c3) by Pawel
+* upgrading dependencies [16948a9](https://github.com/advanced-rest-client/request-panel/commit/16948a9164e2eb082ba146aa3f60f7c44abfab43) by Pawel
+* [ci skip] automated merge master->stage. syncing main branches [d80d527](https://github.com/advanced-rest-client/request-panel/commit/d80d52758f3e4751b3739e2564d17cdc8d2a8536) by Ci agent
+* updating auth data to match rest of the application data struct [ef8d7b5](https://github.com/advanced-rest-client/request-panel/commit/ef8d7b5de55a9a59ec4b3acbe75dcac8fa1ed11b) by Pawel
+* [ci skip] automated merge master->stage. syncing main branches [f6effa9](https://github.com/advanced-rest-client/request-panel/commit/f6effa95c706b18021558d2e61b0d549408c1c23) by Ci agent
+
+
+## Testing
+
+* updating SL run name [a492345](https://github.com/advanced-rest-client/request-panel/commit/a492345f50e23a90d07c7421399716077504ef36) by Pawel
+
+
