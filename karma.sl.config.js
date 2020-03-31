@@ -6,7 +6,7 @@ const createBaseConfig = require('./karma.conf.js');
 module.exports = (config) => {
   const slConfig = merge(slSettings(config), {
     sauceLabs: {
-      testName: 'equest-panel',
+      testName: 'request-panel',
     },
   });
   slConfig.browsers = [
